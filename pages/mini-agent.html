@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>从零开发 Mini Agent | Learn Pi</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Learn Pi</strong><span>从零开发 Mini Agent</span></div></div><nav><a href="../index.html">首页</a><a href="lifecycle.html">Pi 流程</a><a href="custom-model-api.html">自研模型</a><a href="cesium.html">Cesium 路径</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="architecture.html">1. 架构设计</a><a href="lifecycle.html">2. 完整运行流程</a><a href="prompt-processing.html">3. 提示词处理</a><a href="tools.html">4. 工具调用</a><a href="sessions.html">5. 会话与压缩</a><a href="models.html">6. 模型接口</a><a href="frontend.html">7. 前端事件</a><a href="design-tradeoffs.html">8. 为什么这样设计</a><a href="labs.html">9. 动手练习</a><a class="active" href="mini-agent.html">从零开发 Mini Agent</a><a href="custom-model-api.html">自研模型接入</a><a href="glossary.html">术语表</a><a href="callgraph.html">源码调用图</a><a href="faq.html">FAQ</a></aside>
+			<article class="doc">
+				<p class="kicker">Build</p>
+				<h1>从零开发一个 Mini Agent</h1>
+				<p class="lead">这一章不讲 Pi 的大工程，先用最小代码把 agent 的骨架写出来。你理解了这个，再回头看 Pi 的 `AgentSession`、`Agent`、`runLoop` 就会清楚很多。</p>
+
+				<h2>Mini Agent 的目标</h2>
+				<p>做一个能完成这种任务的小 agent：</p>
+				<pre><code>用户：读取 README.md，总结内容，如果没有安装说明就补上。</code></pre>
+				<p>它需要会三件事：调用模型、执行工具、把工具结果继续发给模型。</p>
+
+				<h2>最小 Agent Loop</h2>
+				<pre><code>async function runAgent(userText) {
+  const messages = [
+    { role: "system", content: "你是一个会使用工具的 coding agent。" },
+    { role: "user", content: userText }
+  ];
+
+  while (true) {
+    const assistant = await callModel(messages, tools);
+    messages.push(assistant.message);
+
+    const toolCall = assistant.message.tool_calls?.[0];
+    if (!toolCall) {
+      return assistant.message.content;
+    }
+
+    const result = await runTool(toolCall);
+    messages.push({
+      role: "tool",
+      tool_call_id: toolCall.id,
+      content: result
+    });
+  }
+}</code></pre>
+				<p>这段代码就是 agent 的核心：模型决定下一步，程序执行工具，结果再交给模型。</p>
+
+				<h2>定义三个工具</h2>
+				<pre><code>const tools = [
+  {
+    type: "function",
+    function: {
+      name: "readFile",
+      description: "Read a local file",
+      parameters: {
+        type: "object",
+        properties: { path: { type: "string" } },
+        required: ["path"]
+      }
+    }
+  },
+  {
+    type: "function",
+    function: {
+      name: "writeFile",
+      description: "Write text to a local file",
+      parameters: {
+        type: "object",
+        properties: {
+          path: { type: "string" },
+          content: { type: "string" }
+        },
+        required: ["path", "content"]
+      }
+    }
+  },
+  {
+    type: "function",
+    function: {
+      name: "runCommand",
+      description: "Run a shell command",
+      parameters: {
+        type: "object",
+        properties: { command: { type: "string" } },
+        required: ["command"]
+      }
+    }
+  }
+];</code></pre>
+
+				<h2>实现工具执行器</h2>
+				<pre><code>async function runTool(toolCall) {
+  const name = toolCall.function.name;
+  const args = JSON.parse(toolCall.function.arguments || "{}");
+
+  if (name === "readFile") {
+    return await fs.promises.readFile(args.path, "utf8");
+  }
+
+  if (name === "writeFile") {
+    await fs.promises.writeFile(args.path, args.content, "utf8");
+    return `Wrote ${args.path}`;
+  }
+
+  if (name === "runCommand") {
+    const { stdout, stderr } = await execAsync(args.command);
+    return stdout || stderr;
+  }
+
+  throw new Error(`Unknown tool: ${name}`);
+}</code></pre>
+
+				<h2>调用 OpenAI-compatible 模型</h2>
+				<pre><code>async function callModel(messages, tools) {
+  const response = await fetch("http://localhost:8000/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.API_KEY}`
+    },
+    body: JSON.stringify({
+      model: "my-agent-model",
+      messages,
+      tools,
+      tool_choice: "auto"
+    })
+  });
+
+  const json = await response.json();
+  return {
+    message: json.choices[0].message
+  };
+}</code></pre>
+				<p>这里的 `localhost:8000` 可以是 OpenAI 兼容服务，也可以是你自己训练模型外面包的一层 adapter。</p>
+
+				<h2>Mini Agent 对照 Pi Agent</h2>
+				<table class="compare-table">
+					<thead><tr><th>Mini Agent</th><th>Pi Agent</th><th>含义</th></tr></thead>
+					<tbody>
+						<tr><td>`messages`</td><td>`Agent.state.messages`</td><td>当前对话和工具结果。</td></tr>
+						<tr><td>`callModel()`</td><td>`pi-ai streamSimple()`</td><td>调用模型 provider。</td></tr>
+						<tr><td>`runTool()`</td><td>`executeToolCalls()`</td><td>执行模型请求的工具。</td></tr>
+						<tr><td>`role: "tool"`</td><td>`ToolResultMessage`</td><td>工具结果回填上下文。</td></tr>
+						<tr><td>`while (true)`</td><td>`runLoop()`</td><td>多轮推理和工具执行。</td></tr>
+						<tr><td>无</td><td>`AgentSession`</td><td>产品层：会话、扩展、UI、压缩、重试。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>从 Mini Agent 扩展到真正可用</h2>
+				<ol>
+					<li>加流式输出，让用户看到模型正在生成。</li>
+					<li>加工具执行事件，让前端显示“正在 read/write/bash”。</li>
+					<li>加会话保存，支持恢复上次任务。</li>
+					<li>加上下文压缩，避免长任务超过窗口。</li>
+					<li>加权限控制，限制文件系统和命令执行范围。</li>
+					<li>加工具 schema 校验和更好的错误消息。</li>
+				</ol>
+
+				<h2>你现在应该理解的关键点</h2>
+				<p>Agent 不是“一个更聪明的 prompt”。Agent 是一个循环系统：模型负责决策，工具负责执行，程序负责状态和安全边界。Pi Agent 只是把这个最小循环工程化、可扩展化、可观察化。</p>
+				<div class="next-card"><span>下一步</span><a href="custom-model-api.html">把 Mini Agent 接到自己的模型</a></div>
+			</article>
+		</main>
+		<script src="../theme.js"></script>
+	</body>
+</html>
