@@ -12,8 +12,89 @@
 	--green: #527b2d;
 	--blue: #315d91;
 	--shadow: 0 18px 45px rgba(36, 33, 27, 0.12);
+	--topbar-bg: rgba(251, 248, 239, 0.92);
+	--section-bg: #fbf7ee;
+	--code-bg: #162124;
+	--code-fg: #f3eadc;
 	font-family:
 		Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+
+:root[data-theme="ocean"] {
+	--ink: #10242f;
+	--muted: #55717e;
+	--paper: #eaf6f7;
+	--panel: #ffffff;
+	--line: #bdd6dc;
+	--teal: #00768a;
+	--teal-soft: #d7f0f4;
+	--red: #b54d5d;
+	--amber: #c68a18;
+	--green: #347f68;
+	--blue: #285da8;
+	--shadow: 0 18px 45px rgba(16, 55, 70, 0.13);
+	--topbar-bg: rgba(234, 246, 247, 0.92);
+	--section-bg: #f4fbfc;
+	--code-bg: #10242f;
+	--code-fg: #eaf6f7;
+}
+
+:root[data-theme="graphite"] {
+	color-scheme: dark;
+	--ink: #eef2ef;
+	--muted: #a9b5af;
+	--paper: #171b1d;
+	--panel: #22282b;
+	--line: #3a4448;
+	--teal: #65d1c4;
+	--teal-soft: #183b3a;
+	--red: #f08a86;
+	--amber: #e4bd63;
+	--green: #9bd27d;
+	--blue: #8db7ff;
+	--shadow: 0 18px 45px rgba(0, 0, 0, 0.3);
+	--topbar-bg: rgba(23, 27, 29, 0.94);
+	--section-bg: #1d2326;
+	--code-bg: #0d1113;
+	--code-fg: #eef2ef;
+}
+
+:root[data-theme="mint"] {
+	--ink: #193027;
+	--muted: #5d7469;
+	--paper: #edf8ef;
+	--panel: #ffffff;
+	--line: #bfd9c8;
+	--teal: #17805d;
+	--teal-soft: #d8f2e4;
+	--red: #b14a6b;
+	--amber: #b88916;
+	--green: #4d8a2b;
+	--blue: #326a97;
+	--shadow: 0 18px 45px rgba(32, 79, 58, 0.12);
+	--topbar-bg: rgba(237, 248, 239, 0.92);
+	--section-bg: #f7fcf8;
+	--code-bg: #173026;
+	--code-fg: #eef8ef;
+}
+
+:root[data-theme="rose"] {
+	--ink: #2f2028;
+	--muted: #765e69;
+	--paper: #fbf0f2;
+	--panel: #ffffff;
+	--line: #e2c6cd;
+	--teal: #9b3657;
+	--teal-soft: #f4dce4;
+	--red: #b73548;
+	--amber: #ba7d1e;
+	--green: #627d39;
+	--blue: #5b609b;
+	--shadow: 0 18px 45px rgba(94, 41, 62, 0.12);
+	--topbar-bg: rgba(251, 240, 242, 0.92);
+	--section-bg: #fff7f8;
+	--code-bg: #2f2028;
+	--code-fg: #fff1f4;
 }
 
 * {
@@ -45,9 +126,48 @@ a {
 	justify-content: space-between;
 	gap: 24px;
 	padding: 14px 28px;
-	background: rgba(251, 248, 239, 0.92);
+	background: var(--topbar-bg);
 	border-bottom: 1px solid var(--line);
 	backdrop-filter: blur(18px);
+}
+
+.theme-switcher {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 6px;
+	flex-wrap: wrap;
+	max-width: 360px;
+}
+
+.theme-switcher button {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	min-height: 30px;
+	border: 1px solid var(--line);
+	background: var(--panel);
+	color: var(--muted);
+	border-radius: 999px;
+	padding: 4px 9px;
+	font: inherit;
+	font-size: 12px;
+	font-weight: 800;
+	cursor: pointer;
+}
+
+.theme-switcher button.active {
+	border-color: var(--teal);
+	color: var(--teal);
+	box-shadow: inset 0 0 0 1px var(--teal);
+}
+
+.theme-switcher span {
+	width: 11px;
+	height: 11px;
+	border-radius: 50%;
+	background: var(--teal);
+	box-shadow: 0 0 0 2px var(--teal-soft);
 }
 
 .brand {
@@ -478,7 +598,7 @@ h2 {
 }
 
 .lesson-grid section {
-	background: #fbf7ee;
+	background: var(--section-bg);
 	border: 1px solid var(--line);
 	border-radius: 8px;
 	padding: 18px;
@@ -666,7 +786,7 @@ h2 {
 
 .tag {
 	border: 1px solid var(--line);
-	background: #fbf7ee;
+	background: var(--section-bg);
 	border-radius: 999px;
 	padding: 5px 8px;
 	font-size: 12px;
@@ -748,8 +868,8 @@ h2 {
 
 pre {
 	overflow: auto;
-	background: #162124;
-	color: #f3eadc;
+	background: var(--code-bg);
+	color: var(--code-fg);
 	border-radius: 8px;
 	padding: 16px;
 	line-height: 1.55;
@@ -913,6 +1033,11 @@ footer a {
 
 	.topbar {
 		position: static;
+	}
+
+	.theme-switcher {
+		justify-content: flex-start;
+		max-width: none;
 	}
 
 	.workspace,
