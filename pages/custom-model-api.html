@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>自研模型接入 Agent | Learn Pi</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Learn Pi</strong><span>自研模型接入 Agent</span></div></div><nav><a href="../index.html">首页</a><a href="models.html">模型接口</a><a href="tools.html">工具</a><a href="design-tradeoffs.html">设计</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="architecture.html">1. 架构设计</a><a href="lifecycle.html">2. 完整运行流程</a><a href="prompt-processing.html">3. 提示词处理</a><a href="tools.html">4. 工具调用</a><a href="sessions.html">5. 会话与压缩</a><a href="models.html">6. 模型接口</a><a href="frontend.html">7. 前端事件</a><a href="design-tradeoffs.html">8. 为什么这样设计</a><a href="labs.html">9. 动手练习</a><a class="active" href="custom-model-api.html">自研模型接入</a><a href="glossary.html">术语表</a><a href="callgraph.html">源码调用图</a><a href="faq.html">FAQ</a></aside>
+			<article class="doc">
+				<p class="kicker">Integration</p>
+				<h1>如何让自己训练的模型被 Agent 使用</h1>
+				<p class="lead">结论先说：通常不需要把模型“训练成 OpenAI 接口”。你需要的是一个中间服务，把 Agent 发来的 OpenAI/Anthropic 风格 JSON 请求，转换成你模型真正需要的 prompt；再把模型输出转换回 Agent 能识别的 JSON 响应。</p>
+
+				<h2>大模型的输入本质上是什么</h2>
+				<p>模型本体通常只会接收 token 序列。JSON 不是模型天然输入，而是 API 服务为了让应用好用而定义的协议。</p>
+				<pre><code>Agent 看到的协议层:
+{
+  "messages": [
+    { "role": "system", "content": "你是 coding agent..." },
+    { "role": "user", "content": "读取 README 并总结" }
+  ],
+  "tools": [...]
+}
+
+模型真正看到的通常是模板化文本/token:
+&lt;system&gt;你是 coding agent...&lt;/system&gt;
+&lt;user&gt;读取 README 并总结&lt;/user&gt;
+&lt;tools&gt;...工具说明...&lt;/tools&gt;</code></pre>
+				<p>所以 JSON 是“应用和模型服务之间的接口格式”。模型服务收到 JSON 后，会把它渲染成模型训练时熟悉的 chat template，再送进推理引擎。</p>
+
+				<h2>是训练解决，还是中间层解决</h2>
+				<div class="lesson-grid">
+					<section><h3>中间层必须要有</h3><p>无论模型有没有训练过 tool calling，你都需要 API 层负责鉴权、请求格式、stream、错误码、工具 schema 转换和响应包装。</p></section>
+					<section><h3>训练决定能力上限</h3><p>如果模型没学过按结构输出 tool call，中间层只能靠提示词和解析勉强做；效果不稳定。更好的方式是对模型做 function calling / tool use 指令微调。</p></section>
+				</div>
+				<p>实战建议：先做 OpenAI-compatible 中间层，让 Agent 能跑通；如果模型经常输出不合法 tool call，再做数据微调或约束解码。</p>
+
+				<h2>OpenAI 兼容接口最小需要实现什么</h2>
+				<p>如果你想让很多 Agent 直接用你的模型，最实用的是实现 OpenAI Chat Completions 兼容接口。</p>
+				<pre><code>POST /v1/chat/completions
+Authorization: Bearer YOUR_KEY
+
+请求:
+{
+  "model": "my-agent-model",
+  "messages": [
+    { "role": "system", "content": "..." },
+    { "role": "user", "content": "帮我读 README" }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "description": "Read a file",
+        "parameters": { "type": "object", "properties": { "path": { "type": "string" } } }
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "stream": false
+}</code></pre>
+				<p>当模型想调用工具时，响应要返回 `tool_calls`，而不是直接执行工具。</p>
+				<pre><code>{
+  "id": "chatcmpl_123",
+  "object": "chat.completion",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_1",
+            "type": "function",
+            "function": {
+              "name": "read",
+              "arguments": "{\"path\":\"README.md\"}"
+            }
+          }
+        ]
+      },
+      "finish_reason": "tool_calls"
+    }
+  ]
+}</code></pre>
+				<p>Agent 执行工具后，会再发一轮请求，带上 role 为 `tool` 的消息。</p>
+				<pre><code>{
+  "role": "tool",
+  "tool_call_id": "call_1",
+  "content": "README 的文件内容..."
+}</code></pre>
+
+				<h2>Anthropic Messages 接口差别在哪里</h2>
+				<p>Anthropic 也是 JSON API，但消息结构和工具块表达不同。它用 content block 表示文本、tool_use、tool_result。</p>
+				<pre><code>Anthropic tool_use 形状:
+{
+  "role": "assistant",
+  "content": [
+    {
+      "type": "tool_use",
+      "id": "toolu_1",
+      "name": "read",
+      "input": { "path": "README.md" }
+    }
+  ],
+  "stop_reason": "tool_use"
+}
+
+Anthropic tool_result 通常作为 user content block 发回:
+{
+  "role": "user",
+  "content": [
+    {
+      "type": "tool_result",
+      "tool_use_id": "toolu_1",
+      "content": "README 的文件内容..."
+    }
+  ]
+}</code></pre>
+
+				<h2>OpenAI vs Anthropic 的核心差距</h2>
+				<table class="compare-table">
+					<thead><tr><th>点</th><th>OpenAI Chat Completions</th><th>Anthropic Messages</th></tr></thead>
+					<tbody>
+						<tr><td>工具定义</td><td>`tools: [{ type: "function", function: ... }]`</td><td>`tools: [{ name, description, input_schema }]`</td></tr>
+						<tr><td>工具调用</td><td>`message.tool_calls[].function.arguments` 通常是 JSON 字符串</td><td>`content[]` 里 `type: "tool_use"`，input 是对象</td></tr>
+						<tr><td>工具结果</td><td>`role: "tool"` + `tool_call_id`</td><td>`role: "user"` 的 `tool_result` content block</td></tr>
+						<tr><td>停止原因</td><td>`finish_reason: "tool_calls"`</td><td>`stop_reason: "tool_use"`</td></tr>
+						<tr><td>系统提示词</td><td>通常在 messages 里作为 `role: "system"`</td><td>通常是顶层 `system` 字段</td></tr>
+					</tbody>
+				</table>
+
+				<h2>详细例子：给自研模型做 OpenAI-compatible 中间层</h2>
+				<p>假设你有一个本地模型服务，只支持下面这种简单接口：</p>
+				<pre><code>POST /generate
+{
+  "prompt": "...纯文本 prompt...",
+  "max_tokens": 2048
+}
+
+返回:
+{
+  "text": "&lt;tool_call&gt;{\"name\":\"read\",\"arguments\":{\"path\":\"README.md\"}}&lt;/tool_call&gt;"
+}</code></pre>
+				<p>你可以写一个 adapter 服务，对外伪装成 OpenAI。</p>
+				<pre><code>// 伪代码
+app.post("/v1/chat/completions", async (req, res) => {
+  const { model, messages, tools } = req.body;
+
+  // 1. 把 OpenAI messages/tools 转成你的模型 prompt
+  const prompt = renderChatTemplate(messages, tools);
+
+  // 2. 调你的真实模型
+  const raw = await fetch("http://localhost:9000/generate", {
+    method: "POST",
+    body: JSON.stringify({ prompt, max_tokens: 2048 })
+  }).then(r => r.json());
+
+  // 3. 解析模型输出。如果包含工具调用，转成 OpenAI tool_calls
+  const toolCall = parseToolCall(raw.text);
+  if (toolCall) {
+    return res.json({
+      id: "chatcmpl_local",
+      object: "chat.completion",
+      model,
+      choices: [{
+        index: 0,
+        message: {
+          role: "assistant",
+          content: null,
+          tool_calls: [{
+            id: "call_local_1",
+            type: "function",
+            function: {
+              name: toolCall.name,
+              arguments: JSON.stringify(toolCall.arguments)
+            }
+          }]
+        },
+        finish_reason: "tool_calls"
+      }]
+    });
+  }
+
+  // 4. 普通文本回答
+  res.json({
+    id: "chatcmpl_local",
+    object: "chat.completion",
+    model,
+    choices: [{
+      index: 0,
+      message: { role: "assistant", content: raw.text },
+      finish_reason: "stop"
+    }]
+  });
+});</code></pre>
+
+				<h2>最难的点：让模型稳定输出工具调用</h2>
+				<p>中间层能转换格式，但不能凭空让模型具备稳定 tool use 能力。你有三种路线：</p>
+				<ol>
+					<li><strong>提示词约束：</strong>在 system prompt 里要求模型用固定 XML/JSON 输出工具调用。成本低，但稳定性一般。</li>
+					<li><strong>结构化解码：</strong>用 grammar / JSON schema / constrained decoding 强制输出合法 JSON。稳定性更好。</li>
+					<li><strong>指令微调：</strong>用 tool calling 数据训练模型，让它学会何时调用工具、如何填参数、何时最终回答。</li>
+				</ol>
+
+				<h2>Pi 是怎么做的</h2>
+				<p>Pi 自己没有要求所有 provider 长得一样。它在 `pi-ai` 里做 provider 适配，在 `pi-agent-core` 里只处理统一后的 AgentMessage、toolCall、toolResult。</p>
+				<pre><code>Pi 内部:
+AgentMessage / AgentTool / AgentEvent
+  -> pi-ai provider adapter
+  -> OpenAI / Anthropic / Google / ...
+  -> provider response
+  -> 统一成 AssistantMessageEvent / AssistantMessage
+  -> agent-loop 执行工具并继续</code></pre>
+				<p>所以如果你要接入自研模型，有两条路：</p>
+				<ul>
+					<li><strong>最省事：</strong>让你的服务兼容 OpenAI Chat Completions，Pi 把它当 OpenAI-like provider 使用。</li>
+					<li><strong>更原生：</strong>给 Pi 的 `pi-ai` 增加一个新的 provider adapter，直接支持你的 API。</li>
+				</ul>
+
+				<h2>推荐落地路线</h2>
+				<ol>
+					<li>先做 `/v1/chat/completions` 非流式接口，支持 messages、tools、tool_calls。</li>
+					<li>让 Pi/Agent 跑通一个 read 工具调用。</li>
+					<li>再支持 tool result 回传后的第二轮模型调用。</li>
+					<li>再做 stream 输出，提升前端体验。</li>
+					<li>如果工具调用不稳定，再做结构化输出约束或指令微调。</li>
+					<li>最后再考虑 Anthropic 兼容或 Pi 原生 provider。</li>
+				</ol>
+
+				<h2>官方接口参考</h2>
+				<ul>
+					<li><a href="https://platform.openai.com/docs/api-reference/chat">OpenAI Chat Completions API</a></li>
+					<li><a href="https://docs.anthropic.com/en/api/messages">Anthropic Messages API</a></li>
+					<li><a href="https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview">Anthropic Tool use overview</a></li>
+				</ul>
+				<div class="next-card"><span>建议</span><a href="callgraph.html">再看 Pi 的 provider 和 tool 调用图</a></div>
+			</article>
+		</main>
+		<script src="../theme.js"></script>
+	</body>
+</html>
