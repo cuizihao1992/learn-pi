@@ -12,163 +12,86 @@
 				<img src="https://pi.dev/logo-auto.svg" alt="Pi logo" />
 				<div>
 					<strong>Pi Agent 学习站</strong>
-					<span>从源码入口、主循环、工具系统到部署扩展的完整学习地图</span>
+					<span>面向新手的多章节源码课程</span>
 				</div>
 			</div>
 			<nav aria-label="页面导航">
-				<a href="#map">架构</a>
-				<a href="#example">示例</a>
-				<a href="#sequence">时序</a>
-				<a href="#code">源码</a>
-				<a href="#deep">深读</a>
-				<a href="#route">路线</a>
-				<a href="#practice">练习</a>
+				<a href="pages/architecture.html">开始学习</a>
+				<a href="pages/lifecycle.html">完整例子</a>
+				<a href="pages/design-tradeoffs.html">设计取舍</a>
+				<a href="https://github.com/cuizihao1992/learn-pi">GitHub</a>
 			</nav>
 		</header>
 
 		<main>
 			<section class="workspace" aria-labelledby="page-title">
 				<div class="intro">
-					<p class="kicker">Source Guided Course</p>
-					<h1 id="page-title">全面学习 Pi Agent 的架构与关键代码</h1>
+					<p class="kicker">Learn Pi Agent From Source</p>
+					<h1 id="page-title">从零学懂 Pi Agent 怎么运行、为什么这样设计</h1>
 					<p>
-						这个页面不只告诉你“有哪些模块”，还会带你跟踪一次真实请求：CLI 如何接收输入，
-						AgentSession 如何组装运行时，Agent loop 如何驱动模型和工具，最后会话如何被保存、压缩和导出。
+						这个站点已经从单页导览扩展成多章节课程。你可以按顺序学习：
+						架构分层、一次完整对话的运行流程、提示词处理、工具调用、会话压缩、模型适配、前端事件和设计取舍。
 					</p>
+					<div class="hero-actions">
+						<a class="primary-link" href="pages/architecture.html">从第 1 章开始</a>
+						<a class="secondary-link" href="pages/lifecycle.html">先看完整例子</a>
+					</div>
 				</div>
 				<aside class="quick-panel">
-					<div class="metric"><span>核心包</span><strong>4</strong></div>
-					<div class="metric"><span>重点源码入口</span><strong>24</strong></div>
-					<div class="metric"><span>机制专题</span><strong>9</strong></div>
+					<div class="metric"><span>课程章节</span><strong>9</strong></div>
+					<div class="metric"><span>核心机制</span><strong>8</strong></div>
+					<div class="metric"><span>练习任务</span><strong>6</strong></div>
 				</aside>
-			</section>
-
-			<section id="map" class="section">
-				<div class="section-head">
-					<div>
-						<p class="kicker">Architecture Map</p>
-						<h2>整体架构地图</h2>
-					</div>
-					<div class="segmented" role="tablist" aria-label="架构视图">
-						<button class="active" data-view="runtime" type="button">运行链路</button>
-						<button data-view="packages" type="button">包边界</button>
-						<button data-view="extension" type="button">扩展点</button>
-					</div>
-				</div>
-				<div class="diagram-grid">
-					<div class="flow" id="flow"></div>
-					<div class="explain" id="flowExplain"></div>
-				</div>
-			</section>
-
-			<section id="example" class="section">
-				<div class="section-head">
-					<div>
-						<p class="kicker">Concrete Example</p>
-						<h2>一个完整对话是怎么被 Pi Agent 处理的</h2>
-					</div>
-					<select id="exampleSelect" class="select" aria-label="选择示例视角">
-						<option value="overview">总览</option>
-						<option value="prompt">提示词处理</option>
-						<option value="model">发给大模型</option>
-						<option value="tool">工具调用</option>
-						<option value="ui">返回前端</option>
-					</select>
-				</div>
-				<div class="example-layout">
-					<div class="example-steps" id="exampleSteps"></div>
-					<article class="example-detail" id="exampleDetail" aria-live="polite"></article>
-				</div>
-			</section>
-
-			<section id="sequence" class="section">
-				<div class="section-head">
-					<div>
-						<p class="kicker">Execution Sequence</p>
-						<h2>一次 prompt 的完整执行时序</h2>
-					</div>
-				</div>
-				<div class="sequence" id="sequenceList"></div>
 			</section>
 
 			<section class="section">
 				<div class="section-head">
 					<div>
-						<p class="kicker">Module Cards</p>
-						<h2>模块职责拆解</h2>
+						<p class="kicker">Course Map</p>
+						<h2>课程目录</h2>
 					</div>
-					<input id="moduleSearch" class="search" type="search" placeholder="搜索模块、职责或文件..." />
 				</div>
-				<div class="module-grid" id="moduleGrid"></div>
+				<div class="course-grid">
+					<a href="pages/architecture.html"><span>01</span><h3>架构设计</h3><p>先建立四层心智模型：coding-agent、agent-core、pi-ai、pi-tui。</p></a>
+					<a href="pages/lifecycle.html"><span>02</span><h3>完整运行流程</h3><p>用“修改 README 并测试”的例子，完整走一遍 prompt、模型、工具、前端。</p></a>
+					<a href="pages/prompt-processing.html"><span>03</span><h3>提示词处理</h3><p>解释原始用户输入如何被包装、展开、合并上下文并发给模型。</p></a>
+					<a href="pages/tools.html"><span>04</span><h3>工具调用</h3><p>模型如何通过 toolCall 请求 Pi 执行 read、edit、bash 等真实动作。</p></a>
+					<a href="pages/sessions.html"><span>05</span><h3>会话与压缩</h3><p>为什么 session 是树，长对话如何压缩，summary message 保留什么。</p></a>
+					<a href="pages/models.html"><span>06</span><h3>模型接口</h3><p>pi-ai 如何屏蔽 OpenAI、Anthropic、Google 等 provider 的差异。</p></a>
+					<a href="pages/frontend.html"><span>07</span><h3>前端事件</h3><p>message_update、tool_execution_end 等事件如何驱动终端 UI 实时更新。</p></a>
+					<a href="pages/design-tradeoffs.html"><span>08</span><h3>为什么这样设计</h3><p>对比单体大循环、模型全权控制、provider 分叉等替代方案。</p></a>
+					<a href="pages/labs.html"><span>09</span><h3>动手练习</h3><p>用 6 个小任务把源码理解落到可验证的改动上。</p></a>
+				</div>
 			</section>
 
-			<section id="code" class="section">
+			<section class="section">
 				<div class="section-head">
 					<div>
-						<p class="kicker">Code Atlas</p>
-						<h2>关键源码索引</h2>
-					</div>
-					<select id="codeFilter" class="select" aria-label="按主题筛选代码">
-						<option value="all">全部主题</option>
-						<option value="entry">入口与模式</option>
-						<option value="loop">Agent loop</option>
-						<option value="state">状态与会话</option>
-						<option value="tools">工具系统</option>
-						<option value="models">模型与认证</option>
-						<option value="ui">终端 UI</option>
-						<option value="extension">扩展与资源</option>
-					</select>
-				</div>
-				<div class="code-layout">
-					<div class="code-list" id="codeList"></div>
-					<article class="code-detail" id="codeDetail" aria-live="polite"></article>
-				</div>
-			</section>
-
-			<section id="deep" class="section">
-				<div class="section-head">
-					<div>
-						<p class="kicker">Deep Dive</p>
-						<h2>九个必须读懂的机制</h2>
+						<p class="kicker">One Sentence Model</p>
+						<h2>先记住这一句</h2>
 					</div>
 				</div>
-				<div class="deep-grid" id="deepGrid"></div>
-			</section>
-
-			<section id="route" class="section">
-				<div class="section-head">
-					<div>
-						<p class="kicker">Learning Route</p>
-						<h2>建议学习路线</h2>
-					</div>
-					<div class="progress">
-						<div><span id="progressText">0 / 7</span></div>
-						<progress id="progressBar" max="7" value="0"></progress>
-					</div>
-				</div>
-				<div class="timeline" id="timeline"></div>
-			</section>
-
-			<section id="practice" class="section practice">
-				<div>
-					<p class="kicker">Practice Labs</p>
-					<h2>读源码实战任务</h2>
+				<div class="big-explain">
 					<p>
-						这些任务按“先理解，再改小功能，最后验证”的顺序设计。每个任务都指向真实文件，
-						完成后你会知道 Pi Agent 的主干代码该从哪里进、在哪里改、怎么验证。
+						Pi Agent 运行一次任务时，模型只负责“根据上下文决定下一步”，比如要读文件、改文件、运行测试；
+						真正的文件系统操作、命令执行、状态管理、会话保存、上下文压缩和前端更新，都由 Pi 的运行时负责。
 					</p>
+					<pre><code>用户提示词
+  -> AgentSession 组装上下文和工具
+  -> AgentLoop 调用模型
+  -> 模型返回 toolCall
+  -> Pi 执行工具并生成 toolResult
+  -> toolResult 再发给模型
+  -> 最终回答通过事件返回前端</code></pre>
 				</div>
-				<div class="task-grid" id="practiceGrid"></div>
 			</section>
 		</main>
 
 		<footer>
-			<span>资料来源：本地克隆的 earendil-works/pi 仓库、官方 README 与源码结构。</span>
+			<span>资料来源：earendil-works/pi 源码和官方 README。</span>
 			<a href="https://github.com/earendil-works/pi">Pi GitHub</a>
 			<a href="https://pi.dev">pi.dev</a>
 			<a href="https://github.com/cuizihao1992/learn-pi">本站仓库</a>
 		</footer>
-
-		<script src="app.js"></script>
 	</body>
 </html>

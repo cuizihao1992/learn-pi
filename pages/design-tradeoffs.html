@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>设计取舍 | Learn Pi</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Learn Pi</strong><span>设计取舍</span></div></div><nav><a href="../index.html">首页</a><a href="frontend.html">前端</a><a href="labs.html">练习</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="architecture.html">1. 架构设计</a><a href="lifecycle.html">2. 完整运行流程</a><a href="prompt-processing.html">3. 提示词处理</a><a href="tools.html">4. 工具调用</a><a href="sessions.html">5. 会话与压缩</a><a href="models.html">6. 模型接口</a><a href="frontend.html">7. 前端事件</a><a class="active" href="design-tradeoffs.html">8. 为什么这样设计</a><a href="labs.html">9. 动手练习</a></aside>
+			<article class="doc">
+				<p class="kicker">Part 8</p>
+				<h1>为什么这样设计？还有其他方案吗？</h1>
+				<p class="lead">理解架构不能只背模块名，还要知道为什么不用别的方案。下面是 Pi Agent 的几个关键取舍。</p>
+				<h2>方案一：单体大循环</h2>
+				<p>把 CLI 输入、模型请求、工具执行、UI 输出全写进一个大 while loop。</p>
+				<ul><li>优点：一开始写起来快。</li><li>缺点：难测试、难扩展、难复用、provider 差异会污染主流程。</li><li>Pi 的选择：把主循环放到 agent-core，把产品能力放到 coding-agent。</li></ul>
+				<h2>方案二：模型直接控制所有流程</h2>
+				<p>让模型决定什么时候读写、怎么存会话、怎么更新 UI。</p>
+				<ul><li>优点：看起来智能。</li><li>缺点：不可控，安全边界和状态一致性差。</li><li>Pi 的选择：模型只产生 assistant message 和 toolCall，真实执行由工具系统控制。</li></ul>
+				<h2>方案三：每个 provider 单独写一套 Agent</h2>
+				<ul><li>优点：能用 provider 特性。</li><li>缺点：重复代码巨大，行为难保持一致。</li><li>Pi 的选择：pi-ai 统一 provider，Agent loop 面向统一 Message/EventStream。</li></ul>
+				<h2>方案四：不做事件流，最后一次性返回</h2>
+				<ul><li>优点：实现简单。</li><li>缺点：用户看不到进度，工具执行不可观察，扩展也难插入。</li><li>Pi 的选择：事件驱动，前端、会话保存、扩展都订阅事件。</li></ul>
+				<h2>方案五：永远保留完整历史</h2>
+				<ul><li>优点：不会丢信息。</li><li>缺点：很快超过模型上下文，成本高。</li><li>Pi 的选择：保留近期消息，把旧历史压缩成 summary。</li></ul>
+				<h2>设计原则总结</h2>
+				<pre><code>模型负责推理
+工具负责执行
+Agent loop 负责调度
+AgentSession 负责产品运行时
+pi-ai 负责 provider 差异
+事件负责观察和前端更新
+session/compaction 负责长期记忆</code></pre>
+				<div class="next-card"><span>下一步</span><a href="labs.html">做练习，把理解落到代码上</a></div>
+			</article>
+		</main>
+	</body>
+</html>

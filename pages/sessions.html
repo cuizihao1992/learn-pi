@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>会话与压缩 | Learn Pi</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Learn Pi</strong><span>会话与压缩</span></div></div><nav><a href="../index.html">首页</a><a href="tools.html">工具</a><a href="models.html">模型</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="architecture.html">1. 架构设计</a><a href="lifecycle.html">2. 完整运行流程</a><a href="prompt-processing.html">3. 提示词处理</a><a href="tools.html">4. 工具调用</a><a class="active" href="sessions.html">5. 会话与压缩</a><a href="models.html">6. 模型接口</a><a href="frontend.html">7. 前端事件</a><a href="design-tradeoffs.html">8. 为什么这样设计</a><a href="labs.html">9. 动手练习</a></aside>
+			<article class="doc">
+				<p class="kicker">Part 5</p>
+				<h1>会话、分支和上下文压缩</h1>
+				<p class="lead">Agent 不只是“本轮回答”。它要记住之前读过什么、改过什么、工具结果是什么，还要在上下文太长时继续工作。</p>
+				<h2>会话保存什么</h2>
+				<ul>
+					<li>用户消息、助手消息、工具调用结果。</li>
+					<li>bash 执行记录、custom message、summary message。</li>
+					<li>token usage、cost、时间戳、父子关系。</li>
+				</ul>
+				<h2>为什么是树，不只是列表</h2>
+				<p>因为用户可能从旧会话分叉继续。树结构能支持 fork、branch summary、切换会话路径。线性列表适合简单聊天，但不适合 coding agent 的探索和回退。</p>
+				<h2>上下文为什么需要压缩</h2>
+				<p>模型上下文窗口有限。长任务里工具输出很多，如果全部塞回模型，很快会超限。压缩就是把旧 turn 总结成一条 summary message。</p>
+				<pre><code>完整历史太长
+  -> estimateContextTokens()
+  -> shouldCompact()
+  -> findCutPoint()
+  -> generateSummary()
+  -> compact()
+  -> summary message + 最近消息继续进入模型</code></pre>
+				<h2>好的压缩摘要要保留什么</h2>
+				<ul>
+					<li>读过和改过的文件路径。</li>
+					<li>关键函数名、类名、配置项。</li>
+					<li>错误信息和失败命令。</li>
+					<li>已经做完的决策和还没完成的任务。</li>
+				</ul>
+				<h2>关键源码</h2>
+				<ul>
+					<li>`packages/coding-agent/src/core/session-manager.ts`</li>
+					<li>`packages/agent/src/harness/session/jsonl-storage.ts`</li>
+					<li>`packages/coding-agent/src/core/compaction/compaction.ts`</li>
+					<li>`packages/coding-agent/src/core/compaction/branch-summarization.ts`</li>
+				</ul>
+				<div class="next-card"><span>下一步</span><a href="models.html">看模型接口层如何屏蔽 provider 差异</a></div>
+			</article>
+		</main>
+	</body>
+</html>
