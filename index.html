@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Pi Agent 架构学习站</title>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="brand">
+				<img src="https://pi.dev/logo-auto.svg" alt="Pi logo" />
+				<div>
+					<strong>Pi Agent 学习站</strong>
+					<span>架构、主循环、工具系统、会话与关键代码</span>
+				</div>
+			</div>
+			<nav aria-label="页面导航">
+				<a href="#map">架构图</a>
+				<a href="#code">关键代码</a>
+				<a href="#route">学习路线</a>
+				<a href="#practice">实战任务</a>
+			</nav>
+		</header>
+
+		<main>
+			<section class="workspace" aria-labelledby="page-title">
+				<div class="intro">
+					<p class="kicker">基于 earendil-works/pi 源码梳理</p>
+					<h1 id="page-title">从一次提示词到工具调用，完整读懂 Pi Agent</h1>
+					<p>
+						这个站点把 Pi Agent 拆成四个层次：多模型 API、Agent 核心循环、Coding Agent 运行时、终端 UI。
+						每个模块都给出读源码入口、职责边界和推荐学习顺序。
+					</p>
+				</div>
+				<aside class="quick-panel">
+					<div class="metric">
+						<span>核心包</span>
+						<strong>4</strong>
+					</div>
+					<div class="metric">
+						<span>重点文件</span>
+						<strong>18</strong>
+					</div>
+					<div class="metric">
+						<span>学习阶段</span>
+						<strong>5</strong>
+					</div>
+				</aside>
+			</section>
+
+			<section id="map" class="section">
+				<div class="section-head">
+					<div>
+						<p class="kicker">Architecture Map</p>
+						<h2>整体架构地图</h2>
+					</div>
+					<div class="segmented" role="tablist" aria-label="架构视图">
+						<button class="active" data-view="runtime" type="button">运行链路</button>
+						<button data-view="packages" type="button">包边界</button>
+						<button data-view="extension" type="button">扩展点</button>
+					</div>
+				</div>
+				<div class="diagram-grid">
+					<div class="flow" id="flow"></div>
+					<div class="explain" id="flowExplain"></div>
+				</div>
+			</section>
+
+			<section class="section">
+				<div class="section-head">
+					<div>
+						<p class="kicker">Module Cards</p>
+						<h2>模块职责拆解</h2>
+					</div>
+					<input id="moduleSearch" class="search" type="search" placeholder="搜索模块、职责或文件..." />
+				</div>
+				<div class="module-grid" id="moduleGrid"></div>
+			</section>
+
+			<section id="code" class="section">
+				<div class="section-head">
+					<div>
+						<p class="kicker">Code Atlas</p>
+						<h2>关键代码索引</h2>
+					</div>
+					<select id="codeFilter" class="select" aria-label="按主题筛选代码">
+						<option value="all">全部主题</option>
+						<option value="loop">Agent loop</option>
+						<option value="state">状态与会话</option>
+						<option value="tools">工具系统</option>
+						<option value="models">模型与认证</option>
+						<option value="ui">终端 UI</option>
+					</select>
+				</div>
+				<div class="code-layout">
+					<div class="code-list" id="codeList"></div>
+					<article class="code-detail" id="codeDetail" aria-live="polite"></article>
+				</div>
+			</section>
+
+			<section id="route" class="section">
+				<div class="section-head">
+					<div>
+						<p class="kicker">Learning Route</p>
+						<h2>建议学习路线</h2>
+					</div>
+					<div class="progress">
+						<div><span id="progressText">0 / 5</span></div>
+						<progress id="progressBar" max="5" value="0"></progress>
+					</div>
+				</div>
+				<div class="timeline" id="timeline"></div>
+			</section>
+
+			<section id="practice" class="section practice">
+				<div>
+					<p class="kicker">Practice</p>
+					<h2>读源码练习任务</h2>
+					<p>
+						按顺序完成这些任务，你会同时理解 Pi Agent 的“请求进入、模型响应、工具执行、会话持久化、上下文压缩”五条主线。
+					</p>
+				</div>
+				<div class="task-grid">
+					<div>
+						<strong>跟踪一次 prompt</strong>
+						<span>从 `main.ts` 进入，找到 `AgentSession.prompt()`，再追到 `Agent.run()` 和 `runLoop()`。</span>
+					</div>
+					<div>
+						<strong>新增一个只读工具</strong>
+						<span>模仿 `grep.ts` 或 `ls.ts`，注册到 `tools/index.ts`，观察工具定义和工具实例的分离。</span>
+					</div>
+					<div>
+						<strong>理解压缩触发</strong>
+						<span>阅读 `compaction.ts`，比较手动压缩、阈值压缩和 overflow recovery。</span>
+					</div>
+					<div>
+						<strong>导出会话 HTML</strong>
+						<span>从 `export-html/index.ts` 看消息、工具结果和 ANSI 渲染如何转换成分享页面。</span>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<footer>
+			<span>资料来源：本地克隆的 `earendil-works/pi` 仓库与官方 README。</span>
+			<a href="https://github.com/earendil-works/pi">GitHub 仓库</a>
+			<a href="https://pi.dev">pi.dev</a>
+		</footer>
+
+		<script src="app.js"></script>
+	</body>
+</html>
