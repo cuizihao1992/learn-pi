@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>术语表 | Learn Pi</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Learn Pi</strong><span>术语表</span></div></div><nav><a href="../index.html">首页</a><a href="callgraph.html">调用图</a><a href="faq.html">FAQ</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="architecture.html">1. 架构设计</a><a href="lifecycle.html">2. 完整运行流程</a><a href="prompt-processing.html">3. 提示词处理</a><a href="tools.html">4. 工具调用</a><a href="sessions.html">5. 会话与压缩</a><a href="models.html">6. 模型接口</a><a href="frontend.html">7. 前端事件</a><a href="design-tradeoffs.html">8. 为什么这样设计</a><a href="labs.html">9. 动手练习</a><a class="active" href="glossary.html">术语表</a><a href="callgraph.html">源码调用图</a><a href="faq.html">FAQ</a></aside>
+			<article class="doc">
+				<p class="kicker">Reference</p>
+				<h1>Pi Agent 术语表</h1>
+				<p class="lead">很多理解困难不是代码难，而是几个名字太像。先把术语分清，后面读源码会轻很多。</p>
+				<div class="term-list">
+					<section><h2>AgentMessage</h2><p>Pi 内部的应用层消息。它比发给大模型的 Message 更丰富，可以表示 user、assistant、toolResult、custom、summary、bash execution 等。</p><code>packages/agent/src/types.ts</code></section>
+					<section><h2>Message</h2><p>模型层消息。真正调用 provider 前，AgentMessage 会被 convertToLlm 转换成 provider 能理解的 Message。</p><code>packages/ai/src</code></section>
+					<section><h2>Agent</h2><p>状态化 wrapper。保存 messages、tools、model、thinkingLevel、队列、订阅者和 active run。</p><code>packages/agent/src/agent.ts</code></section>
+					<section><h2>AgentSession</h2><p>coding-agent 的产品运行时中心。负责工具注册、会话保存、模型选择、扩展、压缩、重试和 UI 事件。</p><code>packages/coding-agent/src/core/agent-session.ts</code></section>
+					<section><h2>runLoop</h2><p>核心循环。负责调用模型、发现 toolCall、执行工具、写回 toolResult、决定是否继续下一轮。</p><code>packages/agent/src/agent-loop.ts</code></section>
+					<section><h2>toolCall</h2><p>模型请求执行工具的结构化输出。模型不能直接读写文件，只能提出 toolCall。</p><code>{ name, id, input }</code></section>
+					<section><h2>toolResult</h2><p>Pi 执行工具后的结果消息。它会被放回上下文，再发给模型，让模型决定下一步。</p><code>ToolResultMessage</code></section>
+					<section><h2>ToolDefinition</h2><p>工具的描述层，用于扩展、UI、配置、渲染和工具管理。</p><code>core/tools/index.ts</code></section>
+					<section><h2>AgentTool</h2><p>工具的执行层，包含 schema 和 execute。runLoop 调用的是 AgentTool。</p><code>packages/agent/src/types.ts</code></section>
+					<section><h2>turn</h2><p>一次模型响应加可能的工具执行过程。一个用户 prompt 可能触发多个 turn，因为工具结果会驱动下一轮模型调用。</p><code>turn_start / turn_end</code></section>
+					<section><h2>steering</h2><p>Agent 正在运行时插入的引导消息。它会尽快进入下一轮上下文。</p><code>steeringQueue</code></section>
+					<section><h2>follow-up</h2><p>Agent 本来要停止后继续处理的新消息。适合用户在运行时追加任务。</p><code>followUpQueue</code></section>
+					<section><h2>compaction</h2><p>上下文压缩。把旧历史总结成 summary message，保留近期消息，避免超过模型上下文。</p><code>core/compaction/compaction.ts</code></section>
+					<section><h2>EventStream</h2><p>流式事件抽象。模型输出、工具执行、agent 生命周期都通过事件被上层观察。</p><code>message_update / tool_execution_end</code></section>
+				</div>
+				<div class="next-card"><span>下一步</span><a href="callgraph.html">看这些术语在源码里怎么连起来</a></div>
+			</article>
+		</main>
+		<script src="../theme.js"></script>
+	</body>
+</html>

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>源码调用图 | Learn Pi</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Learn Pi</strong><span>源码调用图</span></div></div><nav><a href="../index.html">首页</a><a href="glossary.html">术语</a><a href="faq.html">FAQ</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="architecture.html">1. 架构设计</a><a href="lifecycle.html">2. 完整运行流程</a><a href="prompt-processing.html">3. 提示词处理</a><a href="tools.html">4. 工具调用</a><a href="sessions.html">5. 会话与压缩</a><a href="models.html">6. 模型接口</a><a href="frontend.html">7. 前端事件</a><a href="design-tradeoffs.html">8. 为什么这样设计</a><a href="labs.html">9. 动手练习</a><a href="glossary.html">术语表</a><a class="active" href="callgraph.html">源码调用图</a><a href="faq.html">FAQ</a></aside>
+			<article class="doc">
+				<p class="kicker">Reference</p>
+				<h1>源码调用图：从入口追到工具执行</h1>
+				<p class="lead">这一页给你“读代码路线”。不知道从哪里跳到哪里时，就按这些图走。</p>
+
+				<h2>主路径：一次用户输入</h2>
+				<pre><code>packages/coding-agent/src/main.ts
+  -> createAgentSessionRuntime()
+  -> createAgentSessionServices()
+  -> createAgentSessionFromServices()
+  -> runInteractiveMode() / runPrintMode() / runRpcMode()
+  -> AgentSession.prompt()
+  -> Agent.run()
+  -> runAgentLoop()
+  -> runLoop()
+  -> streamAssistantResponse()
+  -> pi-ai streamSimple()</code></pre>
+
+				<h2>工具路径：模型返回 toolCall 后</h2>
+				<pre><code>runLoop()
+  -> message.content.filter(type === "toolCall")
+  -> executeToolCalls()
+  -> executeToolCallsParallel() or executeToolCallsSequential()
+  -> prepareToolCall()
+  -> validateToolArguments()
+  -> executePreparedToolCall()
+  -> finalizeExecutedToolCall()
+  -> createToolResultMessage()
+  -> currentContext.messages.push(toolResult)</code></pre>
+
+				<h2>工具注册路径</h2>
+				<pre><code>AgentSession._buildRuntime()
+  -> createAllToolDefinitions()
+  -> createToolDefinition(read/bash/edit/write/grep/find/ls)
+  -> wrapRegisteredTools()
+  -> _toolDefinitions / _toolRegistry
+  -> Agent.state.tools</code></pre>
+
+				<h2>前端事件路径</h2>
+				<pre><code>runLoop emit AgentEvent
+  -> Agent.subscribe(listener)
+  -> AgentSession._handleAgentEvent()
+  -> AgentSessionEvent
+  -> interactive-mode listener
+  -> components update
+  -> pi-tui render</code></pre>
+
+				<h2>压缩路径</h2>
+				<pre><code>AgentSession._handlePostAgentRun()
+  -> estimateContextTokens()
+  -> shouldCompact()
+  -> prepareCompaction()
+  -> generateSummary()
+  -> compact()
+  -> session entries include summary message</code></pre>
+
+				<h2>参考答案：练习 1 调用图</h2>
+				<p>如果你做了 labs 里的“画出一次 prompt 调用图”，参考答案可以是：</p>
+				<pre><code>用户输入
+  -> interactive-mode 捕获输入
+  -> AgentSession.prompt(text)
+  -> create user AgentMessage
+  -> Agent.run([message])
+  -> runAgentLoop()
+  -> runLoop()
+  -> streamAssistantResponse()
+  -> pi-ai provider stream
+  -> assistant message with toolCall
+  -> executeToolCalls()
+  -> toolResult
+  -> runLoop next turn
+  -> assistant final text
+  -> agent_end</code></pre>
+				<div class="next-card"><span>下一步</span><a href="faq.html">看常见误区和问答</a></div>
+			</article>
+		</main>
+		<script src="../theme.js"></script>
+	</body>
+</html>
