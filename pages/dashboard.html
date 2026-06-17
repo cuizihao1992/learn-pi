@@ -4,7 +4,7 @@
 	<body>
 		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习仪表盘</strong><span>Pi Agent + Cesium + OpenLayers</span></div></div><nav><a href="../index.html">首页</a><a href="charter.html">宪章</a><a href="architecture.html">Pi</a><a href="cesium.html">Cesium</a><a href="openlayers.html">OpenLayers</a><a href="knowledge-check.html">测验</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a class="active" href="dashboard.html">学习仪表盘</a><a href="charter.html">内容宪章</a><a href="mini-agent.html">Mini Agent</a><a href="cesium-render-path.html">Cesium 渲染路径</a><a href="openlayers-render-path.html">OpenLayers 渲染路径</a><a href="knowledge-check.html">知识测验</a><a href="pi-debugging.html">Pi 调试手册</a><a href="cesium-debugging.html">Cesium 调试手册</a><a href="openlayers-debugging.html">OpenLayers 调试手册</a></aside>
+			<aside class="doc-sidebar"><a class="active" href="dashboard.html">学习仪表盘</a><a href="charter.html">总宪章</a><a href="../modules/pi-agent/charter.html">Pi 模块宪章</a><a href="../modules/cesium/charter.html">Cesium 模块宪章</a><a href="../modules/openlayers/charter.html">OpenLayers 模块宪章</a><a href="mini-agent.html">Mini Agent</a><a href="cesium-render-path.html">Cesium 渲染路径</a><a href="openlayers-render-path.html">OpenLayers 渲染路径</a><a href="knowledge-check.html">知识测验</a><a href="pi-debugging.html">Pi 调试手册</a><a href="cesium-debugging.html">Cesium 调试手册</a><a href="openlayers-debugging.html">OpenLayers 调试手册</a></aside>
 			<article class="doc">
 				<p class="kicker">Dashboard</p>
 				<h1>三条学习路径怎么走</h1>
@@ -21,6 +21,13 @@
 					<li>OpenLayers：Layer 和 Source 为什么分开？View 如何决定瓦片和要素渲染？</li>
 					<li>共同点：为什么大型系统都喜欢中间命令层？</li>
 				</ul>
+				<h2>内容生产规则</h2>
+				<p>后续新增模块时，先复制新模块宪章模板，再写模块入口和完整链路页。不要直接散落新增页面。</p>
+				<div class="track-grid">
+					<section><h3>总宪章</h3><p>全站通用写作标准和目录规范。</p><a class="primary-link" href="charter.html">查看</a></section>
+					<section><h3>模块宪章模板</h3><p>新项目加入前先复制这个模板。</p><a class="primary-link" href="../modules/_template/charter.html">查看</a></section>
+					<section><h3>内容清单</h3><p>机器可读的模块注册表。</p><a class="primary-link" href="../content-manifest.json">查看 JSON</a></section>
+				</div>
 			</article>
 		</main>
 		<script src="../theme.js"></script><script src="../enhance.js"></script>

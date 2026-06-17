@@ -1,0 +1,46 @@
+{
+  "site": {
+    "name": "Source Learning Lab",
+    "charter": "pages/charter.html",
+    "rule": "Every module needs an overview, a complete lifecycle or render path, source entry points, design tradeoffs, debugging material, labs, and a module charter."
+  },
+  "moduleConvention": {
+    "moduleRoot": "modules/{module-slug}/",
+    "exampleRoot": "examples/{module-slug}/",
+    "required": ["charter.html"],
+    "recommended": ["index.html", "lifecycle.html", "debugging.html", "glossary.html", "labs.html"]
+  },
+  "modules": [
+    {
+      "slug": "pi-agent",
+      "name": "Pi Agent",
+      "charter": "modules/pi-agent/charter.html",
+      "legacyPages": [
+        "pages/architecture.html",
+        "pages/lifecycle.html",
+        "pages/mini-agent.html",
+        "pages/custom-model-api.html"
+      ]
+    },
+    {
+      "slug": "cesium",
+      "name": "Cesium",
+      "charter": "modules/cesium/charter.html",
+      "legacyPages": [
+        "pages/cesium.html",
+        "pages/cesium-render-path.html",
+        "pages/cesium-debugging.html"
+      ]
+    },
+    {
+      "slug": "openlayers",
+      "name": "OpenLayers",
+      "charter": "modules/openlayers/charter.html",
+      "legacyPages": [
+        "pages/openlayers.html",
+        "pages/openlayers-render-path.html",
+        "pages/openlayers-debugging.html"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>OpenLayers 模块宪章 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>OpenLayers 模块宪章</strong><span>二维地图渲染链路</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/charter.html">总宪章</a><a href="../../pages/openlayers.html">OpenLayers 课程</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="../../pages/charter.html">总宪章</a><a class="active" href="charter.html">OpenLayers 宪章</a><a href="../../pages/openlayers.html">OpenLayers 总览</a><a href="../../pages/openlayers-render-path.html">渲染路径</a><a href="../../pages/openlayers-debugging.html">调试手册</a></aside>
+			<article class="doc">
+				<p class="kicker">Module Charter</p>
+				<h1>OpenLayers 模块宪章</h1>
+				<p class="lead">本模块目标是让读者理解二维 Web 地图如何从 Map、View、Layer、Source 走到 Canvas/WebGL renderer。</p>
+				<h2>完成标准</h2>
+				<ul><li>能解释 Map、View、Layer、Source 的职责。</li><li>能区分 TileLayer、ImageLayer、VectorLayer、VectorTileLayer。</li><li>能说明 Layer 和 Source 为什么分离。</li><li>能按 target、View、Layer、Source、renderer 顺序调试地图空白。</li></ul>
+				<h2>核心链路</h2>
+				<pre><code>new Map({ target, view, layers })
+  -> View state
+  -> LayerGroup
+  -> LayerRenderer
+  -> Source loads tiles/features/images
+  -> frameState/layerState
+  -> Canvas or WebGL
+  -> browser pixels</code></pre>
+				<h2>源码入口</h2>
+				<ul><li>`src/ol/Map.js`</li><li>`src/ol/View.js`</li><li>`src/ol/layer/Layer.js`</li><li>`src/ol/source/Source.js`</li><li>`src/ol/renderer/`</li><li>`src/ol/layer/Tile.js`、`Vector.js`、`VectorTile.js`</li></ul>
+				<h2>模块内容标准</h2>
+				<ul><li>任何章节都要说明 View state 如何影响数据选择。</li><li>Layer 章节必须同时讲 Source。</li><li>渲染章节必须区分 Canvas 和 WebGL。</li><li>调试章节必须覆盖投影和坐标转换。</li></ul>
+				<h2>后续可补内容</h2>
+				<ul><li>投影系统和坐标转换专章。</li><li>Vector style function 性能优化。</li><li>VectorTile/MVT 专章。</li><li>自定义 layer renderer 实战。</li></ul>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

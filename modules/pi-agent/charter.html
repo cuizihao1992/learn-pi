@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Pi Agent 模块宪章 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Pi Agent 模块宪章</strong><span>提示词、工具、模型、会话</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/charter.html">总宪章</a><a href="../../pages/architecture.html">Pi 课程</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="../../pages/charter.html">总宪章</a><a class="active" href="charter.html">Pi Agent 宪章</a><a href="../../pages/lifecycle.html">完整流程</a><a href="../../pages/mini-agent.html">Mini Agent</a><a href="../../pages/custom-model-api.html">自研模型接入</a></aside>
+			<article class="doc">
+				<p class="kicker">Module Charter</p>
+				<h1>Pi Agent 模块宪章</h1>
+				<p class="lead">本模块目标是让读者理解一个 coding agent 如何从用户提示词出发，调用模型、执行工具、保存会话、压缩上下文，并扩展到自研模型接入。</p>
+				<h2>目标读者</h2>
+				<ul><li>想知道 agent 到底怎么运行的新手。</li><li>想读 Pi 源码的工程师。</li><li>想开发自己 agent 或接入自研模型的人。</li></ul>
+				<h2>完成标准</h2>
+				<ul><li>能画出 `prompt -> model -> toolCall -> toolResult -> final answer` 链路。</li><li>能解释 Agent、AgentSession、runLoop 的区别。</li><li>能写出一个 Node Mini Agent MVP。</li><li>能说明自研模型为什么通常需要 OpenAI-compatible adapter。</li></ul>
+				<h2>核心链路</h2>
+				<pre><code>用户 prompt
+  -> AgentSession.prompt()
+  -> Agent.run()
+  -> runLoop()
+  -> pi-ai streamSimple()
+  -> assistant toolCall
+  -> executeToolCalls()
+  -> ToolResultMessage
+  -> 下一轮模型调用
+  -> AgentEvent 返回前端</code></pre>
+				<h2>源码入口</h2>
+				<ul><li>`packages/coding-agent/src/main.ts`</li><li>`packages/coding-agent/src/core/agent-session.ts`</li><li>`packages/agent/src/agent.ts`</li><li>`packages/agent/src/agent-loop.ts`</li><li>`packages/coding-agent/src/core/tools/index.ts`</li><li>`packages/coding-agent/src/core/compaction/compaction.ts`</li></ul>
+				<h2>模块内容标准</h2>
+				<ul><li>任何新章节都必须包含一个具体对话例子。</li><li>工具章节必须说明 toolCall 和 toolResult 的 JSON 形状。</li><li>模型章节必须区分“模型能力”和“API adapter”。</li><li>调试章节必须按提示词、模型、工具、会话、前端分层定位。</li></ul>
+				<h2>后续可补内容</h2>
+				<ul><li>更完整的 Mini Agent 流式版本。</li><li>权限沙箱设计。</li><li>工具调用评测集。</li><li>多 agent 协作和任务规划。</li></ul>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

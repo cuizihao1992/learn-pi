@@ -1,53 +1,89 @@
 <!doctype html>
 <html lang="zh-CN">
-	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>内容宪章 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" /></head>
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>总宪章 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" /></head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>源码学习实验室</strong><span>内容宪章</span></div></div><nav><a href="../index.html">首页</a><a href="dashboard.html">仪表盘</a><a href="openlayers.html">OpenLayers</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>源码学习实验室</strong><span>总宪章</span></div></div><nav><a href="../index.html">首页</a><a href="dashboard.html">仪表盘</a><a href="../modules/pi-agent/charter.html">Pi 宪章</a><a href="../modules/cesium/charter.html">Cesium 宪章</a><a href="../modules/openlayers/charter.html">OpenLayers 宪章</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="dashboard.html">学习仪表盘</a><a class="active" href="charter.html">内容宪章</a><a href="architecture.html">Pi Agent</a><a href="cesium.html">Cesium</a><a href="openlayers.html">OpenLayers</a><a href="knowledge-check.html">知识测验</a></aside>
+			<aside class="doc-sidebar">
+				<a href="dashboard.html">学习仪表盘</a>
+				<a class="active" href="charter.html">总宪章</a>
+				<a href="../modules/pi-agent/charter.html">Pi Agent 模块宪章</a>
+				<a href="../modules/cesium/charter.html">Cesium 模块宪章</a>
+				<a href="../modules/openlayers/charter.html">OpenLayers 模块宪章</a>
+				<a href="../modules/_template/charter.html">新模块模板</a>
+				<a href="architecture.html">Pi Agent</a>
+				<a href="cesium.html">Cesium</a>
+				<a href="openlayers.html">OpenLayers</a>
+			</aside>
 			<article class="doc">
-				<p class="kicker">Charter</p>
-				<h1>源码学习实验室内容宪章</h1>
-				<p class="lead">这个网站后续会不断加入新项目。为了不变成零散笔记，每个新专题都按同一套结构写：先让小白知道它解决什么问题，再讲完整链路，再落到源码和练习。</p>
+				<p class="kicker">General Charter</p>
+				<h1>源码学习实验室总宪章</h1>
+				<p class="lead">这个网站不是文章堆叠，而是一个可长期扩展的学习系统。总宪章规定所有模块共同遵守的内容标准；每个模块再有自己的模块宪章，规定该专题的学习目标、边界、源码入口和扩展计划。</p>
 
-				<h2>每个专题必须回答的 8 个问题</h2>
+				<h2>一、总目标</h2>
+				<p>帮助新手从“会用 API”走到“看懂系统怎么设计、怎么运行、怎么调试、怎么扩展”。每个专题都必须围绕完整链路，而不是只列概念。</p>
+
+				<h2>二、内容必须回答的 8 个问题</h2>
 				<ol>
-					<li><strong>它解决什么问题？</strong>先讲使用场景，不先堆类名。</li>
-					<li><strong>最小可运行例子是什么？</strong>用一段代码建立直觉。</li>
-					<li><strong>完整运行链路是什么？</strong>从用户 API 到底层执行，一步一步画出来。</li>
-					<li><strong>核心抽象有哪些？</strong>解释对象之间的边界和关系。</li>
-					<li><strong>为什么这样设计？</strong>必须和其他方案对比。</li>
-					<li><strong>怎么调试？</strong>列出常见故障、检查顺序、关键状态。</li>
-					<li><strong>源码从哪里读？</strong>给出文件路径、函数入口和调用图。</li>
-					<li><strong>怎么动手做？</strong>给出练习任务和完成标准。</li>
+					<li><strong>它解决什么问题？</strong>先讲场景，再讲对象名。</li>
+					<li><strong>最小可运行例子是什么？</strong>用小代码建立直觉。</li>
+					<li><strong>完整运行链路是什么？</strong>从用户 API 到底层执行逐步展开。</li>
+					<li><strong>核心抽象有哪些？</strong>解释边界、职责和关系。</li>
+					<li><strong>为什么这样设计？</strong>必须对比替代方案。</li>
+					<li><strong>怎么调试？</strong>给故障表、检查顺序、关键状态。</li>
+					<li><strong>源码从哪里读？</strong>给文件路径、函数入口、调用图。</li>
+					<li><strong>怎么动手做？</strong>给练习任务和完成标准。</li>
 				</ol>
 
-				<h2>统一章节模板</h2>
-				<pre><code>专题总览
-  -> 最小例子
-  -> 完整运行路径
-  -> 核心概念和术语
-  -> 关键源码入口
-  -> 为什么这样设计
-  -> 调试手册
-  -> 动手练习
-  -> FAQ / 常见误区</code></pre>
+				<h2>三、推荐模块目录结构</h2>
+				<p>你的判断是合理的：每个模块放在独立目录下更适合长期扩展。这样每个专题的宪章、页面、示例、资源互不污染，后续加 React、Mapbox、LangChain、数据库内核等专题也不会乱。</p>
+				<pre><code>modules/{module-slug}/
+  charter.html          # 模块宪章：目标、边界、章节标准
+  index.html            # 模块入口
+  lifecycle.html        # 完整运行链路
+  internals.html        # 核心机制
+  debugging.html        # 调试手册
+  glossary.html         # 术语表
+  labs.html             # 动手练习
+  assets/               # 图片、图表、示例数据
+examples/{module-slug}/
+  ...                   # 可运行示例代码</code></pre>
 
-				<h2>写作原则</h2>
+				<h2>四、为什么现有页面暂时不全量搬迁</h2>
+				<p>当前已有很多公开 URL，例如 `pages/mini-agent.html`、`pages/cesium-render-path.html`。直接搬迁会破坏旧链接。更稳妥的策略是：</p>
 				<ul>
-					<li><strong>从问题开始：</strong>先说“为什么需要这个对象”，再说对象叫什么。</li>
-					<li><strong>坚持完整链路：</strong>不要只讲 API，要讲数据如何一路流到执行层。</li>
-					<li><strong>代码和概念互相映射：</strong>每个抽象都要能指到源码文件。</li>
-					<li><strong>给替代方案：</strong>讲“为什么不是另一种设计”。</li>
-					<li><strong>默认读者是新手：</strong>避免“显然”“很简单”这种跳步。</li>
-					<li><strong>保留工程判断：</strong>说明性能、复杂度、可测试性和扩展性取舍。</li>
+					<li>保留现有 `pages/` URL，保证 GitHub Pages 链接不失效。</li>
+					<li>新增 `modules/` 作为未来内容规范目录。</li>
+					<li>每个模块先补模块宪章，后续新增页面优先放入对应模块目录。</li>
+					<li>必要时再逐步加 redirect/索引页，而不是一次性迁移。</li>
 				</ul>
 
-				<h2>当前学习路径</h2>
+				<h2>五、模块宪章必须包含什么</h2>
+				<ul>
+					<li><strong>学习对象：</strong>这个模块研究哪个项目/系统。</li>
+					<li><strong>目标读者：</strong>小白、进阶、源码读者、工程实践者。</li>
+					<li><strong>完成标准：</strong>学完能说清楚什么、能实现什么。</li>
+					<li><strong>核心链路：</strong>一条最重要的数据流/控制流。</li>
+					<li><strong>源码入口：</strong>优先阅读的文件和函数。</li>
+					<li><strong>调试入口：</strong>常见问题从哪里看。</li>
+					<li><strong>未来扩展：</strong>后续可以继续补哪些章节。</li>
+				</ul>
+
+				<h2>六、写作原则</h2>
+				<ul>
+					<li>默认读者是新手，但不降低工程深度。</li>
+					<li>每个概念都要能落到源码文件。</li>
+					<li>每条链路都要说明“谁产生、谁消费、为什么需要”。</li>
+					<li>代码块要能复制，示例要尽量可运行。</li>
+					<li>既讲实现，也讲取舍。</li>
+					<li>每个模块都要有调试手册和练习任务。</li>
+				</ul>
+
+				<h2>七、当前模块宪章</h2>
 				<div class="track-grid">
-					<section><h3>Pi Agent</h3><p>学习 agent 如何处理提示词、调用模型、执行工具、保存会话、接入自研模型。</p><a class="primary-link" href="architecture.html">进入 Pi</a></section>
-					<section><h3>Cesium</h3><p>学习三维引擎如何从 Viewer、Scene、Primitive、DrawCommand 到 GPU。</p><a class="primary-link" href="cesium.html">进入 Cesium</a></section>
-					<section><h3>OpenLayers</h3><p>学习二维地图如何从 Map、View、Layer、Source 到 renderer 和 canvas/webgl。</p><a class="primary-link" href="openlayers.html">进入 OpenLayers</a></section>
+					<section><h3>Pi Agent</h3><p>从提示词、模型、工具、会话、压缩到自研模型接入。</p><a class="primary-link" href="../modules/pi-agent/charter.html">查看 Pi 宪章</a></section>
+					<section><h3>Cesium</h3><p>从 Viewer、Scene、Primitive、DrawCommand 到 WebGL/GPU。</p><a class="primary-link" href="../modules/cesium/charter.html">查看 Cesium 宪章</a></section>
+					<section><h3>OpenLayers</h3><p>从 Map、View、Layer、Source 到 Canvas/WebGL renderer。</p><a class="primary-link" href="../modules/openlayers/charter.html">查看 OpenLayers 宪章</a></section>
 				</div>
 			</article>
 		</main>
