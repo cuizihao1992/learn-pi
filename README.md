@@ -1,6 +1,6 @@
 # Source Learning Lab
 
-这是一个源码学习网站，用来系统学习复杂工程项目的架构、运行链路、关键源码和设计取舍。
+这是一个源码与工程系统学习网站，用来系统学习复杂项目的架构、运行链路、关键代码和设计取舍。
 
 当前模块：
 
@@ -10,6 +10,7 @@
 - `modules/openlayers/`：学习二维地图如何从 Map、View、Layer、Source 走到 Canvas/WebGL。
 - `modules/mapbox/`：学习 Mapbox GL JS 的 source、layer、style、vector tiles、WebGL 渲染，以及与 Cesium 的性能和场景边界对比。
 - `modules/digital-twin-city/`：学习数字孪生城市系统如何组合 Mapbox、Cesium、3D Tiles、实时数据、AI Agent、前后端架构和 MVP 路线。
+- `modules/llm-agent-interview/`：学习大模型 / Agent 算法面试高频题：记忆机制、RAG 数据工程、长上下文与 RAG、Transformer 长文本优化。
 - `modules/gaussian-splatting/`：学习 3D Gaussian Splatting 如何从照片、相机位姿、稀疏点云走到可微渲染和实时 viewer。
 - `modules/stock-kline/`：学习股票 K 线、技术指标、量价关系、买卖信号、长短线分类、现实解释和风控复盘。
 - `modules/quant-trading/`：学习量化交易如何从策略假设、数据、回测、实盘执行走到服务器资源和风控监控。
@@ -19,7 +20,7 @@
 
 - `index.html`：全站首页。
 - `pages/`：只放全站级页面，例如仪表盘、总宪章、全站检索、测验，以及旧 URL 的兼容跳转页。
-- `modules/{module}/`：放某个专题的学习内容，每个模块至少有 `index.html` 和 `charter.html`。
+- `modules/{module}/`：放某个专题的学习内容，每个模块至少有 `index.html`。
 - `examples/{module}/`：放可运行示例代码。
 - `content-manifest.json`：机器可读的模块清单。
 - `search-index.json`：前端检索索引，由静态页面直接读取。

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>AI 记忆机制设计 | 大模型 Agent 面试</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>AI 记忆机制设计</strong><span>Short-term, Profile, Episodic Memory</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">面试总览</a><a href="rag-pipeline.html">RAG</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a class="active" href="memory.html">AI 记忆机制</a><a href="rag-pipeline.html">RAG 数据工程</a><a href="long-context.html">长上下文 vs RAG</a><a href="transformer-long-context.html">Transformer 长文本优化</a><a href="interview-playbook.html">答题模板</a></aside>
+			<article class="doc">
+				<p class="kicker">Memory</p>
+				<h1>长期陪伴型 AI 角色的记忆机制怎么设计</h1>
+				<p class="lead">核心难点是：对话轮次增多后，不能把全量历史都塞进 prompt。这样会成本高、延迟高、注意力分散，还会让模型在大量无关历史里丢失重点。面试答题要围绕“分层存储、按需召回、动态更新、冲突清理、隐私权限”展开。</p>
+
+				<h2>一、三类记忆</h2>
+				<table class="compare-table">
+					<thead><tr><th>记忆类型</th><th>存什么</th><th>怎么存</th><th>怎么召回</th></tr></thead>
+					<tbody>
+						<tr><td>短期记忆</td><td>最近几轮原始对话、当前任务状态</td><td>会话内 messages / rolling window</td><td>直接放入 prompt，保证上下文连贯。</td></tr>
+						<tr><td>实体画像记忆</td><td>用户偏好、身份、经历、关系、长期事实</td><td>结构化表、KV、JSON profile</td><td>按 user_id 精准读取，可按字段过滤。</td></tr>
+						<tr><td>长期情景记忆</td><td>感悟、闲聊、重要片段、事件经过</td><td>切片后 embedding，存向量库</td><td>按语义相似召回，再过滤和重排。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>二、为什么要分层</h2>
+				<p>事实型信息适合结构化存储，因为它需要可覆盖、可校验、可冲突处理。例如“用户喜欢日式装修”可以放在 profile 里。情景型信息适合向量存储，因为它不一定有固定字段，例如“一次关于职业焦虑的长对话”更适合按语义召回。最近对话则必须原样保留，因为它承载代词、指令和当前任务状态。</p>
+
+				<h2>三、调用链路</h2>
+				<pre><code>用户输入
+  -> 读取短期对话窗口
+  -> 读取用户画像 profile
+  -> 用 query 检索长期情景记忆
+  -> 过滤权限、时间、置信度
+  -> rerank 选出少量高价值片段
+  -> 拼接 system prompt + profile + memories + recent messages
+  -> 调用大模型
+  -> 返回用户
+  -> 后台异步抽取新记忆</code></pre>
+
+				<h2>四、后台异步记忆更新</h2>
+				<p>记忆抽取不要阻塞用户响应。更好的做法是主链路先回答，后台任务再处理记忆。</p>
+				<pre><code>对话结束事件
+  -> memory extraction job
+  -> 抽取事实、偏好、事件、情绪标签
+  -> 判断是否值得写入
+  -> 与旧记忆做冲突检测
+  -> 更新 profile 或写入向量库
+  -> 记录来源、时间、置信度
+  -> 周期性遗忘和压缩</code></pre>
+
+				<h2>五、冲突与遗忘机制</h2>
+				<ul>
+					<li><strong>冲突：</strong>旧记忆说用户喜欢咖啡，新对话说最近不喝咖啡。不要简单追加，要标记时间和状态变化。</li>
+					<li><strong>时效：</strong>短期偏好容易过期，长期事实不应随便覆盖。</li>
+					<li><strong>置信度：</strong>“我可能喜欢”不如“我最喜欢”置信度高。</li>
+					<li><strong>遗忘：</strong>低价值、低置信、长期未召回的情景记忆可以压缩或删除。</li>
+					<li><strong>隐私：</strong>敏感记忆要有权限、可见性、删除能力。</li>
+				</ul>
+
+				<h2>六、面试答题模板</h2>
+				<pre><code>我会把记忆分为短期上下文、结构化用户画像和长期情景记忆。
+短期上下文直接保留最近 N 轮原始对话。
+稳定事实进入 profile，用字段化结构支持精准检索和冲突覆盖。
+非结构化对话片段做 chunk + embedding，进入向量库，按语义召回。
+在线请求时拼 system prompt、profile、召回片段和近期对话。
+记忆写入采用异步任务，做抽取、去重、冲突处理、置信度和遗忘。
+这样可以兼顾成本、延迟、准确性和长期陪伴体验。</code></pre>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

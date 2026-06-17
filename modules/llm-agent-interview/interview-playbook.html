@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>面试答题模板 | 大模型 Agent 面试</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>面试答题模板</strong><span>Two-minute Answers and Follow-ups</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">面试总览</a><a href="memory.html">记忆</a><a href="rag-pipeline.html">RAG</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="memory.html">AI 记忆机制</a><a href="rag-pipeline.html">RAG 数据工程</a><a href="long-context.html">长上下文 vs RAG</a><a href="transformer-long-context.html">Transformer 长文本优化</a><a class="active" href="interview-playbook.html">答题模板</a></aside>
+			<article class="doc">
+				<p class="kicker">Interview Playbook</p>
+				<h1>大模型 / Agent 算法面试怎么答</h1>
+				<p class="lead">好的面试答案通常有固定骨架：先给结论，再给系统链路，再讲关键取舍，最后补失败模式和评估方法。下面这些模板可以背结构，但不要死背原文。</p>
+
+				<h2>一、记忆机制两分钟答案</h2>
+				<pre><code>我会把长期陪伴型 AI 的记忆分为三层。
+第一层是短期记忆，保留最近 N 轮原始对话，保证代词、任务状态和上下文连续。
+第二层是结构化用户画像，把稳定事实、偏好、身份、关系、经历抽取成 profile，按 user_id 精准读取。
+第三层是长期情景记忆，把非结构化片段做 chunk 和 embedding，存入向量库，按语义召回。
+
+在线请求时，系统会拼 system prompt、用户画像、召回的长期记忆和近期对话，再调用模型。
+记忆写入不阻塞主链路，而是异步抽取、去重、冲突检测、置信度更新和遗忘。
+这样可以避免全量历史塞进 prompt 导致成本高、延迟高和注意力分散。</code></pre>
+
+				<h2>二、RAG 工程两分钟答案</h2>
+				<pre><code>我会把 RAG 看成数据工程和检索生成闭环。
+第一步是解析和清洗原始文档，保留标题、表格、代码块和元数据，去掉广告、页眉页脚和重复内容。
+第二步是语义切片，而不是只按固定长度切；生产上常用小块检索、大块返回的父子块结构，并设置适当重叠。
+第三步是 embedding 和索引，记录模型版本，向量库可用 HNSW，同时保留关键词倒排索引。
+第四步是检索，先用 metadata 做权限和业务过滤，再做向量 + BM25 混合召回，合并去重后 rerank。
+最后生成答案时要求引用证据，并通过 Recall@K、NDCG、faithfulness、延迟和成本做评估。
+RAG 的关键不是向量库本身，而是数据质量、召回排序和评估迭代。</code></pre>
+
+				<h2>三、长上下文 vs RAG 两分钟答案</h2>
+				<pre><code>长上下文不会完全替代 RAG，二者更像互补。
+RAG 负责从海量知识中做粗召回，解决信息广度、权限、新鲜度、成本和引用问题。
+长上下文模型负责对筛选后的高质量证据做深度阅读、跨段推理和多文档综合。
+如果全量文档都塞进 prompt，会有 token 成本、预填充延迟、权限过滤和 lost in the middle 问题。
+未来更常见的是 Long RAG：先检索和重排，再扩展父块和相邻上下文，交给长上下文模型精读。</code></pre>
+
+				<h2>四、Transformer 长文本优化两分钟答案</h2>
+				<pre><code>Transformer 处理超长上下文主要有三个瓶颈。
+第一是 self-attention 的 O(n^2) 计算和中间注意力矩阵。
+第二是推理阶段 KV Cache 随序列长度和并发增长，带来显存容量、显存带宽和碎片问题。
+第三是位置编码在训练长度之外外推不稳定。
+
+对应优化也分层：
+FlashAttention 通过分块和算子融合减少显存 IO，是精确注意力但不改变 O(n^2) 本质；
+GQA/MQA 让多个 query head 共享 K/V，减少 KV Cache；
+PagedAttention 用分页思想管理 KV Cache，提升在线服务显存利用率；
+RoPE Scaling、ALiBi 等改善长位置外推。
+生产里还会结合 sliding window、context compression 和 RAG 来控制输入长度。</code></pre>
+
+				<h2>五、常见追问</h2>
+				<table class="compare-table">
+					<thead><tr><th>追问</th><th>回答要点</th></tr></thead>
+					<tbody>
+						<tr><td>有向量检索了为什么还要 BM25？</td><td>向量适合语义相似，BM25 适合精确词、编号、代码、错误码、人名。混合检索能提高召回鲁棒性。</td></tr>
+						<tr><td>chunk size 怎么选？</td><td>看数据结构和评估结果。FAQ 小，论文和法律条款大；通常从几百到一千多 token 试起，加 10%-20% 重叠，再看 Recall@K 和答案质量。</td></tr>
+						<tr><td>rerank 为什么有用？</td><td>embedding 是粗粒度语义相似，rerank 会同时看 query 和候选文本，判断候选是否真的能回答问题，能提升 topN 质量。</td></tr>
+						<tr><td>RAG 怎么降低幻觉？</td><td>高质量召回、rerank、引用约束、无法回答时拒答、答案与证据一致性评估，都能降低幻觉。</td></tr>
+						<tr><td>FlashAttention 是否把复杂度变成线性？</td><td>不是。它优化 IO 和中间存储，标准全局注意力的关系计算仍然是二次规模。</td></tr>
+						<tr><td>KV Cache 为什么是瓶颈？</td><td>生成每个 token 都要读取历史 K/V。上下文越长、batch 越大、层数和 head 越多，显存容量和带宽压力越大。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>六、答题骨架</h2>
+				<pre><code>1. 先给结论：不会取代 / 要分层 / 瓶颈在这里。
+2. 画链路：输入 -> 存储 -> 检索 -> 拼 prompt -> 模型 -> 后台更新。
+3. 讲取舍：成本、延迟、准确率、权限、可维护性。
+4. 讲失败模式：召回漏、噪音多、权限错、上下文中间迷失、KV 爆显存。
+5. 讲评估：离线指标 + 在线指标 + 人工反馈。
+6. 收到工程落地：异步、批处理、缓存、监控、版本管理。</code></pre>
+
+				<h2>七、一个完整系统图</h2>
+				<pre><code>Client
+  -> API Gateway
+  -> Conversation Service
+      -> Short-term Message Store
+      -> User Profile Store
+      -> RAG Retriever
+          -> Metadata Filter
+          -> Vector Search
+          -> BM25 Search
+          -> Reranker
+      -> Prompt Builder
+      -> LLM / Agent Planner
+      -> Tool Executor
+  -> Response
+
+Async Jobs
+  -> Memory Extractor
+  -> Document Ingestion
+  -> Embedding Batch Worker
+  -> Evaluation Pipeline
+  -> Monitoring and Cost Control</code></pre>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

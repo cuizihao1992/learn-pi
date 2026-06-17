@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Transformer 长文本瓶颈与优化 | 大模型 Agent 面试</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Transformer 长文本优化</strong><span>Attention, KV Cache, Position Encoding</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">面试总览</a><a href="long-context.html">长上下文</a><a href="interview-playbook.html">答题</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="memory.html">AI 记忆机制</a><a href="rag-pipeline.html">RAG 数据工程</a><a href="long-context.html">长上下文 vs RAG</a><a class="active" href="transformer-long-context.html">Transformer 长文本优化</a><a href="interview-playbook.html">答题模板</a></aside>
+			<article class="doc">
+				<p class="kicker">Transformer</p>
+				<h1>Transformer 处理超长上下文的瓶颈与优化方案</h1>
+				<p class="lead">这类题的核心不是背 FlashAttention、GQA、PagedAttention 的名字，而是先讲清楚瓶颈在哪里：自注意力平方复杂度、KV Cache 显存与带宽压力、位置编码外推问题。然后再说明每种优化分别打在哪个瓶颈上。</p>
+
+				<h2>一、三大核心瓶颈</h2>
+				<table class="compare-table">
+					<thead><tr><th>瓶颈</th><th>本质</th><th>表现</th></tr></thead>
+					<tbody>
+						<tr><td>计算复杂度</td><td>自注意力要计算每个 token 与其他 token 的关系，复杂度约 O(n^2)。</td><td>上下文长度翻倍，注意力矩阵计算和中间数据迅速膨胀。</td></tr>
+						<tr><td>KV Cache 显存墙</td><td>推理生成时要保存历史 token 的 Key / Value，越长越占显存。</td><td>并发下降、显存碎片、带宽搬运成为瓶颈。</td></tr>
+						<tr><td>位置编码外推</td><td>模型训练时见过的位置长度有限，直接拉长可能破坏位置信号。</td><td>长文本后半段或中间段理解变差，输出不稳定。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>二、为什么 O(n^2) 麻烦</h2>
+				<p>在标准 self-attention 中，输入长度是 n，每个 token 都要和 n 个 token 计算注意力分数，所以注意力矩阵规模是 n x n。短文本时这很强，因为模型可以全局建模；长文本时它会变成计算和显存压力。注意：FlashAttention 优化的是显存读写和中间存储，并不把标准注意力的数学复杂度变成线性。</p>
+				<pre><code>Q = XWq, K = XWk, V = XWv
+Attention(Q,K,V) = softmax(QK^T / sqrt(d))V
+
+QK^T 的形状约为 n x n
+n 越大，中间注意力矩阵越大</code></pre>
+
+				<h2>三、FlashAttention：解决 IO 搬运瓶颈</h2>
+				<p>GPU 计算很快，但从高带宽显存反复读写大矩阵很贵。FlashAttention 的思路是分块计算注意力，把 softmax 和矩阵乘法融合起来，避免把完整注意力矩阵写回显存。它是精确注意力，不是近似注意力；收益来自 IO-aware 计算和 tiling。</p>
+				<ul>
+					<li><strong>解决什么：</strong>减少 HBM 读写和中间显存占用。</li>
+					<li><strong>不解决什么：</strong>不从根本上消除全局注意力的 O(n^2) 关系计算。</li>
+					<li><strong>面试说法：</strong>它让同样的注意力计算更省显存、更快，尤其适合训练和长 prompt prefilling。</li>
+				</ul>
+
+				<h2>四、GQA / MQA：减少 KV Cache</h2>
+				<p>多头注意力中，每个 query head 通常对应自己的 key/value head。长文本推理时，KV Cache 会随层数、head 数、序列长度、batch 增长。MQA 让多个 query head 共享一组 K/V；GQA 是折中方案，让一组 query head 共享 K/V。这样能显著减少 KV Cache 大小，提升推理吞吐和并发。</p>
+				<table class="compare-table">
+					<thead><tr><th>方式</th><th>KV 头数量</th><th>特点</th></tr></thead>
+					<tbody>
+						<tr><td>MHA</td><td>每个 query head 都有 K/V</td><td>效果强，但 KV Cache 大。</td></tr>
+						<tr><td>MQA</td><td>所有 query head 共享一组 K/V</td><td>KV 最省，但可能影响效果。</td></tr>
+						<tr><td>GQA</td><td>一组 query head 共享 K/V</td><td>在质量和推理效率之间折中。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>五、PagedAttention：管理 KV Cache 碎片</h2>
+				<p>在线推理服务不是只处理一个请求。不同用户 prompt 长度不同，生成长度不同，KV Cache 生命周期不同，显存会碎片化。PagedAttention 借鉴操作系统分页，把 KV Cache 拆成固定大小的块，不要求连续显存，从而提高显存利用率和吞吐。</p>
+				<ul>
+					<li><strong>解决什么：</strong>长上下文、多并发服务中的 KV Cache 分配和碎片问题。</li>
+					<li><strong>为什么像分页：</strong>逻辑上连续的序列，可以映射到物理上不连续的显存块。</li>
+					<li><strong>工程意义：</strong>同样显存下能服务更多请求，减少因为预留过多连续显存导致的浪费。</li>
+				</ul>
+
+				<h2>六、位置编码优化</h2>
+				<p>模型需要知道 token 的顺序。RoPE 把位置信息编码到 query/key 的旋转中，长上下文扩展时常见做法是 RoPE scaling，让模型能适配更长位置。ALiBi 则给注意力分数加入随距离变化的偏置，鼓励模型关注近处，同时具备一定外推能力。</p>
+				<table class="compare-table">
+					<thead><tr><th>方法</th><th>思路</th><th>面试重点</th></tr></thead>
+					<tbody>
+						<tr><td>RoPE Scaling</td><td>调整旋转位置频率或尺度，扩展可用上下文。</td><td>常用于已有 RoPE 模型的长上下文扩展。</td></tr>
+						<tr><td>ALiBi</td><td>对远距离 token 加线性偏置。</td><td>结构简单，有较好的长度外推倾向。</td></tr>
+						<tr><td>位置插值</td><td>把更长位置压缩映射到训练过的位置范围。</td><td>可能需要继续训练来稳定效果。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>七、其他工程策略</h2>
+				<ul>
+					<li><strong>Sliding Window Attention：</strong>只看局部窗口，适合局部依赖强的任务。</li>
+					<li><strong>Sparse Attention：</strong>只计算部分注意力边，降低复杂度，但会改变模型能力边界。</li>
+					<li><strong>Chunked Prefill：</strong>长 prompt 分块预填充，降低服务峰值显存压力。</li>
+					<li><strong>Context Compression：</strong>先摘要、抽取、重排，再输入模型，属于系统层优化。</li>
+				</ul>
+
+				<h2>八、面试总结句</h2>
+				<pre><code>Transformer 长上下文的瓶颈主要有三类：
+第一是 self-attention 的 O(n^2) 计算和中间数据；
+第二是推理阶段 KV Cache 带来的显存容量、显存带宽和碎片问题；
+第三是位置编码对训练长度之外的外推能力。
+FlashAttention 主要优化注意力计算的 IO 和显存占用；
+GQA/MQA 减少 KV Cache；
+PagedAttention 改善在线服务中的 KV Cache 分配；
+RoPE Scaling、ALiBi 等方法改善位置外推。
+真实系统通常需要算子、模型结构、推理引擎和 RAG/压缩策略一起优化。</code></pre>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

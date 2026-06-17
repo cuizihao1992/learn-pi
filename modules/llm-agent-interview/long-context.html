@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>长上下文与 RAG | 大模型 Agent 面试</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>长上下文与 RAG</strong><span>Breadth, Depth, Cost, Latency</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">面试总览</a><a href="rag-pipeline.html">RAG</a><a href="transformer-long-context.html">Transformer</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="memory.html">AI 记忆机制</a><a href="rag-pipeline.html">RAG 数据工程</a><a class="active" href="long-context.html">长上下文 vs RAG</a><a href="transformer-long-context.html">Transformer 长文本优化</a><a href="interview-playbook.html">答题模板</a></aside>
+			<article class="doc">
+				<p class="kicker">Long Context</p>
+				<h1>长上下文模型会取代 RAG 吗</h1>
+				<p class="lead">结论：不会简单取代。更可能的主流形态是 Long RAG：先用 RAG 从海量知识里找出高相关材料，再让长上下文模型读取更完整的证据并做复杂推理。</p>
+
+				<h2>一、二者分工不同</h2>
+				<table class="compare-table">
+					<thead><tr><th>能力</th><th>RAG</th><th>长上下文模型</th></tr></thead>
+					<tbody>
+						<tr><td>解决的问题</td><td>从海量数据里粗召回相关内容，解决信息广度。</td><td>在较长材料里综合、对比、推理，解决信息深度。</td></tr>
+						<tr><td>输入范围</td><td>可以面对企业全量文档、网页、数据库、日志。</td><td>受上下文窗口、成本和延迟限制。</td></tr>
+						<tr><td>更新方式</td><td>外部知识更新后重建或增量更新索引。</td><td>把材料塞进 prompt，或重新训练/微调。</td></tr>
+						<tr><td>主要风险</td><td>召回漏证据、chunk 噪音、rerank 错误。</td><td>成本高、延迟高、注意力分散、中间信息丢失。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>二、RAG 为什么不可替代</h2>
+				<ul>
+					<li><strong>成本：</strong>大模型通常按 token 计费，全量塞文档会让每次请求都很贵。RAG 只放必要证据，能显著降低输入 token。</li>
+					<li><strong>延迟：</strong>长文本预填充和注意力计算会拉高响应时间。RAG 把上下文控制在较小范围，更适合在线产品。</li>
+					<li><strong>新鲜度：</strong>企业制度、商品、代码、财报、日志经常变化。RAG 更新索引比重新训练模型快得多。</li>
+					<li><strong>权限：</strong>不同用户能看的文档不同。RAG 可以在检索阶段做权限过滤，长上下文全量输入很难自然解决这一点。</li>
+					<li><strong>可追溯：</strong>RAG 可以返回引用和证据，适合知识库、客服、法律、金融等需要来源的场景。</li>
+					<li><strong>中间迷失：</strong>研究表明模型在很长上下文中对中间位置的信息利用会下降，所以“窗口很长”不等于“所有信息都被同等理解”。</li>
+				</ul>
+
+				<h2>三、长上下文有什么优势</h2>
+				<p>长上下文并不是没用，恰恰相反，它让 RAG 的上限提高了。过去 RAG 只能塞几个短 chunk，模型很难理解长报告、合同、多文件代码和跨章节逻辑。长上下文模型可以在召回后的证据集里读更完整的段落、更多相邻章节和多份文档，减少“只看碎片”的问题。</p>
+				<ul>
+					<li><strong>跨文档综合：</strong>把多份候选材料放在一起比较，适合尽调、政策分析、复杂代码理解。</li>
+					<li><strong>长链推理：</strong>需要前后约束、定义、例外条款时，长上下文比短 chunk 更稳。</li>
+					<li><strong>少切片损失：</strong>可以返回父块或整章，而不是只给模型孤立片段。</li>
+				</ul>
+
+				<h2>四、Long RAG 模式</h2>
+				<pre><code>用户问题
+  -> 查询改写
+  -> RAG 从大规模知识库召回 topK 文档/章节
+  -> rerank 选出高质量证据
+  -> 扩展上下文：补充父块、邻近段落、相关表格
+  -> 长上下文模型精读证据
+  -> 生成带引用答案
+  -> 记录反馈，更新评估集和检索策略</code></pre>
+				<p>这也是为什么很多新 RAG 方案开始强调 contextual retrieval：给 chunk 补充文档级背景，结合 BM25、向量检索和 rerank，让召回结果既精准又不丢上下文。</p>
+
+				<h2>五、什么时候偏向哪种方案</h2>
+				<table class="compare-table">
+					<thead><tr><th>场景</th><th>推荐</th><th>原因</th></tr></thead>
+					<tbody>
+						<tr><td>几十页固定报告问答</td><td>长上下文优先</td><td>材料规模小，直接读完整报告更简单。</td></tr>
+						<tr><td>企业全量知识库</td><td>RAG + 长上下文</td><td>数据量大、权限复杂、更新频繁。</td></tr>
+						<tr><td>客服知识库</td><td>RAG 优先</td><td>需要低延迟、低成本和引用来源。</td></tr>
+						<tr><td>代码仓库理解</td><td>结构化检索 + 长上下文</td><td>先按符号、依赖和文件召回，再让模型读完整调用链。</td></tr>
+						<tr><td>个人少量笔记</td><td>两者都可</td><td>数据小可直接长上下文；长期增长后再接 RAG。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>六、面试总结句</h2>
+				<pre><code>长上下文不会完全取代 RAG。
+RAG 解决的是海量知识中的过滤、权限、新鲜度、成本和引用问题；
+长上下文解决的是召回后对高质量材料的深度阅读和跨段推理问题。
+生产系统通常会走 Long RAG：先检索和重排，再把更完整的证据交给长上下文模型。
+这样比全量塞 prompt 更便宜、更快、更可控，也比短 chunk RAG 更有推理深度。</code></pre>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

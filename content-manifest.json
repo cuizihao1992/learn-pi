@@ -4,7 +4,7 @@
     "charter": "pages/charter.html",
     "dashboard": "pages/dashboard.html",
     "search": "pages/search.html",
-    "rule": "The site is organized as ten first-class modules: pi-agent, mini-agent, cesium, openlayers, mapbox, digital-twin-city, gaussian-splatting, stock-kline, quant-trading, and nuclear-battery. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
+    "rule": "The site is organized as eleven first-class modules: pi-agent, mini-agent, cesium, openlayers, mapbox, digital-twin-city, llm-agent-interview, gaussian-splatting, stock-kline, quant-trading, and nuclear-battery. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
     "modules": "modules/index.html"
   },
   "moduleConvention": {
@@ -115,6 +115,21 @@
         "backend-frontend.html",
         "performance.html",
         "mvp.html"
+      ]
+    },
+    {
+      "slug": "llm-agent-interview",
+      "name": "LLM Agent Interview",
+      "root": "modules/llm-agent-interview/",
+      "entry": "modules/llm-agent-interview/index.html",
+      "purpose": "Prepare for LLM and Agent algorithm interviews covering memory, RAG data engineering, long context versus RAG, and Transformer long-context optimization.",
+      "pages": [
+        "index.html",
+        "memory.html",
+        "rag-pipeline.html",
+        "long-context.html",
+        "transformer-long-context.html",
+        "interview-playbook.html"
       ]
     },
     {

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>大模型 Agent 算法面试 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>大模型 Agent 算法面试</strong><span>Memory, RAG, Long Context, Transformer</span></div></div><nav><a href="../../index.html">首页</a><a href="../index.html">全部模块</a><a href="memory.html">记忆</a><a href="rag-pipeline.html">RAG</a><a href="long-context.html">长上下文</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a class="active" href="index.html">模块总览</a><a href="memory.html">AI 记忆机制</a><a href="rag-pipeline.html">RAG 数据工程</a><a href="long-context.html">长上下文 vs RAG</a><a href="transformer-long-context.html">Transformer 长文本优化</a><a href="interview-playbook.html">面试答题模板</a><a href="../pi-agent/index.html">Pi Agent</a><a href="../mini-agent/index.html">Mini Agent</a></aside>
+			<article class="doc">
+				<p class="kicker">LLM Agent Interview</p>
+				<h1>字节大模型 / Agent 算法面试高频考点</h1>
+				<p class="lead">这个模块围绕四类高频问题展开：长期陪伴型 AI 的记忆机制、RAG 向量数据工程、长上下文模型和 RAG 的关系、Transformer 处理超长文本的瓶颈与优化。目标不是背概念，而是能在面试里讲出系统设计、工程取舍、成本延迟和失败模式。</p>
+
+				<h2>先记住总框架</h2>
+				<pre><code>用户问题
+  -> 会话短期上下文
+  -> 用户画像和长期记忆
+  -> RAG 检索外部知识
+  -> 长上下文模型做综合推理
+  -> Agent 选择工具或生成回答
+  -> 后台异步更新记忆、索引和评估日志</code></pre>
+
+				<h2>四大面试题</h2>
+				<div class="lesson-grid">
+					<section><h3>长期记忆机制</h3><p>回答长期陪伴型 AI 如何记住用户：短期对话、实体画像、长期情景记忆、异步抽取、冲突处理、遗忘机制。</p><a class="primary-link" href="memory.html">进入记忆机制</a></section>
+					<section><h3>RAG 数据工程</h3><p>回答从原始文档到向量库到混合检索再到 rerank 的完整链路，重点讲数据质量、切片、元数据、索引和评估闭环。</p><a class="primary-link" href="rag-pipeline.html">进入 RAG 工程</a></section>
+					<section><h3>长上下文 vs RAG</h3><p>回答长上下文是否会取代 RAG：不会取代，而是互补。RAG 管广度，长上下文管深度，主流是 Long RAG。</p><a class="primary-link" href="long-context.html">进入长上下文</a></section>
+					<section><h3>Transformer 长文本优化</h3><p>回答 O(n²) 计算、KV Cache 显存墙、位置编码外推，及 FlashAttention、GQA、PagedAttention、RoPE Scaling、ALiBi。</p><a class="primary-link" href="transformer-long-context.html">进入长文本优化</a></section>
+				</div>
+
+				<h2>面试官真正想听什么</h2>
+				<ul>
+					<li><strong>不是只背名词：</strong>要能说出为什么需要分层、为什么 RAG 不能只靠向量检索、为什么长上下文仍有成本和注意力问题。</li>
+					<li><strong>要有系统链路：</strong>输入、存储、检索、排序、拼 prompt、调用模型、异步更新、监控评估。</li>
+					<li><strong>要有工程取舍：</strong>精度 vs 延迟、成本 vs 上下文长度、召回率 vs 幻觉、同步响应 vs 异步记忆。</li>
+					<li><strong>要能讲失败模式：</strong>记忆冲突、脏数据、切片断语义、embedding 域不匹配、lost in the middle、KV Cache 爆显存。</li>
+				</ul>
+
+				<h2>推荐学习顺序</h2>
+				<ol>
+					<li>先看记忆机制，因为 Agent 产品最容易问“如何长期陪伴”。</li>
+					<li>再看 RAG 数据工程，因为 RAG 是企业知识库和 Agent 工具的基础。</li>
+					<li>再看长上下文 vs RAG，形成系统级取舍。</li>
+					<li>最后看 Transformer 长文本优化，把工程现象讲到底层算子和显存。</li>
+				</ol>
+
+				<h2>主要参考</h2>
+				<ul>
+					<li><a href="https://arxiv.org/abs/2005.11401">Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</a></li>
+					<li><a href="https://arxiv.org/abs/2307.03172">Lost in the Middle: How Language Models Use Long Contexts</a></li>
+					<li><a href="https://arxiv.org/abs/2205.14135">FlashAttention</a></li>
+					<li><a href="https://arxiv.org/abs/2309.06180">PagedAttention / vLLM</a></li>
+					<li><a href="https://arxiv.org/abs/2305.13245">Grouped-Query Attention</a></li>
+					<li><a href="https://arxiv.org/abs/2104.09864">RoPE / RoFormer</a></li>
+					<li><a href="https://arxiv.org/abs/2108.12409">ALiBi</a></li>
+				</ul>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

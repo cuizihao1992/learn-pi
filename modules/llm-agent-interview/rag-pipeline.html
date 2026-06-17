@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>RAG 向量数据工程 | 大模型 Agent 面试</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>RAG 向量数据工程</strong><span>Parsing, Chunking, Embedding, Retrieval, Rerank</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">面试总览</a><a href="memory.html">记忆</a><a href="long-context.html">长上下文</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="memory.html">AI 记忆机制</a><a class="active" href="rag-pipeline.html">RAG 数据工程</a><a href="long-context.html">长上下文 vs RAG</a><a href="transformer-long-context.html">Transformer 长文本优化</a><a href="interview-playbook.html">答题模板</a></aside>
+			<article class="doc">
+				<p class="kicker">RAG Pipeline</p>
+				<h1>RAG 向量数据全流程工程化方案</h1>
+				<p class="lead">RAG 面试题不要只说“把文档向量化，然后相似度检索”。真正能区分水平的是工程链路：数据怎么清洗，chunk 怎么切，metadata 怎么用，向量和关键词怎么混合，rerank 怎么接，权限怎么保证，效果怎么评估。</p>
+
+				<h2>一、完整链路</h2>
+				<pre><code>原始文件
+  -> 解析：PDF / 网页 / Word / Markdown / 数据库
+  -> 清洗：乱码、广告、页眉页脚、重复段落、无意义表格
+  -> 元数据：来源、作者、时间、权限、业务域、版本、章节路径
+  -> 语义切片：按标题、段落、代码块、表格、问答边界切
+  -> 父子块：小块用于检索，大块用于返回给模型
+  -> embedding：批量向量化，记录模型版本
+  -> 入库：向量库 + 倒排索引 + 原文对象存储
+  -> 检索：metadata 过滤 + 向量召回 + BM25 关键词召回
+  -> 合并去重：融合多路召回结果
+  -> rerank：用交叉编码器或大模型重排
+  -> 生成：把高质量证据放入 prompt
+  -> 评估：召回率、命中率、答案忠实度、延迟、成本</code></pre>
+
+				<h2>二、数据预处理决定下限</h2>
+				<p>很多 RAG 系统效果差，不是模型差，而是数据进入向量库之前已经坏了。PDF 解析会把两栏论文打乱，网页会混入导航栏和广告，扫描件 OCR 会有错字，表格会丢失行列关系。预处理阶段要把“人能读懂的文档”变成“机器稳定检索的知识单元”。</p>
+				<ul>
+					<li><strong>格式标准化：</strong>把 PDF、网页、Word、飞书文档等转成统一中间格式，保留标题层级、段落、表格、代码块和链接。</li>
+					<li><strong>噪音清洗：</strong>删除导航、版权、重复页眉页脚、广告、空段、乱码、无意义页码。</li>
+					<li><strong>元数据提取：</strong>记录来源、更新时间、作者、权限范围、业务线、文档类型，用于检索前过滤。</li>
+					<li><strong>版本管理：</strong>文档更新后要支持 upsert 和 delete，避免旧知识和新知识同时被召回。</li>
+				</ul>
+
+				<h2>三、文本切片不要只按长度</h2>
+				<table class="compare-table">
+					<thead><tr><th>切片方式</th><th>优点</th><th>问题</th><th>适用场景</th></tr></thead>
+					<tbody>
+						<tr><td>固定长度切片</td><td>实现简单，吞吐高</td><td>容易切断语义，标题和正文分离</td><td>临时 Demo 或结构很差的数据</td></tr>
+						<tr><td>语义切片</td><td>保留标题、段落、代码、表格边界</td><td>实现更复杂，需要解析器支持</td><td>知识库、文档问答、企业内搜</td></tr>
+						<tr><td>滑动窗口重叠</td><td>降低边界丢信息风险</td><td>索引膨胀，重复召回增加</td><td>长段落、论文、法律条款</td></tr>
+						<tr><td>父子块</td><td>小块召回精准，大块返回完整</td><td>需要维护 chunk 层级关系</td><td>生产级 RAG 推荐方案</td></tr>
+					</tbody>
+				</table>
+				<p>常见经验是 chunk 保持在几百 token 到一千多 token，重叠约 10% 到 20%。但这不是死规则：FAQ 可以更小，法律条款要保留完整条文，代码文档要按函数、类、文件结构切。面试里更重要的是说清楚“根据数据形态和评估结果调 chunk”。</p>
+
+				<h2>四、向量化和向量库</h2>
+				<p>Embedding 的作用是把文本映射到语义空间。通用知识库可以先用成熟通用 embedding 模型；医疗、法律、金融、内部术语密集的场景，可能需要领域模型、对比学习微调或查询改写来弥补语义偏差。入库时要记录 embedding 模型版本，因为模型一换，旧向量通常需要重建。</p>
+				<ul>
+					<li><strong>HNSW 索引：</strong>千万级向量常用近似最近邻索引，在召回速度和精度之间取平衡。</li>
+					<li><strong>批处理入库：</strong>解析、切片、embedding、写库都要批量化，否则吞吐会被 API 调用和数据库写入拖垮。</li>
+					<li><strong>分区与过滤：</strong>按租户、权限、业务域、语言、时间做过滤，先缩小候选集再召回。</li>
+					<li><strong>原文分离：</strong>向量库存 chunk id 和向量，原文大块、附件、图片通常放对象存储或文档库。</li>
+				</ul>
+
+				<h2>五、检索闭环优化</h2>
+				<p>只用向量检索会漏掉精确词，比如错误码、接口名、股票代码、人名、条款编号。只用关键词检索又理解不了同义表达。所以生产系统常用混合检索：向量召回语义相似内容，BM25 召回关键词命中内容，再合并、去重、重排。</p>
+				<pre><code>query
+  -> query rewrite / HyDE 模拟答案
+  -> metadata filter
+  -> dense vector search topK
+  -> sparse BM25 search topK
+  -> merge + deduplicate
+  -> rerank topN
+  -> context compression
+  -> answer with citations</code></pre>
+				<ul>
+					<li><strong>Rerank：</strong>比 embedding 相似度更精细，能判断 query 和候选 chunk 是否真的能互相回答。</li>
+					<li><strong>HyDE：</strong>先让模型生成一个“可能答案”，再用这个答案去检索，有时能改善抽象问题的召回。</li>
+					<li><strong>上下文压缩：</strong>把召回的大块再摘出相关句子，减少 prompt 噪音。</li>
+					<li><strong>引用约束：</strong>回答必须带来源，无法从证据推出时要说不知道，降低幻觉。</li>
+				</ul>
+
+				<h2>六、怎么评估 RAG</h2>
+				<table class="compare-table">
+					<thead><tr><th>层级</th><th>指标</th><th>要看什么</th></tr></thead>
+					<tbody>
+						<tr><td>检索</td><td>Recall@K、MRR、NDCG</td><td>正确证据有没有被召回，排得够不够靠前。</td></tr>
+						<tr><td>生成</td><td>Faithfulness、答案正确率</td><td>回答是否忠于证据，有没有编造。</td></tr>
+						<tr><td>系统</td><td>延迟、成本、吞吐、失败率</td><td>能不能在真实并发和预算内运行。</td></tr>
+						<tr><td>业务</td><td>人工采纳率、转人工率、搜索成功率</td><td>用户到底有没有被帮到。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>七、面试总结句</h2>
+				<pre><code>RAG 的核心不是“向量库”，而是从数据治理到检索评估的闭环。
+我会先做文档解析、清洗和元数据治理，再按语义切片并采用父子块结构。
+检索阶段用 metadata 过滤、向量召回、BM25 关键词召回和 rerank。
+生成阶段要求引用证据，并通过离线评测集和线上反馈持续调 chunk、topK、rerank 和 prompt。
+这样才能兼顾召回率、准确率、权限、安全、延迟和成本。</code></pre>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>
