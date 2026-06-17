@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Mapbox 接口与调试 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Mapbox 接口与调试</strong><span>Sources, Layers, Expressions</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">Mapbox</a><a href="architecture.html">架构</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="architecture.html">渲染架构</a><a href="vs-cesium.html">与 Cesium 对比</a><a class="active" href="api-debugging.html">接口与调试</a></aside>
+			<article class="doc">
+				<p class="kicker">API</p>
+				<h1>Mapbox 常用接口和调试路径</h1>
+				<p class="lead">Mapbox 开发大多数问题都可以沿着 `Map -> Style -> Source -> Layer -> Expression -> Event` 查。先确认 style 是否加载，再确认 source 是否存在，最后确认 layer 的 filter、paint、layout 是否符合预期。</p>
+
+				<h2>常用接口分类</h2>
+				<table class="compare-table">
+					<thead><tr><th>类别</th><th>接口</th><th>作用</th></tr></thead>
+					<tbody>
+						<tr><td>地图生命周期</td><td>`new Map`、`map.on("load")`、`map.remove()`</td><td>创建、等待样式加载、销毁地图。</td></tr>
+						<tr><td>数据源</td><td>`addSource`、`getSource`、`removeSource`、`setData`</td><td>添加和更新 GeoJSON/vector/raster 数据。</td></tr>
+						<tr><td>图层</td><td>`addLayer`、`removeLayer`、`setPaintProperty`、`setLayoutProperty`</td><td>控制绘制规则和样式。</td></tr>
+						<tr><td>相机</td><td>`flyTo`、`easeTo`、`jumpTo`、`fitBounds`</td><td>控制中心点、zoom、bearing、pitch。</td></tr>
+						<tr><td>查询</td><td>`queryRenderedFeatures`、`querySourceFeatures`</td><td>查询屏幕上或 source 中的要素。</td></tr>
+						<tr><td>交互</td><td>`click`、`mousemove`、`mouseenter`、`mouseleave`</td><td>绑定地图和图层事件。</td></tr>
+						<tr><td>状态</td><td>`setFeatureState`、`getFeatureState`</td><td>高效更新要素 hover/selected 状态。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>表达式 expression</h2>
+				<p>Expression 是 Mapbox 样式系统的灵魂。它让样式可以根据 zoom、feature 属性、feature-state 动态变化。例如按人口给圆点半径分级：</p>
+				<pre><code>map.addLayer({
+  id: "city-circle",
+  type: "circle",
+  source: "cities",
+  paint: {
+    "circle-radius": [
+      "interpolate", ["linear"], ["get", "population"],
+      100000, 4,
+      1000000, 12,
+      10000000, 28
+    ],
+    "circle-color": [
+      "case",
+      [">", ["get", "population"], 10000000],
+      "#d64f45",
+      "#277da1"
+    ]
+  }
+});</code></pre>
+
+				<h2>调试 checklist</h2>
+				<ul>
+					<li><strong>地图空白：</strong>检查 token、style URL、容器高度、网络请求、控制台错误。</li>
+					<li><strong>source 不显示：</strong>确认 `map.on("load")` 后添加，source id 写对，GeoJSON 坐标是 `[lng, lat]`。</li>
+					<li><strong>layer 不显示：</strong>检查 source-layer、filter、minzoom/maxzoom、paint 透明度、layer 顺序。</li>
+					<li><strong>点击查不到要素：</strong>确认 layer 可渲染，使用 `queryRenderedFeatures(point, { layers: [...] })`。</li>
+					<li><strong>频繁更新卡顿：</strong>不要频繁更新大 GeoJSON；把动态数据拆成小 source，或用 `feature-state`。</li>
+					<li><strong>文字不显示：</strong>检查 glyphs、字体、symbol placement、碰撞避让。</li>
+				</ul>
+
+				<h2>性能优化清单</h2>
+				<ul>
+					<li>使用 vector tileset，不要把超大 GeoJSON 直接塞进浏览器。</li>
+					<li>合并相似 layers，用表达式区分颜色、宽度、半径。</li>
+					<li>合并 vector tile sources，减少 source 调度成本。</li>
+					<li>删除不会显示的属性和要素，减小 tile 体积。</li>
+					<li>快速变化的数据单独放 source，避免每次更新整张地图的数据。</li>
+					<li>hover/selected 状态优先用 `feature-state`，不要反复 `setData`。</li>
+				</ul>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

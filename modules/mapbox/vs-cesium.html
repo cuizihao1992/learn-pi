@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Mapbox 与 Cesium 对比 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Mapbox vs Cesium</strong><span>Why Mapbox often feels faster</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">Mapbox</a><a href="../cesium/index.html">Cesium</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="architecture.html">渲染架构</a><a class="active" href="vs-cesium.html">与 Cesium 对比</a><a href="api-debugging.html">接口与调试</a></aside>
+			<article class="doc">
+				<p class="kicker">Comparison</p>
+				<h1>Mapbox 和 Cesium 对比：为什么 Mapbox 常常感觉性能更好</h1>
+				<p class="lead">这个问题必须加限定条件：在二维地图、矢量瓦片、城市道路、POI、样式切换、普通业务标注等场景里，Mapbox 往往更轻、更快；但在真实三维地球、地形、海量 3D Tiles、全球坐标精度、地下/倾斜摄影/航空航天场景里，Cesium 的能力边界更强。它们不是同一个目标下的简单快慢关系。</p>
+
+				<h2>核心差异表</h2>
+				<table class="compare-table">
+					<thead><tr><th>维度</th><th>Mapbox GL JS</th><th>CesiumJS</th></tr></thead>
+					<tbody>
+						<tr><td>核心目标</td><td>高性能交互式 Web 地图，强项是 2D/2.5D 矢量地图</td><td>三维地球和大规模 3D 地理空间可视化</td></tr>
+						<tr><td>数据模型</td><td>source + layer + vector/raster tiles</td><td>Scene + Primitive + Globe + Terrain + Imagery + 3D Tiles</td></tr>
+						<tr><td>坐标复杂度</td><td>主要围绕 Web Mercator 和屏幕瓦片</td><td>全球椭球、ECEF、地形高度、相机视锥、精度处理</td></tr>
+						<tr><td>渲染对象</td><td>按瓦片和图层批量画线、面、符号、栅格</td><td>地球、地形、影像、模型、点云、3D Tiles、体量数据</td></tr>
+						<tr><td>常见性能优势</td><td>轻量瓦片、样式驱动、批处理、worker 解析、缓存友好</td><td>处理复杂三维场景能力强，但调度负担更重</td></tr>
+						<tr><td>适合场景</td><td>导航地图、业务地图、POI、路线、运营看板、2D 城市地图</td><td>数字孪生、三维地球、倾斜摄影、地形、3D Tiles、航空航天</td></tr>
+					</tbody>
+				</table>
+
+				<h2>为什么 Mapbox 在二维地图里常常更快</h2>
+				<h3>1. 问题更窄，架构更专</h3>
+				<p>Mapbox 的主战场是地图瓦片和样式渲染。它不需要默认处理完整三维地球的地形曲面、全球精度、3D Tiles traversal、terrain imagery 混合、地下空间、复杂相机和海量三维对象。问题域越窄，优化就越集中。</p>
+
+				<h3>2. Vector tile 天然适合裁剪和缓存</h3>
+				<p>Mapbox 的矢量瓦片只加载当前 zoom 和视口附近的数据。瓦片可以被 CDN 和浏览器缓存，数据也可以按 zoom 简化。相比直接加载大 GeoJSON 或复杂三维 tileset，典型二维地图的数据量和解析成本更可控。</p>
+
+				<h3>3. Style layer 可以批量组织渲染</h3>
+				<p>Mapbox 的 layer 类型非常明确：fill、line、symbol、circle 等。渲染器可以围绕这些固定类型做批处理和缓存。Cesium 的对象类型更开放，可能是地形、影像、模型、点云、primitive、classification、后处理，统一调度更复杂。</p>
+
+				<h3>4. Worker 分担瓦片解析</h3>
+				<p>Mapbox 会把不少瓦片解析、布局、符号处理放进 worker。主线程更多负责交互和提交渲染。Cesium 也有异步加载和 worker，但三维场景的数据准备和可见性判断通常更重。</p>
+
+				<h3>5. 二维屏幕空间交互更便宜</h3>
+				<p>二维地图的 pan/zoom 可以围绕瓦片金字塔和屏幕变换优化。Cesium 的三维相机要处理椭球、地形遮挡、视锥裁剪、深度、精度和更多 pass。越接近真实三维世界，计算负担越重。</p>
+
+				<h2>什么时候 Cesium 更合适</h2>
+				<ul>
+					<li>你需要真实三维地球，而不是平面或轻量 2.5D 地图。</li>
+					<li>你要加载地形、倾斜摄影、BIM、点云、3D Tiles。</li>
+					<li>你需要全球尺度、高精度相机、卫星轨道、飞行路径、地球曲率。</li>
+					<li>你需要和 3D Tiles、glTF、大规模三维数据生态结合。</li>
+				</ul>
+
+				<h2>选择建议</h2>
+				<table class="compare-table">
+					<thead><tr><th>需求</th><th>更推荐</th><th>原因</th></tr></thead>
+					<tbody>
+						<tr><td>普通业务地图、点线面、POI、路线</td><td>Mapbox</td><td>样式系统强，矢量瓦片成熟，交互轻。</td></tr>
+						<tr><td>大屏二维地图、城市运营、热力、轨迹</td><td>Mapbox / OpenLayers</td><td>二维地图成本低，开发快。</td></tr>
+						<tr><td>三维地球、地形、卫星轨迹</td><td>Cesium</td><td>全球 3D 场景是 Cesium 的核心。</td></tr>
+						<tr><td>倾斜摄影、BIM、点云、3D Tiles</td><td>Cesium</td><td>3D Tiles 加载和调度能力成熟。</td></tr>
+						<tr><td>只要建筑拔高 2.5D 效果</td><td>Mapbox</td><td>`fill-extrusion` 足够，成本低。</td></tr>
+						<tr><td>建筑内部结构、真实三维模型交互</td><td>Cesium / Three.js 组合</td><td>需要更强三维表达。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>一句话总结</h2>
+				<p>Mapbox 快，常常是因为它把问题收敛到“瓦片化二维/2.5D 地图 + 样式驱动批量渲染”；Cesium 重，常常是因为它承担了“真实三维地球 + 地形 + 影像 + 3D Tiles + 全球精度”的复杂性。不是谁绝对更好，而是谁的抽象更匹配你的问题。</p>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

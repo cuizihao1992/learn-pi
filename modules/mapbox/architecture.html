@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Mapbox 渲染架构 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Mapbox 渲染架构</strong><span>Style -> Tile -> Layer -> WebGL</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">Mapbox</a><a href="vs-cesium.html">对比 Cesium</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a class="active" href="architecture.html">渲染架构</a><a href="vs-cesium.html">与 Cesium 对比</a><a href="api-debugging.html">接口与调试</a></aside>
+			<article class="doc">
+				<p class="kicker">Architecture</p>
+				<h1>Mapbox 渲染路径：样式驱动的瓦片渲染</h1>
+				<p class="lead">Mapbox 的设计非常“地图产品化”：数据按瓦片切好，样式按 layer 声明，渲染器批量处理可见瓦片。业务开发者通常不直接操作 WebGL，而是通过 source、layer、expression 控制渲染。</p>
+
+				<h2>完整调度链路</h2>
+				<pre><code>new mapboxgl.Map()
+  -> load style JSON
+  -> create sources and layers
+  -> determine visible tile IDs by camera/zoom
+  -> request vector/raster tiles
+  -> worker parse vector tile into features
+  -> layout symbol/line/fill buckets
+  -> upload buffers/textures to GPU
+  -> render layers in style order
+  -> WebGL draws pixels</code></pre>
+
+				<h2>Style JSON 是 Mapbox 的“渲染协议”</h2>
+				<p>Cesium 常从对象和场景图进入，而 Mapbox 常从 style 进入。style 决定 source、layer、paint、layout、filter、minzoom、maxzoom、sprite、glyphs。它像一份地图渲染说明书：哪些数据源可用、哪些图层要画、不同 zoom 和属性下怎么画。</p>
+
+				<h2>Source 和 Layer 为什么分开</h2>
+				<p>source 负责数据，layer 负责视觉。一个 source 可以被多个 layer 使用。例如同一份道路 vector source，可以有一个 line layer 画道路底色，一个 line layer 画道路描边，一个 symbol layer 画道路名称。这样数据只需要加载一次，样式可以多层表达。</p>
+
+				<h2>Vector Tile 为什么快</h2>
+				<ul>
+					<li><strong>空间切片：</strong>只加载当前视口附近和当前 zoom 需要的瓦片。</li>
+					<li><strong>数据简化：</strong>不同 zoom 可以使用不同精度，远处不需要高精度几何。</li>
+					<li><strong>缓存友好：</strong>瓦片 URL 可缓存，浏览器、CDN、服务端都能复用。</li>
+					<li><strong>二进制编码：</strong>MVT 比直接传巨大 GeoJSON 更适合网络传输和解析。</li>
+					<li><strong>样式分离：</strong>同一份矢量数据可以换样式，不必重新生成栅格图。</li>
+				</ul>
+
+				<h2>Layer 渲染顺序</h2>
+				<p>Mapbox 按 style 的 layers 顺序绘制。通常底图先画 background、raster、fill，再画 line、fill-extrusion、symbol。symbol 层还涉及文字避让、图标 atlas、glyph 加载、碰撞检测等逻辑。官方 layer spec 也列出了 background、fill、line、symbol、circle、heatmap、raster、hillshade、fill-extrusion、model 等 layer 类型。</p>
+
+				<h2>性能模型</h2>
+				<p>Mapbox 官方性能文档把性能拆成 render time、source update time、layer update time。直觉上，渲染时间受 source 数、layer 数、vertex 数影响；更新 source 受 layer 数和 vertex 数影响；更新 layer 受 vertex 数影响。</p>
+				<table class="compare-table">
+					<thead><tr><th>成本来源</th><th>为什么变慢</th><th>优化方向</th></tr></thead>
+					<tbody>
+						<tr><td>source 太多</td><td>每个 source 都有加载、解析、调度成本</td><td>合并 vector source，避免碎片化数据源。</td></tr>
+						<tr><td>layer 太多</td><td>layer 越多，样式计算和 draw 组织越复杂</td><td>合并相似 layer，用 expression 区分样式。</td></tr>
+						<tr><td>GeoJSON 太大</td><td>主线程/worker 解析和更新成本高</td><td>改用 vector tiles，或拆分动态小 GeoJSON。</td></tr>
+						<tr><td>表达式复杂</td><td>每个 feature 都要计算样式表达式</td><td>简化 expression，预计算属性。</td></tr>
+						<tr><td>频繁 setData</td><td>source 反复更新，触发布局和上传</td><td>快速变化数据单独 source，或用 feature-state。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>和 Cesium 命令层的类比</h2>
+				<table class="compare-table">
+					<thead><tr><th>Mapbox</th><th>Cesium</th><th>含义</th></tr></thead>
+					<tbody>
+						<tr><td>Style JSON</td><td>Scene + Primitive 配置</td><td>渲染意图和配置。</td></tr>
+						<tr><td>Source</td><td>Tileset / Imagery / Terrain / DataSource</td><td>数据来源。</td></tr>
+						<tr><td>Layer</td><td>Appearance / Material / Primitive 类型</td><td>怎么画。</td></tr>
+						<tr><td>Tile bucket</td><td>DrawCommand 前的数据组织</td><td>按瓦片和图层批量整理。</td></tr>
+						<tr><td>WebGL draw</td><td>DrawCommand.execute</td><td>底层 GPU 绘制。</td></tr>
+					</tbody>
+				</table>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

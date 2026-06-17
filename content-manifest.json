@@ -4,7 +4,7 @@
     "charter": "pages/charter.html",
     "dashboard": "pages/dashboard.html",
     "search": "pages/search.html",
-    "rule": "The site is organized as eight first-class modules: pi-agent, mini-agent, cesium, openlayers, gaussian-splatting, stock-kline, quant-trading, and nuclear-battery. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
+    "rule": "The site is organized as nine first-class modules: pi-agent, mini-agent, cesium, openlayers, mapbox, gaussian-splatting, stock-kline, quant-trading, and nuclear-battery. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
     "modules": "modules/index.html"
   },
   "moduleConvention": {
@@ -86,6 +86,19 @@
         "index.html",
         "render-path.html",
         "debugging.html"
+      ]
+    },
+    {
+      "slug": "mapbox",
+      "name": "Mapbox",
+      "root": "modules/mapbox/",
+      "entry": "modules/mapbox/index.html",
+      "purpose": "Understand Mapbox GL JS sources, layers, styles, vector tiles, rendering architecture, API debugging, and comparison with Cesium.",
+      "pages": [
+        "index.html",
+        "architecture.html",
+        "vs-cesium.html",
+        "api-debugging.html"
       ]
     },
     {
