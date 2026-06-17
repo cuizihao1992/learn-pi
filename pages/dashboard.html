@@ -2,18 +2,19 @@
 <html lang="zh-CN">
 	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>学习仪表盘 | Learn Pi</title><link rel="stylesheet" href="../styles.css" /></head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习仪表盘</strong><span>Pi Agent + Mini Agent + Cesium + OpenLayers</span></div></div><nav><a href="../index.html">首页</a><a href="charter.html">宪章</a><a href="../modules/pi-agent/index.html">Pi</a><a href="../modules/mini-agent/index.html">Mini Agent</a><a href="../modules/cesium/index.html">Cesium</a><a href="../modules/openlayers/index.html">OpenLayers</a><a href="knowledge-check.html">测验</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习仪表盘</strong><span>Pi Agent + Mini Agent + Cesium + OpenLayers + Gaussian Splatting</span></div></div><nav><a href="../index.html">首页</a><a href="charter.html">宪章</a><a href="../modules/pi-agent/index.html">Pi</a><a href="../modules/mini-agent/index.html">Mini Agent</a><a href="../modules/cesium/index.html">Cesium</a><a href="../modules/openlayers/index.html">OpenLayers</a><a href="../modules/gaussian-splatting/index.html">Gaussian Splatting</a><a href="knowledge-check.html">测验</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a class="active" href="dashboard.html">学习仪表盘</a><a href="charter.html">总宪章</a><a href="../modules/pi-agent/charter.html">Pi 模块宪章</a><a href="../modules/cesium/charter.html">Cesium 模块宪章</a><a href="../modules/openlayers/charter.html">OpenLayers 模块宪章</a><a href="../modules/mini-agent/index.html">Mini Agent</a><a href="../modules/cesium/render-path.html">Cesium 渲染路径</a><a href="../modules/openlayers/render-path.html">OpenLayers 渲染路径</a><a href="knowledge-check.html">知识测验</a><a href="../modules/pi-agent/pi-debugging.html">Pi 调试手册</a><a href="../modules/cesium/debugging.html">Cesium 调试手册</a><a href="../modules/openlayers/debugging.html">OpenLayers 调试手册</a><a href="search.html">全站检索</a></aside>
+			<aside class="doc-sidebar"><a class="active" href="dashboard.html">学习仪表盘</a><a href="charter.html">总宪章</a><a href="../modules/pi-agent/charter.html">Pi 模块宪章</a><a href="../modules/mini-agent/charter.html">Mini Agent 模块宪章</a><a href="../modules/cesium/charter.html">Cesium 模块宪章</a><a href="../modules/openlayers/charter.html">OpenLayers 模块宪章</a><a href="../modules/gaussian-splatting/charter.html">Gaussian Splatting 模块宪章</a><a href="../modules/mini-agent/index.html">Mini Agent</a><a href="../modules/cesium/render-path.html">Cesium 渲染路径</a><a href="../modules/openlayers/render-path.html">OpenLayers 渲染路径</a><a href="../modules/gaussian-splatting/render-path.html">Gaussian Splatting 路径</a><a href="knowledge-check.html">知识测验</a><a href="../modules/pi-agent/pi-debugging.html">Pi 调试手册</a><a href="../modules/cesium/debugging.html">Cesium 调试手册</a><a href="../modules/openlayers/debugging.html">OpenLayers 调试手册</a><a href="../modules/gaussian-splatting/debugging.html">Gaussian Splatting 调试手册</a><a href="search.html">全站检索</a></aside>
 			<article class="doc">
 				<p class="kicker">Dashboard</p>
-				<h1>四个学习模块怎么走</h1>
-				<p class="lead">现在有四个并列模块：Pi Agent 负责读懂开源 Agent 架构，Mini Agent 负责从零实现自己的 Agent，Cesium 负责三维渲染链路，OpenLayers 负责二维地图渲染链路。四者共同点都是高层意图先转成中间结构，再由底层统一调度执行。</p>
+				<h1>五个学习模块怎么走</h1>
+				<p class="lead">现在有五个并列模块：Pi Agent 负责读懂开源 Agent 架构，Mini Agent 负责从零实现自己的 Agent，Cesium 负责三维渲染链路，OpenLayers 负责二维地图渲染链路，Gaussian Splatting 负责读懂照片到实时 3D 场景的训练与渲染链路。共同点都是高层意图先转成中间结构，再由底层统一调度执行。</p>
 				<div class="track-grid">
 					<section><h2>Pi Agent</h2><ol><li>模块总览</li><li>架构设计</li><li>完整对话流程</li><li>提示词处理</li><li>工具调用</li><li>会话与压缩</li><li>源码调用图</li></ol><a class="primary-link" href="../modules/pi-agent/index.html">进入 Pi Agent</a></section>
 					<section><h2>Mini Agent</h2><ol><li>Node MVP</li><li>工具调用闭环</li><li>OpenAI-compatible 接口</li><li>自研模型适配</li><li>产品化路线</li></ol><a class="primary-link" href="../modules/mini-agent/index.html">进入 Mini Agent</a></section>
 					<section><h2>Cesium 路径</h2><ol><li>Viewer 和 Scene</li><li>Entity 到 Primitive</li><li>Primitive 到 DrawCommand</li><li>Renderer 到 WebGL</li><li>Globe/Terrain/3D Tiles</li><li>渲染调试</li></ol><a class="primary-link" href="../modules/cesium/index.html">进入 Cesium 路径</a></section>
 					<section><h2>OpenLayers 路径</h2><ol><li>Map/View/Layer/Source</li><li>TileLayer 渲染</li><li>VectorLayer 渲染</li><li>VectorTile 路径</li><li>Canvas/WebGL renderer</li><li>地图调试</li></ol><a class="primary-link" href="../modules/openlayers/index.html">进入 OpenLayers 路径</a></section>
+					<section><h2>Gaussian Splatting</h2><ol><li>照片与相机位姿</li><li>COLMAP 稀疏点云</li><li>高斯参数初始化</li><li>可微 rasterization</li><li>densify/prune 优化</li><li>实时 viewer 调试</li></ol><a class="primary-link" href="../modules/gaussian-splatting/index.html">进入高斯泼溅</a></section>
 				</div>
 				<h2>每学完一章要能回答什么</h2>
 				<ul>
@@ -21,6 +22,7 @@
 					<li>Mini Agent：最小 Agent Loop 为什么必须有 toolResult 回填？</li>
 					<li>Cesium：Entity 为什么不能直接 draw？DrawCommand 包含哪些 WebGL 信息？</li>
 					<li>OpenLayers：Layer 和 Source 为什么分开？View 如何决定瓦片和要素渲染？</li>
+					<li>Gaussian Splatting：为什么一个 3D 场景可以表示成很多高斯椭球？训练阶段和渲染阶段分别在优化什么？</li>
 					<li>共同点：为什么大型系统都喜欢中间命令层？</li>
 				</ul>
 				<h2>内容生产规则</h2>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>高斯泼溅模块宪章 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>高斯泼溅模块宪章</strong><span>3D Gaussian Splatting</span></div></div><nav><a href="../../index.html">首页</a><a href="../index.html">全部模块</a><a href="../../pages/charter.html">总宪章</a><a href="index.html">模块总览</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="../../pages/charter.html">总宪章</a><a class="active" href="charter.html">高斯泼溅宪章</a><a href="index.html">模块总览</a><a href="render-path.html">渲染路径</a><a href="debugging.html">调试手册</a></aside>
+			<article class="doc">
+				<p class="kicker">Module Charter</p>
+				<h1>高斯泼溅模块宪章</h1>
+				<p class="lead">这个模块研究 3D Gaussian Splatting：如何从多张图片和相机位姿训练出一组 3D 高斯，再把它们实时投影、排序、混合成照片级视图。</p>
+				<h2>学习目标</h2>
+				<ul>
+					<li>理解 3D Gaussian 不只是点，而是带位置、协方差、颜色、不透明度的可优化场景表达。</li>
+					<li>能画出 `COLMAP -> 初始化点云 -> 高斯参数优化 -> densification/pruning -> rasterization` 的完整链路。</li>
+					<li>能解释高斯泼溅和 NeRF、点云、网格渲染的差异。</li>
+					<li>能定位训练失败、相机位姿错误、显存爆掉、渲染闪烁、透明混合错误等问题。</li>
+				</ul>
+				<h2>模块边界</h2>
+				<p>Cesium 和 OpenLayers 学的是引擎渲染调度；高斯泼溅学的是一种新型场景表示和可微渲染管线。它既有训练链路，也有实时渲染链路。</p>
+				<h2>核心源码入口</h2>
+				<ul>
+					<li>`graphdeco-inria/gaussian-splatting`：官方训练和 viewer 项目。</li>
+					<li>`diff-gaussian-rasterization`：论文使用的可微 rasterizer。</li>
+					<li>`scene/`：相机、数据集、GaussianModel。</li>
+					<li>`train.py`：训练主循环。</li>
+					<li>`gaussian_renderer/`：渲染入口。</li>
+				</ul>
+				<h2>内容标准</h2>
+				<ul>
+					<li>必须区分“训练时可微渲染”和“运行时实时 viewer 渲染”。</li>
+					<li>必须解释 3D 协方差如何投影成屏幕空间椭圆。</li>
+					<li>必须解释为什么需要 depth sort 和 alpha blending。</li>
+					<li>必须给出和 NeRF、mesh、point cloud 的取舍对比。</li>
+				</ul>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

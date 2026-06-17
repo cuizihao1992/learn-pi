@@ -8,6 +8,7 @@
 - `modules/mini-agent/`：从零实现最小 Agent，包含 Node MVP、模型接口兼容和产品化路线。
 - `modules/cesium/`：学习三维渲染如何从 Viewer、Scene、Primitive、DrawCommand 走到 WebGL/GPU。
 - `modules/openlayers/`：学习二维地图如何从 Map、View、Layer、Source 走到 Canvas/WebGL。
+- `modules/gaussian-splatting/`：学习 3D Gaussian Splatting 如何从照片、相机位姿、稀疏点云走到可微渲染和实时 viewer。
 
 ## Directory Rules
 

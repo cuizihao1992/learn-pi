@@ -4,7 +4,7 @@
     "charter": "pages/charter.html",
     "dashboard": "pages/dashboard.html",
     "search": "pages/search.html",
-    "rule": "The site is organized as four first-class modules: pi-agent, mini-agent, cesium, and openlayers. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
+    "rule": "The site is organized as five first-class modules: pi-agent, mini-agent, cesium, openlayers, and gaussian-splatting. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
     "modules": "modules/index.html"
   },
   "moduleConvention": {
@@ -81,6 +81,19 @@
       "charter": "modules/openlayers/charter.html",
       "entry": "modules/openlayers/index.html",
       "purpose": "Understand the 2D map rendering path from Map/View/Layer/Source to Canvas/WebGL.",
+      "pages": [
+        "index.html",
+        "render-path.html",
+        "debugging.html"
+      ]
+    },
+    {
+      "slug": "gaussian-splatting",
+      "name": "Gaussian Splatting",
+      "root": "modules/gaussian-splatting/",
+      "charter": "modules/gaussian-splatting/charter.html",
+      "entry": "modules/gaussian-splatting/index.html",
+      "purpose": "Understand 3D Gaussian Splatting training and realtime rendering from images to pixels.",
       "pages": [
         "index.html",
         "render-path.html",

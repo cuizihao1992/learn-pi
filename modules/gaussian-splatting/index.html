@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>高斯泼溅学习路径 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>高斯泼溅学习路径</strong><span>3D Gaussian Splatting</span></div></div><nav><a href="../../index.html">首页</a><a href="../index.html">全部模块</a><a href="render-path.html">渲染路径</a><a href="debugging.html">调试</a><a href="../../pages/search.html">检索</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a class="active" href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="render-path.html">完整渲染路径</a><a href="debugging.html">调试手册</a><a href="../cesium/index.html">对照 Cesium</a></aside>
+			<article class="doc">
+				<p class="kicker">Gaussian Splatting</p>
+				<h1>高斯泼溅：从照片到实时新视角渲染</h1>
+				<p class="lead">3D Gaussian Splatting 的直觉是：不用把场景存成网格，也不用像 NeRF 那样每条光线采样很多点，而是把场景表示成大量可优化的 3D 高斯椭球。渲染时把它们投影到屏幕、排序、混合，就能实时生成新视角。</p>
+
+				<h2>它解决什么问题</h2>
+				<div class="lesson-grid">
+					<section><h3>输入</h3><p>一组照片或视频帧、相机内外参、稀疏点云。通常先用 COLMAP 做相机标定和稀疏重建。</p></section>
+					<section><h3>输出</h3><p>一组 3D Gaussian：位置、尺度、旋转、颜色/球谐系数、不透明度。它们共同表示一个可实时渲染的场景。</p></section>
+					<section><h3>训练</h3><p>通过可微 rasterizer 渲染当前视角，与真实照片计算损失，反向优化每个 Gaussian 的参数。</p></section>
+					<section><h3>实时渲染</h3><p>把高斯投影成屏幕空间椭圆，按深度排序后 alpha blending，避免 NeRF 那种重采样开销。</p></section>
+				</div>
+
+				<h2>先记住这条链路</h2>
+				<pre><code>多视角照片
+  -> COLMAP 求相机位姿和稀疏点云
+  -> 初始化 3D Gaussians
+  -> 可微 rasterization 渲染训练视角
+  -> 和真实图片算 loss
+  -> 优化位置、协方差、颜色、不透明度
+  -> densify / prune 调整高斯数量
+  -> 实时 viewer 投影、排序、混合</code></pre>
+
+				<h2>和其他模块的关系</h2>
+				<ul>
+					<li><strong>和 Cesium：</strong>Cesium 讲引擎如何调度 DrawCommand；高斯泼溅讲场景本身如何被表示为很多透明椭球。</li>
+					<li><strong>和 OpenLayers：</strong>OpenLayers 是二维地图数据到 Canvas/WebGL；高斯泼溅是三维视觉重建数据到屏幕像素。</li>
+					<li><strong>和 Mini Agent：</strong>Mini Agent 是决策和工具闭环；高斯泼溅是训练和渲染闭环。</li>
+				</ul>
+
+				<h2>推荐学习顺序</h2>
+				<ol>
+					<li>先理解 3D Gaussian 的参数：mean、covariance、opacity、color/SH。</li>
+					<li>理解 COLMAP 为什么提供初始化相机和点云。</li>
+					<li>理解训练循环：render -> loss -> backward -> optimizer。</li>
+					<li>理解 densification 和 pruning 为什么影响质量与显存。</li>
+					<li>理解实时渲染：projection、tile/binning、depth sort、alpha blend。</li>
+				</ol>
+
+				<h2>官方参考</h2>
+				<ul>
+					<li><a href="https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/">Inria/GraphDeco 项目页</a></li>
+					<li><a href="https://github.com/graphdeco-inria/gaussian-splatting">官方 GitHub 实现</a></li>
+					<li><a href="https://github.com/graphdeco-inria/diff-gaussian-rasterization">Differential Gaussian Rasterization</a></li>
+				</ul>
+				<div class="next-card"><span>下一步</span><a href="render-path.html">看完整渲染路径</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

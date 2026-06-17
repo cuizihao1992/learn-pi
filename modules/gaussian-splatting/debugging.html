@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>高斯泼溅调试手册 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>高斯泼溅调试</strong><span>训练坏了从哪里查</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">高斯泼溅</a><a href="render-path.html">渲染路径</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="render-path.html">完整渲染路径</a><a class="active" href="debugging.html">调试手册</a></aside>
+			<article class="doc">
+				<p class="kicker">Debugging</p>
+				<h1>高斯泼溅训练和渲染失败怎么查</h1>
+				<p class="lead">高斯泼溅的问题通常不在一个地方：可能是照片质量、相机位姿、初始化点云、训练参数、显存、排序混合、viewer shader。调试时要沿完整链路排查。</p>
+
+				<h2>常见问题表</h2>
+				<table class="compare-table">
+					<thead><tr><th>现象</th><th>可能原因</th><th>检查点</th></tr></thead>
+					<tbody>
+						<tr><td>训练一开始就很糊</td><td>相机位姿差、照片模糊、COLMAP 稀疏点太少</td><td>先看 sparse reconstruction 和相机覆盖。</td></tr>
+						<tr><td>场景漂浮或错位</td><td>相机外参错误、坐标系转换错误</td><td>检查 COLMAP 输出、坐标轴方向、viewer 相机。</td></tr>
+						<tr><td>显存爆掉</td><td>高斯数量过多、分辨率过高、densify 太激进</td><td>降低分辨率，调 densification interval/threshold。</td></tr>
+						<tr><td>噪点很多</td><td>透明度/协方差异常，高斯贡献太碎</td><td>检查 pruning、opacity reset、学习率。</td></tr>
+						<tr><td>边缘闪烁</td><td>排序不稳定、半透明混合误差、过大 splat</td><td>看 depth sort、tile binning、scale 分布。</td></tr>
+						<tr><td>近处过曝</td><td>alpha 累积或颜色优化异常</td><td>检查 opacity、SH degree、曝光/白平衡一致性。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>检查顺序</h2>
+				<ol>
+					<li><strong>照片：</strong>是否模糊、曝光差异大、动态物体多、重叠视角不足。</li>
+					<li><strong>COLMAP：</strong>相机数量、稀疏点云质量、重投影误差、坐标尺度是否合理。</li>
+					<li><strong>初始化：</strong>Gaussian 数量是否过少或过多，初始尺度是否异常。</li>
+					<li><strong>训练：</strong>loss 是否下降，densify/prune 是否让点数爆炸。</li>
+					<li><strong>渲染：</strong>屏幕投影是否正常，tile 覆盖是否过大，alpha 是否快速饱和。</li>
+					<li><strong>viewer：</strong>shader、排序、相机矩阵、坐标系是否和训练一致。</li>
+				</ol>
+
+				<h2>关键指标</h2>
+				<ul>
+					<li><strong>Gaussian count：</strong>太少表达不了细节，太多会爆显存和拖慢渲染。</li>
+					<li><strong>opacity 分布：</strong>大量接近 0 的点说明需要 prune；大量接近 1 可能导致透明混合饱和。</li>
+					<li><strong>scale 分布：</strong>过大的高斯会糊，过小的高斯会噪。</li>
+					<li><strong>loss 曲线：</strong>不下降先查数据和相机，不要先调 shader。</li>
+				</ul>
+
+				<h2>最重要的一句话</h2>
+				<p>高斯泼溅的质量首先由数据和相机位姿决定，其次才是训练参数和 rasterizer。相机错了，后面所有优化都只是在错误几何上变漂亮。</p>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

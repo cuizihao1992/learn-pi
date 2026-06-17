@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>高斯泼溅完整渲染路径 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>高斯泼溅渲染路径</strong><span>训练链路 + 实时链路</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">高斯泼溅</a><a href="debugging.html">调试</a><a href="../cesium/render-path.html">Cesium 对照</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a class="active" href="render-path.html">完整渲染路径</a><a href="debugging.html">调试手册</a></aside>
+			<article class="doc">
+				<p class="kicker">Render Path</p>
+				<h1>高斯泼溅完整路径：从相机到像素</h1>
+				<p class="lead">高斯泼溅要分成两条链路看：训练时的可微渲染链路，以及 viewer 中的实时渲染链路。两者都依赖同一组 Gaussian 参数，但目标不同。</p>
+
+				<h2>1. 数据准备</h2>
+				<pre><code>images/
+  -> COLMAP feature extraction
+  -> feature matching
+  -> sparse reconstruction
+  -> cameras + images + sparse points</code></pre>
+				<p>COLMAP 给出相机内参、外参和稀疏点云。稀疏点云不是最终渲染结果，而是初始化 Gaussian 位置的起点。</p>
+
+				<h2>2. Gaussian 参数</h2>
+				<table class="compare-table">
+					<thead><tr><th>参数</th><th>作用</th><th>为什么重要</th></tr></thead>
+					<tbody>
+						<tr><td>mean / xyz</td><td>高斯中心点</td><td>决定场景几何位置。</td></tr>
+						<tr><td>scale + rotation</td><td>构造 3D 协方差</td><td>决定高斯椭球大小和方向。</td></tr>
+						<tr><td>opacity</td><td>透明度</td><td>决定 alpha blending 贡献。</td></tr>
+						<tr><td>color / SH</td><td>颜色或视角相关颜色</td><td>决定照片级外观。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>3. 训练链路</h2>
+				<pre><code>取一个训练相机
+  -> project 3D Gaussian 到屏幕空间
+  -> 计算屏幕椭圆覆盖哪些 tile / pixel
+  -> 按深度组织可见贡献
+  -> alpha blending 得到渲染图
+  -> 和真实照片算 L1 / SSIM loss
+  -> 反向传播更新 Gaussian 参数
+  -> densify / prune 控制点数</code></pre>
+				<p>训练的核心不是“画出来”这么简单，而是让 rasterizer 对 Gaussian 参数可微。只有可微，loss 才能告诉每个高斯该移动、变大、变小、变透明还是变颜色。</p>
+
+				<h2>4. 3D 协方差到 2D 椭圆</h2>
+				<p>每个 Gaussian 在 3D 里是一个椭球。渲染时要通过相机投影和雅可比近似，把 3D 协方差变成屏幕空间的 2D 协方差。直觉上就是：一个空间椭球从当前相机看过去，会覆盖屏幕上的一个椭圆区域。</p>
+				<pre><code>3D mean + covariance
+  -> view transform
+  -> projection jacobian
+  -> 2D covariance
+  -> screen-space ellipse
+  -> tile coverage</code></pre>
+
+				<h2>5. 为什么要排序和混合</h2>
+				<p>高斯是半透明贡献，不像普通 mesh 那样只做最近深度测试就完事。多个高斯覆盖同一个像素时，需要按深度从前到后或从后到前合成，使用 alpha blending 累积颜色和透明度。</p>
+				<pre><code>pixel color = sum(transmittance * alpha_i * color_i)
+transmittance *= (1 - alpha_i)</code></pre>
+
+				<h2>6. densification / pruning</h2>
+				<ul>
+					<li><strong>densification：</strong>某些区域误差大或梯度大，说明需要更多高斯表达细节，于是 clone/split。</li>
+					<li><strong>pruning：</strong>透明度太低、贡献太小或异常的高斯会被删除，控制显存和噪点。</li>
+					<li><strong>reset opacity：</strong>训练中可能重置透明度，让优化摆脱局部坏状态。</li>
+				</ul>
+
+				<h2>7. 和 NeRF 的关键区别</h2>
+				<table class="compare-table">
+					<thead><tr><th>点</th><th>NeRF</th><th>3D Gaussian Splatting</th></tr></thead>
+					<tbody>
+						<tr><td>场景表示</td><td>神经网络隐式场</td><td>显式 3D Gaussians</td></tr>
+						<tr><td>渲染方式</td><td>沿光线采样很多点</td><td>把高斯投影成屏幕 splat</td></tr>
+						<tr><td>实时性</td><td>通常需要加速结构</td><td>原生更适合实时 viewer</td></tr>
+						<tr><td>可编辑性</td><td>较难直接编辑</td><td>可以直接操作高斯点集，但语义编辑仍不简单</td></tr>
+					</tbody>
+				</table>
+				<div class="next-card"><span>下一步</span><a href="debugging.html">看训练和渲染失败怎么查</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

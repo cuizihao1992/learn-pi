@@ -7,7 +7,7 @@
 			<aside class="doc-sidebar"><a href="dashboard.html">学习仪表盘</a><a class="active" href="knowledge-check.html">知识测验</a><a href="../modules/pi-agent/faq.html">FAQ</a><a href="../modules/cesium/glossary.html">Cesium 术语</a></aside>
 			<article class="doc">
 				<p class="kicker">Quiz</p>
-				<h1>10 个问题检验你的理解</h1>
+				<h1>13 个问题检验你的理解</h1>
 				<div class="faq-list">
 					<section><h2>1. 模型为什么不能直接改文件？</h2><p>因为模型只输出文本或结构化 toolCall。真实文件操作必须由程序工具执行。</p></section>
 					<section><h2>2. toolResult 为什么要放回 messages？</h2><p>模型需要基于工具结果决定下一步，形成多轮推理。</p></section>
@@ -19,8 +19,9 @@
 					<section><h2>8. Cesium 为什么需要 commandList？</h2><p>Scene 可以统一裁剪、排序、分 pass、执行命令。</p></section>
 					<section><h2>9. OpenLayers 的 Layer 和 Source 为什么分开？</h2><p>Source 负责数据加载，Layer 负责视觉表达。这样同一种数据源可以用不同方式展示，Layer 也能统一参与渲染调度。</p></section>
 					<section><h2>10. OpenLayers View 主要决定什么？</h2><p>决定中心点、分辨率/zoom、旋转和投影，进而影响需要加载哪些瓦片、哪些要素处在视口内。</p></section>
-					<section><h2>11. Pi、Cesium、OpenLayers 的共同架构思想是什么？</h2><p>高层意图先转成结构化中间对象或命令，再由底层统一调度执行。</p></section>
-					<section><h2>12. 一个系统可扩展的关键是什么？</h2><p>边界清晰：模型/工具/状态/UI，或 Entity/Primitive/Command/Renderer，或 Map/View/Layer/Source/Renderer 各司其职。</p></section>
+					<section><h2>11. 3D Gaussian Splatting 的场景表示是什么？</h2><p>是一组可优化的 3D 高斯椭球，每个高斯通常包含位置、尺度/旋转或协方差、不透明度、颜色或球谐系数。</p></section>
+					<section><h2>12. 高斯泼溅训练时为什么需要可微 rasterizer？</h2><p>因为渲染图要和真实照片计算 loss，再把梯度传回每个高斯参数，决定它该移动、变形、变透明还是改变颜色。</p></section>
+					<section><h2>13. Pi、Cesium、OpenLayers、高斯泼溅的共同架构思想是什么？</h2><p>高层意图先转成结构化中间对象或命令，再由底层统一调度执行。可扩展的关键是边界清晰，各层各司其职。</p></section>
 				</div>
 			</article>
 		</main>
