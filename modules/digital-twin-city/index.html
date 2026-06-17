@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>数字孪生城市系统架构 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>数字孪生城市</strong><span>Map, 3D Tiles, IoT, Agent</span></div></div><nav><a href="../../index.html">首页</a><a href="../index.html">全部模块</a><a href="map-stack.html">地图底座</a><a href="realtime-agent.html">实时与 Agent</a><a href="mvp.html">MVP</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a class="active" href="index.html">模块总览</a><a href="map-stack.html">地图底座</a><a href="assets-data.html">三维资产与数据</a><a href="realtime-agent.html">实时数据与 Agent</a><a href="backend-frontend.html">前后端架构</a><a href="performance.html">性能优化</a><a href="mvp.html">MVP 路线</a></aside>
+			<article class="doc">
+				<p class="kicker">Digital Twin City</p>
+				<h1>数字孪生城市系统：把地图、三维、实时数据和 Agent 串起来</h1>
+				<p class="lead">数字孪生城市不是“做一个好看的三维大屏”。真正的系统要能接入城市资产、地图底座、三维模型、传感器、车辆、摄像头、告警、历史时序数据和 AI Agent 分析能力，让用户能看见、查询、推演、处置和复盘。</p>
+
+				<h2>一句话总览</h2>
+				<pre><code>城市数据源
+  -> 数据接入与治理
+  -> 空间数据库 / 时序数据库 / 对象存储
+  -> 瓦片服务 / 3D Tiles / API
+  -> Mapbox / Cesium / OpenLayers 前端
+  -> Agent 工具调用：查询、分析、告警解释、生成处置建议
+  -> 人在前端确认和执行</code></pre>
+
+				<h2>系统分层</h2>
+				<div class="lesson-grid">
+					<section><h3>地图底座</h3><p>Mapbox 负责轻量二维矢量地图，Cesium 负责三维地球、3D Tiles、地形和大范围空间场景，OpenLayers 可做传统 GIS 管理型页面。</p></section>
+					<section><h3>三维资产</h3><p>包括 3D Tiles、BIM、倾斜摄影、点云、地形、建筑白模、高斯泼溅重建结果。重点是格式、LOD、坐标和更新流程。</p></section>
+					<section><h3>实时数据</h3><p>车辆位置、IoT 传感器、摄像头状态、管网压力、告警事件、人员轨迹通过消息队列和时序库进入系统。</p></section>
+					<section><h3>Agent 分析</h3><p>Agent 不直接“控制城市”，而是调用受控工具：空间查询、时序分析、告警聚合、图层开关、报表生成、应急预案检索。</p></section>
+					<section><h3>前端交互</h3><p>图层树、时间轴、对象选中、属性面板、告警面板、测量、剖切、路径回放、对话式查询。</p></section>
+					<section><h3>后端治理</h3><p>权限、审计、数据质量、服务降级、缓存、监控、任务队列、模型调用成本控制。</p></section>
+				</div>
+
+				<h2>和已有模块的关系</h2>
+				<table class="compare-table">
+					<thead><tr><th>已有模块</th><th>在数字孪生中的角色</th></tr></thead>
+					<tbody>
+						<tr><td>Cesium</td><td>三维地球、3D Tiles、地形、卫星/飞行路径、倾斜摄影。</td></tr>
+						<tr><td>Mapbox</td><td>二维业务地图、矢量瓦片、道路、POI、城市运营图层。</td></tr>
+						<tr><td>OpenLayers</td><td>传统 GIS 管理、投影、WMS/WFS、测绘业务页面。</td></tr>
+						<tr><td>Gaussian Splatting</td><td>小范围真实场景重建，例如街区、园区、室内外局部。</td></tr>
+						<tr><td>Pi Agent / Mini Agent</td><td>自然语言查询、工具调用、自动分析、生成报告。</td></tr>
+						<tr><td>量化模块</td><td>实时信号、策略规则、风控、监控和回测思路可迁移到城市告警系统。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>读完要能回答</h2>
+				<ul>
+					<li>Mapbox、Cesium、OpenLayers 在城市系统里怎么分工？</li>
+					<li>3D Tiles、BIM、倾斜摄影、点云、高斯泼溅分别解决什么问题？</li>
+					<li>实时数据从设备到前端要经过哪些队列、数据库和 API？</li>
+					<li>Agent 能调用哪些工具，哪些操作必须让人确认？</li>
+					<li>一个最小可运行数字孪生 Demo 应该先做哪些功能？</li>
+				</ul>
+				<div class="next-card"><span>下一步</span><a href="map-stack.html">看地图底座怎么分工</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

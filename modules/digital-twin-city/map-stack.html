@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>数字孪生地图底座 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>地图底座分工</strong><span>Mapbox, Cesium, OpenLayers</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">数字孪生</a><a href="assets-data.html">资产数据</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a class="active" href="map-stack.html">地图底座</a><a href="assets-data.html">三维资产与数据</a><a href="realtime-agent.html">实时数据与 Agent</a><a href="backend-frontend.html">前后端架构</a><a href="performance.html">性能优化</a><a href="mvp.html">MVP 路线</a></aside>
+			<article class="doc">
+				<p class="kicker">Map Stack</p>
+				<h1>地图底座怎么选：Mapbox、Cesium、OpenLayers 如何分工</h1>
+				<p class="lead">数字孪生城市常常不是一个地图引擎打天下。二维运营看板、传统 GIS 管理、三维城市漫游、倾斜摄影和 3D Tiles 的目标不同，底层引擎也应该分工。</p>
+
+				<h2>选择表</h2>
+				<table class="compare-table">
+					<thead><tr><th>场景</th><th>推荐底座</th><th>原因</th></tr></thead>
+					<tbody>
+						<tr><td>道路、POI、车辆、网格、热力</td><td>Mapbox</td><td>矢量瓦片和样式系统强，二维交互性能好。</td></tr>
+						<tr><td>测绘、WMS/WFS、投影转换、传统 GIS 管理</td><td>OpenLayers</td><td>GIS 协议和投影体系成熟，适合管理型应用。</td></tr>
+						<tr><td>三维城市、地形、倾斜摄影、3D Tiles</td><td>Cesium</td><td>三维地球、3D Tiles、地形和大范围空间坐标能力强。</td></tr>
+						<tr><td>街区级真实重建展示</td><td>Cesium / Three.js + Gaussian Splatting</td><td>高斯泼溅适合局部真实感，Cesium 适合放入地理坐标框架。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>常见架构：二维 + 三维双视图</h2>
+				<pre><code>左侧/主视图：Mapbox 二维运营地图
+  -> 快速看车辆、告警、道路、网格、热力
+
+右侧/详情视图：Cesium 三维场景
+  -> 查看建筑、地形、倾斜摄影、3D Tiles、飞行路线
+
+统一状态：
+  -> camera center / selected object / time range / layer visibility</code></pre>
+				<p>这样做的好处是：日常操作用轻量二维地图，进入复杂空间理解时再切三维。不要所有页面都强行用三维地球，否则前端性能、交互复杂度和用户认知成本都会上升。</p>
+
+				<h2>统一坐标和对象 ID</h2>
+				<p>多地图底座最容易出问题的是坐标和对象身份。必须建立统一对象 ID，例如建筑 `building_id`、路段 `road_id`、摄像头 `camera_id`、传感器 `sensor_id`。二维图层、三维模型、属性数据库、告警事件都引用同一个 ID。</p>
+				<pre><code>building_id = BLDG_001
+  -> Mapbox fill layer feature
+  -> Cesium 3D Tiles feature metadata
+  -> PostGIS building table
+  -> Alarm event building_id
+  -> Agent tool query parameter</code></pre>
+
+				<h2>图层体系</h2>
+				<ul>
+					<li><strong>基础图层：</strong>行政区、道路、水系、建筑轮廓、影像。</li>
+					<li><strong>业务图层：</strong>车辆、摄像头、传感器、管网、网格员、工单。</li>
+					<li><strong>三维图层：</strong>白模、精模、倾斜摄影、BIM、点云、地形。</li>
+					<li><strong>分析图层：</strong>热力、缓冲区、等值面、风险区、拥堵指数。</li>
+					<li><strong>交互图层：</strong>选中高亮、搜索结果、路径规划、告警闪烁。</li>
+				</ul>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>数字孪生实时数据与 Agent | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>实时数据与 Agent</strong><span>IoT, Alerts, Tool Calling</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">数字孪生</a><a href="backend-frontend.html">架构</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="map-stack.html">地图底座</a><a href="assets-data.html">三维资产与数据</a><a class="active" href="realtime-agent.html">实时数据与 Agent</a><a href="backend-frontend.html">前后端架构</a><a href="performance.html">性能优化</a><a href="mvp.html">MVP 路线</a></aside>
+			<article class="doc">
+				<p class="kicker">Realtime and Agent</p>
+				<h1>实时数据和 AI Agent 如何接入数字孪生</h1>
+				<p class="lead">数字孪生城市的“实时”不只是地图上点在动。它要求设备数据能进入系统、被清洗、被存储、被推送、被分析，并能在告警发生时让 Agent 调用工具解释原因、关联周边对象、生成处置建议。</p>
+
+				<h2>实时数据链路</h2>
+				<pre><code>设备 / 业务系统
+  -> MQTT / HTTP / Kafka
+  -> 接入网关
+  -> 数据校验、去重、补全
+  -> 实时流处理
+  -> 时序数据库 / 空间数据库 / 事件库
+  -> WebSocket 推送前端
+  -> 地图图层和告警面板更新</code></pre>
+
+				<h2>实时数据类型</h2>
+				<table class="compare-table">
+					<thead><tr><th>数据</th><th>频率</th><th>存储</th><th>前端表现</th></tr></thead>
+					<tbody>
+						<tr><td>车辆 GPS</td><td>秒级</td><td>轨迹库 / 时序库</td><td>移动点、轨迹回放、路线偏离。</td></tr>
+						<tr><td>环境传感器</td><td>秒级到分钟级</td><td>时序数据库</td><td>数值标签、热力、阈值告警。</td></tr>
+						<tr><td>摄像头状态</td><td>事件驱动</td><td>设备库 + 事件库</td><td>图标状态、视频弹窗、离线告警。</td></tr>
+						<tr><td>工单/告警</td><td>事件驱动</td><td>事件库 / 业务库</td><td>告警列表、空间定位、状态流转。</td></tr>
+						<tr><td>人流/车流统计</td><td>分钟级</td><td>时序库 / OLAP</td><td>热力图、趋势图、拥堵指数。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>Agent 应该能做什么</h2>
+				<p>Agent 的价值不是替代指挥员，而是把跨系统查询和初步分析变快。它应该通过工具调用获取事实，而不是凭空编答案。</p>
+				<ul>
+					<li><strong>空间查询：</strong>“查这个告警点 500 米内的学校、医院、摄像头”。</li>
+					<li><strong>时序分析：</strong>“过去 6 小时这个水压传感器是否异常”。</li>
+					<li><strong>关联分析：</strong>“这次拥堵是否和附近施工、事故、天气有关”。</li>
+					<li><strong>图层操作：</strong>“打开积水点、泵站、排水管网图层”。</li>
+					<li><strong>报告生成：</strong>“生成本次告警处置摘要和后续建议”。</li>
+				</ul>
+
+				<h2>Agent 工具设计</h2>
+				<pre><code>tools = [
+  querySpatialObjects(radius, center, types),
+  queryTimeSeries(sensorId, start, end),
+  queryEvents(areaId, eventType, start, end),
+  setLayerVisibility(layerId, visible),
+  flyToObject(objectId),
+  generateIncidentReport(eventId)
+]</code></pre>
+				<p>高风险动作要让人确认，例如派单、广播、控制设备、关闭道路、调度人员。Agent 可以建议，但不能默认直接执行。</p>
+
+				<h2>一次完整对话例子</h2>
+				<pre><code>用户：为什么 A 区突然出现拥堵？
+Agent：
+  1. 调 queryEvents(A区, 交通事故, 最近1小时)
+  2. 调 queryRoadSpeed(A区, 最近2小时)
+  3. 调 queryWeather(A区, 最近2小时)
+  4. 调 setLayerVisibility("traffic-incidents", true)
+  5. 调 flyToObject("事故点")
+回答：
+  A 区拥堵从 08:42 开始扩大，和 08:39 的追尾事故位置高度重合。
+  附近两条支路速度下降 60%，天气无明显异常。
+  建议优先查看事故点北侧摄像头，并临时引导车辆绕行 B 路。</code></pre>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

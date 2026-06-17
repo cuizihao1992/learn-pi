@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>数字孪生性能优化 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>性能优化</strong><span>LOD, Tiles, Cache, Degrade</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">数字孪生</a><a href="mvp.html">MVP</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="map-stack.html">地图底座</a><a href="assets-data.html">三维资产与数据</a><a href="realtime-agent.html">实时数据与 Agent</a><a href="backend-frontend.html">前后端架构</a><a class="active" href="performance.html">性能优化</a><a href="mvp.html">MVP 路线</a></aside>
+			<article class="doc">
+				<p class="kicker">Performance</p>
+				<h1>数字孪生城市性能优化</h1>
+				<p class="lead">数字孪生性能问题通常不是某一行代码慢，而是数据太大、图层太多、三维资产太重、实时更新太频繁、前端状态太乱、服务没有缓存。优化要从数据、渲染、网络、交互和降级策略一起看。</p>
+
+				<h2>优化清单</h2>
+				<table class="compare-table">
+					<thead><tr><th>层级</th><th>问题</th><th>优化方法</th></tr></thead>
+					<tbody>
+						<tr><td>数据</td><td>GeoJSON / 模型太大</td><td>切瓦片、简化、压缩、LOD、按需加载。</td></tr>
+						<tr><td>三维资产</td><td>倾斜摄影和 BIM 过重</td><td>转 3D Tiles、分级、纹理压缩、构件合并。</td></tr>
+						<tr><td>前端渲染</td><td>图层太多、动态对象太多</td><td>合并图层、批量绘制、聚合、视口外不更新。</td></tr>
+						<tr><td>实时推送</td><td>WebSocket 消息太频繁</td><td>节流、合并、只推变化、按视口订阅。</td></tr>
+						<tr><td>服务端</td><td>空间查询慢</td><td>空间索引、缓存、预聚合、异步任务。</td></tr>
+						<tr><td>Agent</td><td>工具调用慢或成本高</td><td>缓存查询结果、限制上下文、分级模型、工具超时。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>LOD 和瓦片是核心</h2>
+				<p>城市级系统不可能一次性把全部建筑、道路、传感器、点云、轨迹都加载到浏览器。必须按视口、zoom、相机距离、对象重要性选择不同精度。Mapbox 用矢量瓦片解决二维数据，Cesium 用 3D Tiles 解决三维数据，本质都是按需加载和分级细节。</p>
+
+				<h2>实时数据不要全量刷新</h2>
+				<p>车辆、传感器和告警更新时，只推变化，不要每秒 `setData` 全量刷新几万条对象。前端应该按视口订阅，只渲染当前区域相关对象。历史轨迹应按时间范围请求，当前点和历史线分开图层。</p>
+
+				<h2>降级策略</h2>
+				<ul>
+					<li>低性能设备默认进入二维 Mapbox 视图，而不是三维 Cesium。</li>
+					<li>三维视图远距离只显示白模，近距离再加载精模。</li>
+					<li>实时对象超量时做聚合，用户放大后再展开。</li>
+					<li>Agent 分析超时则返回已获得事实和后续建议，不阻塞前端。</li>
+					<li>网络差时先显示缓存底图和最后状态，标记数据可能过期。</li>
+				</ul>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

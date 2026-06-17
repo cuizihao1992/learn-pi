@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>数字孪生城市 MVP 路线 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>MVP 路线</strong><span>Build the smallest useful twin</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">数字孪生</a><a href="performance.html">性能</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="map-stack.html">地图底座</a><a href="assets-data.html">三维资产与数据</a><a href="realtime-agent.html">实时数据与 Agent</a><a href="backend-frontend.html">前后端架构</a><a href="performance.html">性能优化</a><a class="active" href="mvp.html">MVP 路线</a></aside>
+			<article class="doc">
+				<p class="kicker">MVP</p>
+				<h1>最小数字孪生城市 Demo 怎么做</h1>
+				<p class="lead">MVP 不应该一开始就追求全城三维大屏。最小可用版本要能展示一块区域、几个业务图层、一类实时数据、一次对象查询和一次 Agent 分析闭环。</p>
+
+				<h2>第一版目标</h2>
+				<pre><code>区域：一个园区或一个街区
+底图：Mapbox 二维地图 + Cesium 三维视图
+资产：建筑白模或简单 3D Tiles
+实时：模拟传感器 / 车辆 / 告警
+交互：点击对象看属性，时间轴回放
+Agent：问“这里发生了什么”，调用工具查对象和时序数据</code></pre>
+
+				<h2>阶段计划</h2>
+				<table class="compare-table">
+					<thead><tr><th>阶段</th><th>交付物</th><th>完成标准</th></tr></thead>
+					<tbody>
+						<tr><td>1. 地图底座</td><td>Mapbox 地图 + Cesium 场景</td><td>能切换二维/三维，定位到同一区域。</td></tr>
+						<tr><td>2. 静态资产</td><td>建筑、道路、摄像头、传感器点位</td><td>点击对象能打开属性面板。</td></tr>
+						<tr><td>3. 实时模拟</td><td>WebSocket 推送车辆和告警</td><td>地图对象随时间变化，告警列表同步更新。</td></tr>
+						<tr><td>4. 历史回放</td><td>时间轴和轨迹查询</td><td>选择时间范围能回放车辆或传感器曲线。</td></tr>
+						<tr><td>5. Agent 工具</td><td>空间查询、时序查询、报告生成</td><td>Agent 回答必须引用工具结果。</td></tr>
+						<tr><td>6. 权限审计</td><td>用户角色、工具调用日志</td><td>高风险操作需要确认并留痕。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>推荐技术栈</h2>
+				<ul>
+					<li><strong>前端：</strong>React/Vue + Mapbox GL JS + CesiumJS + ECharts。</li>
+					<li><strong>后端：</strong>Node.js 或 Python FastAPI。</li>
+					<li><strong>空间库：</strong>PostgreSQL + PostGIS。</li>
+					<li><strong>实时：</strong>WebSocket，后续可接 MQTT/Kafka。</li>
+					<li><strong>时序：</strong>TimescaleDB 或简化版 PostgreSQL 表。</li>
+					<li><strong>三维资产：</strong>先用简单 glTF/3D Tiles，不急着接全量倾斜摄影。</li>
+					<li><strong>Agent：</strong>先做工具调用，不做自动控制。</li>
+				</ul>
+
+				<h2>最小数据表</h2>
+				<pre><code>assets(id, type, name, geom, properties)
+sensors(id, asset_id, type, unit, status)
+sensor_readings(sensor_id, time, value)
+vehicles(id, name, status, last_geom)
+vehicle_positions(vehicle_id, time, geom, speed)
+events(id, type, level, geom, status, started_at, ended_at)
+agent_tool_logs(id, user_id, tool_name, args, result, created_at)</code></pre>
+
+				<h2>判断 MVP 成功的标准</h2>
+				<ul>
+					<li>用户能在地图上快速定位对象。</li>
+					<li>实时状态和历史状态能互相切换。</li>
+					<li>告警能关联空间对象和时序曲线。</li>
+					<li>Agent 能调用工具回答问题，而不是空泛聊天。</li>
+					<li>系统在普通笔记本和手机上能基本查看，不依赖高端机器。</li>
+				</ul>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

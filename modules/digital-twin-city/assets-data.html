@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>数字孪生三维资产与数据 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>三维资产与数据</strong><span>3D Tiles, BIM, Point Cloud, IoT</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">数字孪生</a><a href="realtime-agent.html">实时 Agent</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="map-stack.html">地图底座</a><a class="active" href="assets-data.html">三维资产与数据</a><a href="realtime-agent.html">实时数据与 Agent</a><a href="backend-frontend.html">前后端架构</a><a href="performance.html">性能优化</a><a href="mvp.html">MVP 路线</a></aside>
+			<article class="doc">
+				<p class="kicker">Assets and Data</p>
+				<h1>三维资产和城市数据如何组织</h1>
+				<p class="lead">数字孪生的资产不是只有一个三维模型。它通常由基础地理数据、建筑模型、BIM、倾斜摄影、点云、实时传感器、业务系统数据和历史数据共同组成。难点在于坐标统一、LOD、对象 ID、数据更新和权限。</p>
+
+				<h2>资产分类</h2>
+				<table class="compare-table">
+					<thead><tr><th>类型</th><th>常见格式</th><th>用途</th><th>注意点</th></tr></thead>
+					<tbody>
+						<tr><td>二维基础数据</td><td>GeoJSON、MVT、Shapefile、PostGIS</td><td>道路、地块、行政区、管线轮廓</td><td>投影、拓扑、属性字段。</td></tr>
+						<tr><td>建筑白模</td><td>3D Tiles、glTF</td><td>城市体块、楼栋定位</td><td>轻量、ID 绑定、按区块切片。</td></tr>
+						<tr><td>BIM</td><td>IFC、Revit、glTF、3D Tiles</td><td>建筑内部构件、机电设备</td><td>模型太重，需要简化和权限控制。</td></tr>
+						<tr><td>倾斜摄影</td><td>3D Tiles、OSGB 转换</td><td>大范围真实城市外观</td><td>数据量大，纹理和 LOD 重要。</td></tr>
+						<tr><td>点云</td><td>LAS/LAZ、3D Tiles Point Cloud</td><td>测绘、道路、树木、电力巡检</td><td>点数巨大，需要抽稀和分级。</td></tr>
+						<tr><td>高斯泼溅</td><td>ply/splat/自定义格式</td><td>局部真实感重建</td><td>浏览器渲染和地理配准仍需工程处理。</td></tr>
+						<tr><td>实时数据</td><td>MQTT、Kafka、WebSocket、REST</td><td>车辆、传感器、告警、轨迹</td><td>延迟、乱序、去重、历史归档。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>数据治理链路</h2>
+				<pre><code>原始数据
+  -> 坐标转换
+  -> 清洗和校验
+  -> 对象 ID 绑定
+  -> 切片 / LOD / 压缩
+  -> 元数据入库
+  -> 发布为 tile/API
+  -> 前端按需加载</code></pre>
+
+				<h2>对象 ID 比模型更重要</h2>
+				<p>如果没有统一 ID，三维模型只是好看的壳。系统必须能从用户点击的建筑跳到属性、工单、设备、告警、历史曲线和 Agent 分析。ID 设计要稳定，不能依赖临时文件名或前端数组下标。</p>
+
+				<h2>更新策略</h2>
+				<ul>
+					<li><strong>基础地图：</strong>低频更新，按版本发布。</li>
+					<li><strong>建筑模型：</strong>中低频更新，按区域切片，支持灰度替换。</li>
+					<li><strong>传感器数据：</strong>实时入库，前端订阅最新状态。</li>
+					<li><strong>轨迹数据：</strong>实时展示最新点，历史轨迹进时序库或轨迹库。</li>
+					<li><strong>告警事件：</strong>必须可追溯，有状态流转和处置记录。</li>
+				</ul>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

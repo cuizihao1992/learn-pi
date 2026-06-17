@@ -4,7 +4,7 @@
     "charter": "pages/charter.html",
     "dashboard": "pages/dashboard.html",
     "search": "pages/search.html",
-    "rule": "The site is organized as nine first-class modules: pi-agent, mini-agent, cesium, openlayers, mapbox, gaussian-splatting, stock-kline, quant-trading, and nuclear-battery. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
+    "rule": "The site is organized as ten first-class modules: pi-agent, mini-agent, cesium, openlayers, mapbox, digital-twin-city, gaussian-splatting, stock-kline, quant-trading, and nuclear-battery. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
     "modules": "modules/index.html"
   },
   "moduleConvention": {
@@ -99,6 +99,22 @@
         "architecture.html",
         "vs-cesium.html",
         "api-debugging.html"
+      ]
+    },
+    {
+      "slug": "digital-twin-city",
+      "name": "Digital Twin City",
+      "root": "modules/digital-twin-city/",
+      "entry": "modules/digital-twin-city/index.html",
+      "purpose": "Understand how city-scale digital twin systems combine Mapbox, Cesium, 3D Tiles, real-time data, AI agents, backend services, frontend interaction, performance, and MVP planning.",
+      "pages": [
+        "index.html",
+        "map-stack.html",
+        "assets-data.html",
+        "realtime-agent.html",
+        "backend-frontend.html",
+        "performance.html",
+        "mvp.html"
       ]
     },
     {

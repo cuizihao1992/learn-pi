@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>数字孪生前后端架构 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>前后端架构</strong><span>Services, Tiles, UI</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">数字孪生</a><a href="performance.html">性能</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="map-stack.html">地图底座</a><a href="assets-data.html">三维资产与数据</a><a href="realtime-agent.html">实时数据与 Agent</a><a class="active" href="backend-frontend.html">前后端架构</a><a href="performance.html">性能优化</a><a href="mvp.html">MVP 路线</a></aside>
+			<article class="doc">
+				<p class="kicker">Architecture</p>
+				<h1>数字孪生城市前后端架构</h1>
+				<p class="lead">一个可维护的数字孪生系统，需要把瓦片服务、业务 API、实时推送、Agent 工具、权限审计和前端状态管理拆清楚。不要把所有逻辑塞进一个大屏页面。</p>
+
+				<h2>后端服务分层</h2>
+				<pre><code>API Gateway
+  -> Auth / RBAC / Audit
+  -> Map Tile Service
+  -> 3D Tiles Service
+  -> Spatial Query Service
+  -> Realtime Event Service
+  -> Time Series Service
+  -> Asset Metadata Service
+  -> Agent Tool Service
+  -> Report / Export Service</code></pre>
+
+				<h2>数据库选择</h2>
+				<table class="compare-table">
+					<thead><tr><th>数据</th><th>推荐存储</th><th>原因</th></tr></thead>
+					<tbody>
+						<tr><td>空间对象</td><td>PostgreSQL + PostGIS</td><td>空间索引、缓冲区、相交、距离查询成熟。</td></tr>
+						<tr><td>时序传感器</td><td>TimescaleDB / InfluxDB / ClickHouse</td><td>按时间范围聚合和降采样。</td></tr>
+						<tr><td>事件告警</td><td>PostgreSQL / Elasticsearch / OpenSearch</td><td>状态流转、全文搜索、时间筛选。</td></tr>
+						<tr><td>大模型和报告</td><td>对象存储 + 关系库元数据</td><td>报告文件、截图、附件和审计记录。</td></tr>
+						<tr><td>瓦片和三维资产</td><td>对象存储 / CDN</td><td>静态资源大、适合缓存。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>前端结构</h2>
+				<pre><code>App Shell
+  -> Map View: Mapbox / Cesium / OpenLayers
+  -> Layer Tree
+  -> Object Inspector
+  -> Timeline
+  -> Alert Panel
+  -> Search Panel
+  -> Agent Chat Panel
+  -> Charts and Reports</code></pre>
+				<p>前端状态要分层：地图相机状态、图层可见性、选中对象、时间范围、订阅状态、Agent 对话状态。地图对象很多时，不要把每个要素都放进前端全局状态；应让地图引擎和瓦片系统管理渲染对象，只把业务选择结果放入状态。</p>
+
+				<h2>权限与审计</h2>
+				<p>数字孪生涉及城市数据和设备控制，权限必须严肃处理。不同角色看到的图层、对象属性、摄像头、控制按钮都应不同。Agent 的每次工具调用也应该被记录：谁问的、调用了哪个工具、参数是什么、返回了什么、是否触发外部动作。</p>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>
