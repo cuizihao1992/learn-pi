@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>核电池与放射性同位素电源 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>核电池学习路径</strong><span>RTG, Betavoltaic, Atomic Clock</span></div></div><nav><a href="../../index.html">首页</a><a href="../index.html">全部模块</a><a href="principles.html">原理</a><a href="space-atomic-clock.html">原子钟</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a class="active" href="index.html">模块总览</a><a href="principles.html">工作原理</a><a href="space-atomic-clock.html">卫星与原子钟</a><a href="../../pages/search.html">全站检索</a></aside>
+			<article class="doc">
+				<p class="kicker">Nuclear Battery</p>
+				<h1>核燃料电池、核电池、RTG 到底是什么</h1>
+				<p class="lead">日常说的“核燃料电池”容易混淆。空间探测器上常见的不是化学燃料电池，而是放射性同位素电源，典型代表是 RTG。它利用钚-238 等同位素自然衰变产生的热，再通过热电材料把温差转成电能。</p>
+
+				<h2>先纠正一个误区</h2>
+				<p>卫星上的原子钟不是靠“核燃料电池”来计时。原子钟利用铯、铷等原子的稳定能级跃迁频率作为时间基准；电源只是给电子学、微波腔、温控、控制电路供电。GPS 等地球轨道导航卫星通常使用太阳能电池板和蓄电池供电，而不是 RTG。RTG 更多用于远离太阳、阴影长、环境恶劣或长期无人值守的深空任务。</p>
+
+				<h2>三类常被混在一起的东西</h2>
+				<table class="compare-table">
+					<thead><tr><th>名称</th><th>能量来源</th><th>典型用途</th><th>特点</th></tr></thead>
+					<tbody>
+						<tr><td>化学燃料电池</td><td>氢氧等化学反应</td><td>航天器、车辆、备用电源</td><td>需要燃料和氧化剂，反应可控。</td></tr>
+						<tr><td>RTG / 放射性同位素热电机</td><td>放射性衰变热</td><td>深空探测器、火星车</td><td>无运动部件，寿命长，功率较低。</td></tr>
+						<tr><td>贝塔伏特电池</td><td>β 衰变粒子</td><td>微功率传感器、特殊长寿命设备</td><td>功率很小，但寿命可能很长。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>RTG 的一条链路</h2>
+				<pre><code>放射性同位素自然衰变
+  -> 释放热量
+  -> 热端和冷端形成温差
+  -> 热电偶产生电压
+  -> 多个热电偶串并联
+  -> 稳定给 spacecraft bus 和仪器供电</code></pre>
+
+				<h2>为什么适合深空</h2>
+				<ul>
+					<li>离太阳越远，太阳能板输出越低，木星、土星之外尤其明显。</li>
+					<li>火星尘暴、月夜、永久阴影区会让太阳能不稳定。</li>
+					<li>RTG 无运动部件，可靠性高，适合多年任务。</li>
+					<li>它同时能提供热量，帮助设备在低温环境中保温。</li>
+				</ul>
+
+				<h2>官方参考</h2>
+				<ul>
+					<li><a href="https://science.nasa.gov/planetary-science/programs/radioisotope-power-systems/faq/">NASA Radioisotope Power Systems FAQ</a></li>
+					<li><a href="https://science.nasa.gov/resource/how-does-a-radioisotope-thermoelectric-generator-rtg-work-the-seebeck-effect/">NASA: RTG and Seebeck effect</a></li>
+					<li><a href="https://www.energy.gov/ne/space-and-defense-power-systems">U.S. DOE Space and Defense Power Systems</a></li>
+					<li><a href="https://www.nist.gov/atomic-clocks/how-atomic-clocks-work/clocks-galore">NIST: atomic clocks in GPS</a></li>
+				</ul>
+				<div class="next-card"><span>下一步</span><a href="principles.html">看核电池工作原理</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

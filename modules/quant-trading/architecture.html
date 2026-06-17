@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>量化系统架构 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>量化系统架构</strong><span>Data, Backtest, Live</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">量化</a><a href="strategies.html">策略</a><a href="resources.html">资源</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a class="active" href="architecture.html">系统架构</a><a href="strategies.html">常见策略</a><a href="resources.html">资源与风控</a></aside>
+			<article class="doc">
+				<p class="kicker">Architecture</p>
+				<h1>一个量化交易系统通常长什么样</h1>
+				<p class="lead">量化系统可以很小，也可以很复杂。入门项目可能只是一个 Python 脚本；机构系统会拆成数据服务、研究平台、回测引擎、订单管理、风控、监控和审计。关键是每一层边界清晰。</p>
+
+				<h2>核心模块</h2>
+				<pre><code>Data Ingestion
+  -> Data Store
+  -> Research Notebook
+  -> Feature / Signal Engine
+  -> Backtest Engine
+  -> Portfolio / Risk Engine
+  -> Execution Engine
+  -> Broker / Exchange API
+  -> Monitor / Alert / Log</code></pre>
+
+				<h2>1. 数据层</h2>
+				<p>数据层负责把外部行情、财务、公司行动、指数成分、交易日历变成可查询、可复现的数据。它要处理复权、时区、缺失值、异常价格、停牌、拆股、分红。量化里最贵的错误常常不是模型错，而是数据错。</p>
+				<ul>
+					<li><strong>行情数据：</strong>日线、分钟线、tick、盘口、成交明细。</li>
+					<li><strong>基本面数据：</strong>财报、估值、盈利预测、行业分类。</li>
+					<li><strong>另类数据：</strong>新闻、舆情、卫星图像、供应链、网页数据。</li>
+					<li><strong>元数据：</strong>交易日历、复权因子、成分股历史、停牌和涨跌停。</li>
+				</ul>
+
+				<h2>2. 研究层</h2>
+				<p>研究层通常用 notebook 或脚本探索因子和策略。好的研究从假设开始，而不是从暴力搜索参数开始。例如：“过去 12 个月强、过去 1 个月不过热的股票，未来一个月是否有动量延续？”这个假设可以被数据检验。</p>
+
+				<h2>3. 回测层</h2>
+				<p>回测层要像历史真实发生一样推进时间：在某个时间点只允许使用当时已经知道的数据，然后生成订单，再按成交规则撮合。事件驱动回测系统会按数据事件、信号事件、订单事件、成交事件推进，Zipline 这类系统就是典型的事件驱动思路。</p>
+				<table class="compare-table">
+					<thead><tr><th>回测要素</th><th>为什么重要</th></tr></thead>
+					<tbody>
+						<tr><td>手续费</td><td>高换手策略收益会被交易成本吃掉。</td></tr>
+						<tr><td>滑点</td><td>回测价格和真实成交价格不可能完全一样。</td></tr>
+						<tr><td>冲击成本</td><td>大资金下单会影响价格，小资金可忽略但也要理解。</td></tr>
+						<tr><td>成交限制</td><td>不能假设在涨停、停牌、低流动性时无限成交。</td></tr>
+						<tr><td>延迟</td><td>信号生成、下单、成交之间有时间差。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>4. 组合和风控层</h2>
+				<p>信号只告诉你买什么，组合层决定买多少。它要考虑单票上限、行业暴露、杠杆、现金、最大回撤、波动率目标、相关性、止损和再平衡。很多策略单看信号不错，但组合后风险集中，实盘很容易出问题。</p>
+
+				<h2>5. 执行层</h2>
+				<p>执行层负责把目标仓位变成真实订单。它要处理订单拆分、限价单、市价单、撤单、重试、成交回报、券商 API 断线、重复下单保护。实盘里最重要的不是聪明，而是不能乱下单。</p>
+
+				<h2>6. 监控和审计</h2>
+				<p>任何自动交易系统都必须有监控。至少要监控行情延迟、账户权益、持仓、未成交订单、异常成交、策略进程、服务器资源、网络连接、日志错误。出现异常时，应能自动停止交易或进入只减仓模式。</p>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

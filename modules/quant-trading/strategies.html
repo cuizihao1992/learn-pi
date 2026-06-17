@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>常见量化策略 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>常见量化策略</strong><span>Momentum, Mean Reversion, Factor</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">量化</a><a href="architecture.html">架构</a><a href="resources.html">资源</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="architecture.html">系统架构</a><a class="active" href="strategies.html">常见策略</a><a href="resources.html">资源与风控</a></aside>
+			<article class="doc">
+				<p class="kicker">Strategies</p>
+				<h1>一般的量化策略有哪些</h1>
+				<p class="lead">量化策略不是越复杂越好。很多长期有效的策略思想很朴素：趋势会延续，极端偏离会回归，便宜且质量好的资产长期更有吸引力，风险需要被分散和约束。</p>
+
+				<h2>1. 趋势跟随 / 动量</h2>
+				<p>动量策略假设强者可能继续强。典型做法是买过去一段时间表现较好的标的，卖出表现较弱的标的。股票中常见 3 到 12 个月动量，期货中常见均线突破和时间序列动量。</p>
+				<ul>
+					<li><strong>优点：</strong>能抓住大趋势，规则清晰。</li>
+					<li><strong>缺点：</strong>震荡市回撤明显，容易追在阶段高点。</li>
+					<li><strong>关键：</strong>过滤过热、控制仓位、设置退出规则。</li>
+				</ul>
+
+				<h2>2. 均值回归</h2>
+				<p>均值回归假设价格短期过度偏离后会回到合理区间。常见于指数、ETF、配对交易和高频做市。比如某 ETF 短期跌破布林带下轨，但长期趋势未坏，可能出现反弹。</p>
+				<p>它的危险在于：有些偏离不是噪声，而是基本面真的变了。均值回归最怕“接飞刀”，所以必须有止损和环境过滤。</p>
+
+				<h2>3. 多因子选股</h2>
+				<p>多因子策略把股票按若干特征打分，例如价值、质量、动量、低波动、规模、盈利修正。然后买入排名靠前的一组股票，定期调仓。</p>
+				<table class="compare-table">
+					<thead><tr><th>因子</th><th>常见指标</th><th>直觉</th></tr></thead>
+					<tbody>
+						<tr><td>价值</td><td>PE、PB、EV/EBITDA、股息率</td><td>便宜资产长期可能均值回归。</td></tr>
+						<tr><td>质量</td><td>ROE、毛利率、现金流、负债率</td><td>好公司更能穿越周期。</td></tr>
+						<tr><td>动量</td><td>过去收益率、相对强弱</td><td>资金和预期可能延续。</td></tr>
+						<tr><td>低波动</td><td>历史波动率、最大回撤</td><td>风险较低资产可能有更好风险调整收益。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>4. 统计套利</h2>
+				<p>统计套利寻找价格关系的短期偏离，例如配对交易：两只高度相关股票历史价差扩大到异常水平时，做多相对便宜的一只，做空相对贵的一只。它依赖相关关系稳定，一旦行业或公司基本面分化，历史关系会失效。</p>
+
+				<h2>5. 套利和市场中性</h2>
+				<p>套利策略试图利用同一资产或相关资产之间的价格差，如 ETF 折溢价、期现套利、跨市场套利。市场中性策略希望降低大盘方向暴露，通过多空组合赚取相对收益。入门者应先理解原理，不要轻易实盘做复杂套利，因为执行、借券、费率、延迟都可能吃掉利润。</p>
+
+				<h2>6. 机器学习策略</h2>
+				<p>机器学习可以用于预测收益、分类涨跌、估计风险、组合优化、新闻情绪分析。但金融数据噪声大、样本非平稳、可交易信号弱。机器学习最容易过拟合，必须严格做训练集、验证集、样本外测试和走步验证。</p>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

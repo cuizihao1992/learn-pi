@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>核电池工作原理 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>核电池工作原理</strong><span>Heat to Electricity</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">核电池</a><a href="space-atomic-clock.html">原子钟</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a class="active" href="principles.html">工作原理</a><a href="space-atomic-clock.html">卫星与原子钟</a></aside>
+			<article class="doc">
+				<p class="kicker">Principles</p>
+				<h1>RTG、贝塔伏特电池和“核电池”的底层逻辑</h1>
+				<p class="lead">核电池的共同点是利用原子核变化释放的能量，但转换方式不同。RTG 走“核衰变热 -> 温差 -> 电”的路线；贝塔伏特电池走“β 粒子 -> 半导体结 -> 电”的路线。</p>
+
+				<h2>1. RTG：热电转换</h2>
+				<p>RTG 常用钚-238 这类放射性同位素作为热源。它自然衰变产生热量，热量让热电材料两端出现温差。根据塞贝克效应，不同材料形成的热电偶在温差下会产生电压。很多热电偶串联后，就能输出稳定电力。</p>
+				<table class="compare-table">
+					<thead><tr><th>部件</th><th>作用</th></tr></thead>
+					<tbody>
+						<tr><td>同位素热源</td><td>持续释放热量。</td></tr>
+						<tr><td>包壳和防护结构</td><td>保护核材料，承受发射和事故场景。</td></tr>
+						<tr><td>热电偶</td><td>把温差转换为电压。</td></tr>
+						<tr><td>散热面</td><td>维持冷端温度，保证温差。</td></tr>
+						<tr><td>电源管理</td><td>给航天器母线和仪器稳定供电。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>2. 为什么 RTG 效率不高但仍有用</h2>
+				<p>热电转换效率通常不高，因为没有像涡轮机那样高效地把热转成机械功再发电。但 RTG 的优势是简单、稳定、无运动部件、寿命长。深空任务更重可靠性，而不是最高效率。</p>
+
+				<h2>3. 贝塔伏特电池</h2>
+				<p>贝塔伏特电池利用 β 衰变释放的电子或正电子轰击半导体结构，类似光伏电池利用光子产生电子空穴对。它的功率通常很小，更适合微功率、长寿命设备，而不是给大功率航天器供电。</p>
+				<ul>
+					<li><strong>优点：</strong>寿命长、能量密度高、维护少。</li>
+					<li><strong>缺点：</strong>输出功率低、材料和辐射防护要求高。</li>
+					<li><strong>适用：</strong>低功耗传感器、特殊医疗/航天/极端环境电子设备。</li>
+				</ul>
+
+				<h2>4. 和核反应堆的区别</h2>
+				<p>RTG 不是小型核反应堆。核反应堆依靠可控裂变链式反应产生大量热量，功率可调，系统复杂。RTG 依靠自然衰变，功率随半衰期缓慢下降，不能像反应堆那样调大调小。</p>
+
+				<h2>5. 安全设计</h2>
+				<p>NASA 和 DOE 的放射性同位素电源强调多层安全设计：核材料被封装在坚固结构中，目标是在正常运行和一系列事故条件下保持燃料包容。安全性是这类系统的核心工程问题之一。</p>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

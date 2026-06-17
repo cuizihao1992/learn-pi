@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>卫星、原子钟与核电池 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>卫星与原子钟</strong><span>Atomic Clocks Need Power, Not Nuclear Timing</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">核电池</a><a href="principles.html">原理</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="principles.html">工作原理</a><a class="active" href="space-atomic-clock.html">卫星与原子钟</a></aside>
+			<article class="doc">
+				<p class="kicker">Atomic Clock</p>
+				<h1>卫星原子钟和核电池是什么关系</h1>
+				<p class="lead">关系可以一句话说清：原子钟提供高稳定时间频率，电源给原子钟供电；原子钟本身不是核电池。GPS 等导航卫星的原子钟通常是铷钟或铯钟，使用原子能级跃迁作为频率标准。</p>
+
+				<h2>原子钟如何计时</h2>
+				<p>原子钟利用原子在特定能级之间跃迁的稳定频率。电子学系统产生微波或光频信号，与原子跃迁频率锁定，从而得到极稳定的时间基准。GPS 卫星依赖星上原子钟广播精确时间，接收机通过多个卫星信号到达时间差计算位置。</p>
+
+				<h2>它需要什么电源</h2>
+				<p>原子钟需要电源驱动振荡器、控制电路、温控、信号处理和卫星通信系统。地球轨道导航卫星通常使用太阳能电池板和蓄电池。RTG 主要用于太阳能不足或环境特殊的深空任务，不是 GPS 原子钟的典型电源。</p>
+
+				<h2>为什么会混淆</h2>
+				<ul>
+					<li>“原子钟”名字里有原子，但它不是靠核裂变或核衰变发电。</li>
+					<li>“核电池”名字听起来像能给所有航天设备供电，但它通常指特定放射性同位素电源。</li>
+					<li>航天器可能同时有精密时钟和特殊电源，但两者职责不同。</li>
+				</ul>
+
+				<h2>对比表</h2>
+				<table class="compare-table">
+					<thead><tr><th>对象</th><th>核心物理</th><th>输出</th><th>用途</th></tr></thead>
+					<tbody>
+						<tr><td>原子钟</td><td>原子能级跃迁频率</td><td>稳定时间/频率信号</td><td>导航、通信、同步。</td></tr>
+						<tr><td>RTG</td><td>放射性衰变热 + 热电效应</td><td>电能和热</td><td>深空探测器供电。</td></tr>
+						<tr><td>太阳能电池</td><td>光伏效应</td><td>电能</td><td>多数地球轨道卫星供电。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>记忆模型</h2>
+				<pre><code>原子钟：稳定频率标准，回答“现在几点”
+太阳能/电池/RTG：电源系统，回答“设备靠什么供电”
+导航卫星：用稳定时间信号计算距离
+深空探测器：常用 RTG 解决远离太阳的长期供电问题</code></pre>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

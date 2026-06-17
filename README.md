@@ -10,6 +10,8 @@
 - `modules/openlayers/`：学习二维地图如何从 Map、View、Layer、Source 走到 Canvas/WebGL。
 - `modules/gaussian-splatting/`：学习 3D Gaussian Splatting 如何从照片、相机位姿、稀疏点云走到可微渲染和实时 viewer。
 - `modules/stock-kline/`：学习股票 K 线、技术指标、量价关系、买卖信号、长短线分类、现实解释和风控复盘。
+- `modules/quant-trading/`：学习量化交易如何从策略假设、数据、回测、实盘执行走到服务器资源和风控监控。
+- `modules/nuclear-battery/`：学习 RTG、放射性同位素电源、贝塔伏特电池，以及卫星原子钟和电源系统的区别。
 
 ## Directory Rules
 

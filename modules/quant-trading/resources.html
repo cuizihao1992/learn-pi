@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>量化服务器资源与风控 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>服务器资源与风控</strong><span>Infra and Risk</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">量化</a><a href="architecture.html">架构</a><a href="strategies.html">策略</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="architecture.html">系统架构</a><a href="strategies.html">常见策略</a><a class="active" href="resources.html">资源与风控</a></aside>
+			<article class="doc">
+				<p class="kicker">Resources</p>
+				<h1>量化需要什么服务器资源</h1>
+				<p class="lead">资源要求取决于周期。日频研究可以用普通电脑；分钟级实盘需要稳定服务器；高频交易需要低延迟网络、交易所附近机房和专业风控。入门者不要一开始追求高频。</p>
+
+				<table class="compare-table">
+					<thead><tr><th>阶段</th><th>资源建议</th><th>说明</th></tr></thead>
+					<tbody>
+						<tr><td>学习/日频回测</td><td>本机 4-8 核 CPU、16GB 内存、SSD</td><td>足够做 pandas 回测、因子分析、小数据集。</td></tr>
+						<tr><td>中等规模研究</td><td>8-16 核、32-64GB 内存、1TB SSD</td><td>适合多年分钟线、多因子矩阵、并行参数测试。</td></tr>
+						<tr><td>日频/分钟实盘</td><td>云服务器 2-8 核、8-32GB 内存、稳定网络</td><td>重点是稳定、日志、告警、自动重启。</td></tr>
+						<tr><td>高频/低延迟</td><td>专线、托管机房、低延迟语言和网卡</td><td>不是入门方向，工程和合规成本极高。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>实盘最小架构</h2>
+				<pre><code>行情进程
+  -> 策略进程
+  -> 风控检查
+  -> 下单进程
+  -> 成交回报
+  -> 持仓同步
+  -> 日志和告警</code></pre>
+				<p>最低限度也要有：日志文件、异常告警、断线重连、每日最大亏损限制、单票最大仓位、重复下单保护、手动一键停止。真正危险的不是策略亏钱，而是程序失控。</p>
+
+				<h2>风控清单</h2>
+				<ul>
+					<li>单笔订单金额上限。</li>
+					<li>单票仓位上限和行业仓位上限。</li>
+					<li>每日最大亏损和最大下单次数。</li>
+					<li>行情延迟超过阈值时停止交易。</li>
+					<li>券商持仓和本地持仓不一致时停止交易。</li>
+					<li>策略异常报错时进入只撤单/只减仓模式。</li>
+				</ul>
+
+				<h2>入门技术栈</h2>
+				<p>研究用 Python、pandas、numpy、polars、duckdb、jupyter。数据存储可以先用 CSV/Parquet，规模上来后用 PostgreSQL、ClickHouse 或对象存储。实盘服务可用 Python + systemd/pm2/docker，监控可以从日志、邮件、Telegram/企业微信告警开始。</p>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

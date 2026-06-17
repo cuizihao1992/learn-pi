@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>量化交易学习路径 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>量化交易学习路径</strong><span>Research, Backtest, Live Trading</span></div></div><nav><a href="../../index.html">首页</a><a href="../index.html">全部模块</a><a href="architecture.html">架构</a><a href="strategies.html">策略</a><a href="resources.html">资源</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a class="active" href="index.html">模块总览</a><a href="architecture.html">系统架构</a><a href="strategies.html">常见策略</a><a href="resources.html">资源与风控</a><a href="../stock-kline/index.html">股票 K 线</a><a href="../../pages/search.html">全站检索</a></aside>
+			<article class="doc">
+				<p class="kicker">Quant Trading</p>
+				<h1>量化是怎么做的：从想法到自动交易系统</h1>
+				<p class="lead">量化交易不是“用 AI 自动赚钱”，而是把交易想法写成明确规则，用历史数据验证，用风控约束，用程序执行。它的核心不是代码炫技，而是研究假设、数据质量、回测真实性、实盘稳定性和风险控制。</p>
+
+				<h2>一条完整链路</h2>
+				<pre><code>交易假设
+  -> 获取和清洗数据
+  -> 生成特征和信号
+  -> 回测撮合
+  -> 评估收益、回撤、换手、滑点
+  -> 参数稳定性和样本外测试
+  -> 模拟盘 / 纸面交易
+  -> 实盘下单
+  -> 监控、风控、复盘、迭代</code></pre>
+
+				<h2>量化和主观看盘的区别</h2>
+				<table class="compare-table">
+					<thead><tr><th>维度</th><th>主观看盘</th><th>量化交易</th></tr></thead>
+					<tbody>
+						<tr><td>决策来源</td><td>经验、图形、消息、临场判断</td><td>规则、模型、统计检验、程序执行</td></tr>
+						<tr><td>优点</td><td>能理解复杂语境，适合少量标的深度判断</td><td>可复现、可批量、可回测、可监控</td></tr>
+						<tr><td>缺点</td><td>容易情绪化，复盘困难</td><td>容易过拟合，依赖数据和工程质量</td></tr>
+						<tr><td>关键能力</td><td>市场理解和纪律</td><td>数据、统计、工程、风控、执行</td></tr>
+					</tbody>
+				</table>
+
+				<h2>量化系统的几个角色</h2>
+				<div class="lesson-grid">
+					<section><h3>研究层</h3><p>提出假设，例如“低波动高质量股票长期超额收益更好”“突破长期平台后动量延续”。研究层要避免数据挖掘和幸存者偏差。</p></section>
+					<section><h3>数据层</h3><p>处理行情、财务、复权、成分股、停牌、分红、交易日历。数据错，后面所有漂亮结果都可能是幻觉。</p></section>
+					<section><h3>回测层</h3><p>按历史时间推进，生成信号、撮合订单、计算手续费滑点，避免偷看未来。</p></section>
+					<section><h3>实盘层</h3><p>连接券商 API、行情源、风控服务和监控告警。实盘更重稳定性，不是把回测脚本直接跑起来。</p></section>
+				</div>
+
+				<h2>入门最推荐的路线</h2>
+				<ol>
+					<li>先学 Python、pandas、基础统计、收益率、波动率、回撤、夏普比率。</li>
+					<li>先做日频策略，不要一上来做高频。日频更适合理解研究、回测和风控。</li>
+					<li>用很简单的策略练完整流程，例如均线趋势、动量轮动、低波动组合。</li>
+					<li>回测必须加入手续费、滑点、调仓限制、停牌、涨跌停、交易日历。</li>
+					<li>先模拟盘，再小资金实盘。实盘稳定性和心理压力会暴露很多回测看不到的问题。</li>
+				</ol>
+
+				<h2>必须警惕的误区</h2>
+				<ul>
+					<li><strong>过拟合：</strong>参数调到历史最好，不代表未来最好。</li>
+					<li><strong>幸存者偏差：</strong>只用今天还活着的股票回测，会高估收益。</li>
+					<li><strong>未来函数：</strong>用了当时不可能知道的数据，例如未来财报、未来成分股。</li>
+					<li><strong>忽略交易成本：</strong>高换手策略如果不算滑点和冲击成本，收益会虚高。</li>
+					<li><strong>把回测收益当承诺：</strong>回测只是历史模拟，不是未来保证。</li>
+				</ul>
+
+				<h2>参考项目和资料</h2>
+				<ul>
+					<li><a href="https://www.quantconnect.com/">QuantConnect</a>：研究、回测和实盘一体化平台。</li>
+					<li><a href="https://www.lean.io/">LEAN</a>：QuantConnect 的开源算法交易引擎。</li>
+					<li><a href="https://zipline.ml4trading.io/">Zipline</a>：事件驱动回测系统。</li>
+					<li><a href="https://www.finra.org/rules-guidance/key-topics/algorithmic-trading">FINRA Algorithmic Trading</a>：算法交易监管和控制实践。</li>
+				</ul>
+
+				<div class="next-card"><span>下一步</span><a href="architecture.html">看量化系统架构</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

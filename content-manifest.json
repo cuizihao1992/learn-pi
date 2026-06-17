@@ -4,7 +4,7 @@
     "charter": "pages/charter.html",
     "dashboard": "pages/dashboard.html",
     "search": "pages/search.html",
-    "rule": "The site is organized as six first-class modules: pi-agent, mini-agent, cesium, openlayers, gaussian-splatting, and stock-kline. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
+    "rule": "The site is organized as eight first-class modules: pi-agent, mini-agent, cesium, openlayers, gaussian-splatting, stock-kline, quant-trading, and nuclear-battery. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
     "modules": "modules/index.html"
   },
   "moduleConvention": {
@@ -116,6 +116,31 @@
         "long-short.html",
         "context.html",
         "risk-journal.html"
+      ]
+    },
+    {
+      "slug": "quant-trading",
+      "name": "Quant Trading",
+      "root": "modules/quant-trading/",
+      "entry": "modules/quant-trading/index.html",
+      "purpose": "Understand quantitative trading research, backtesting, live architecture, common strategies, infrastructure, and risk controls.",
+      "pages": [
+        "index.html",
+        "architecture.html",
+        "strategies.html",
+        "resources.html"
+      ]
+    },
+    {
+      "slug": "nuclear-battery",
+      "name": "Nuclear Battery",
+      "root": "modules/nuclear-battery/",
+      "entry": "modules/nuclear-battery/index.html",
+      "purpose": "Understand RTGs, radioisotope power systems, betavoltaic batteries, and the difference between satellite atomic clocks and power sources.",
+      "pages": [
+        "index.html",
+        "principles.html",
+        "space-atomic-clock.html"
       ]
     }
   ],
