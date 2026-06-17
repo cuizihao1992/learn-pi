@@ -1,0 +1,45 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>模型接口 | Learn Pi</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Pi Agent 学习路径</strong><span>模型接口</span></div></div><nav><a href="../../index.html">首页</a><a href="sessions.html">会话</a><a href="frontend.html">前端</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="architecture.html">1. 架构设计</a><a href="lifecycle.html">2. 完整运行流程</a><a href="prompt-processing.html">3. 提示词处理</a><a href="tools.html">4. 工具调用</a><a href="sessions.html">5. 会话与压缩</a><a class="active" href="models.html">6. 模型接口</a><a href="frontend.html">7. 前端事件</a><a href="design-tradeoffs.html">8. 为什么这样设计</a><a href="labs.html">9. 动手练习</a><a href="mini-agent.html">从零开发 Mini Agent</a><a href="custom-model-api.html">自研模型接入</a><a href="glossary.html">术语表</a><a href="callgraph.html">源码调用图</a><a href="faq.html">FAQ</a><a href="../cesium/index.html">Cesium 学习路径</a></aside>
+			<article class="doc">
+				<p class="kicker">Part 6</p>
+				<h1>pi-ai：为什么需要模型适配层</h1>
+				<p class="lead">不同模型 API 对 messages、tools、images、reasoning、stream 的格式都不一样。Pi 把这些差异集中到 `pi-ai`，让 Agent loop 只面对统一抽象。</p>
+				<h2>Agent loop 希望看到的统一世界</h2>
+				<pre><code>streamSimple(model, context, options)
+  -> EventStream&lt;AssistantMessageEvent, AssistantMessage&gt;</code></pre>
+				<p>这意味着上层只关心：模型是什么、上下文是什么、工具有哪些、事件如何流出来。</p>
+				<h2>provider 差异有哪些</h2>
+				<ul>
+					<li>工具调用字段名不同。</li>
+					<li>thinking/reasoning 表达方式不同。</li>
+					<li>图片输入格式不同。</li>
+					<li>stream chunk 格式不同。</li>
+					<li>token usage、cache read/write、cost 计算方式不同。</li>
+					<li>认证方式不同：API key、OAuth、headers、endpoint。</li>
+				</ul>
+				<h2>为什么不直接在 Agent loop 里判断 provider</h2>
+				<p>如果在 runLoop 里到处写 `if provider === "openai"`，主循环会被模型 API 污染，工具执行和状态管理也难测试。把 provider 差异放进 pi-ai，主循环就能保持稳定。</p>
+				<h2>关键源码</h2>
+				<ul>
+					<li>`packages/ai/src/index.ts`：统一出口。</li>
+					<li>`packages/ai/test/*openai*.test.ts`：OpenAI 相关行为。</li>
+					<li>`packages/ai/test/*anthropic*.test.ts`：Anthropic 工具和 thinking 行为。</li>
+					<li>`packages/coding-agent/src/core/model-registry.ts`：产品层如何选择模型。</li>
+					<li>`packages/coding-agent/src/core/auth-storage.ts`：认证如何保存。</li>
+				</ul>
+				<div class="next-card"><span>下一步</span><a href="frontend.html">看事件如何返回前端</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script>
+			<script src="../../enhance.js"></script>
+	</body>
+</html>
+
+
+
+

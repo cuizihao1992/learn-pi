@@ -1,29 +1,21 @@
 <!doctype html>
 <html lang="zh-CN">
-	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Cesium 术语表 | Learn Pi</title><link rel="stylesheet" href="../styles.css" /></head>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta http-equiv="refresh" content="0; url=../modules/cesium/glossary.html" />
+		<title>Cesium 术语表 | Learn Pi 已迁移 | 源码学习实验室</title>
+		<link rel="canonical" href="../modules/cesium/glossary.html" />
+		<link rel="stylesheet" href="../styles.css" />
+	</head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Cesium 术语表</strong><span>渲染链路关键词</span></div></div><nav><a href="../index.html">首页</a><a href="cesium.html">Cesium</a><a href="cesium-render-path.html">渲染路径</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="cesium.html">Cesium 总览</a><a href="cesium-render-path.html">完整渲染路径</a><a href="cesium-debugging.html">渲染调试手册</a><a class="active" href="cesium-glossary.html">Cesium 术语表</a></aside>
 			<article class="doc">
-				<p class="kicker">Reference</p>
-				<h1>Cesium 渲染术语表</h1>
-				<div class="term-list">
-					<section><h2>Viewer</h2><p>最高级应用入口，帮你创建 Scene、Camera、Clock、EntityCollection、DataSourceDisplay 等。</p></section>
-					<section><h2>Scene</h2><p>一帧渲染的调度中心，管理 canvas、camera、globe、primitives、frameState 和 commandList。</p></section>
-					<section><h2>Entity</h2><p>业务友好的动态对象抽象。适合应用层描述对象，但不是底层绘制命令。</p></section>
-					<section><h2>Primitive</h2><p>更接近渲染层的对象，update 时通常产生命令。</p></section>
-					<section><h2>Appearance</h2><p>描述几何体如何着色，关联 shader、material、render state。</p></section>
-					<section><h2>DrawCommand</h2><p>一次绘制命令，封装 vertexArray、shaderProgram、uniformMap、renderState、pass。</p></section>
-					<section><h2>RenderState</h2><p>WebGL 渲染状态，如深度测试、剔除、混合、颜色写入。</p></section>
-					<section><h2>ShaderProgram</h2><p>顶点着色器和片元着色器编译链接后的程序。</p></section>
-					<section><h2>FrameState</h2><p>当前帧状态，包含相机、时间、pass、commandList、cullingVolume 等。</p></section>
-					<section><h2>Pass</h2><p>渲染阶段，如 opaque、translucent、overlay、pick。</p></section>
-					<section><h2>Globe</h2><p>地球渲染入口，管理地形、影像图层和瓦片选择。</p></section>
-					<section><h2>3D Tiles</h2><p>面向海量三维数据的瓦片格式和运行时，按视角和误差选择 tile。</p></section>
-				</div>
+				<p class="kicker">Moved</p>
+				<h1>页面已移动到模块目录</h1>
+				<p class="lead">为了让学习站更适合长期扩展，这个页面已经整理到对应模块下。</p>
+				<p><a class="primary-link" href="../modules/cesium/glossary.html">打开新页面</a></p>
 			</article>
 		</main>
-		<script src="../theme.js"></script><script src="../enhance.js"></script>
 	</body>
 </html>

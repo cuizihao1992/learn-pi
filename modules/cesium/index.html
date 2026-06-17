@@ -1,0 +1,49 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Cesium 学习路径 | Learn Pi</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Cesium 学习路径</strong><span>完整渲染路径</span></div></div><nav><a href="../../index.html">首页</a><a href="render-path.html">渲染路径</a><a href="../pi-agent/mini-agent.html">Mini Agent</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a class="active" href="index.html">Cesium 总览</a><a href="render-path.html">完整渲染路径</a><a href="../pi-agent/architecture.html">返回 Pi 路径</a></aside>
+			<article class="doc">
+				<p class="kicker">Cesium Path</p>
+				<h1>Cesium 学习路径：从 Viewer 到 GPU</h1>
+				<p class="lead">这是一条和 Pi Agent 并列的学习路径。Pi 路径关注 agent 如何决策和调用工具；Cesium 路径关注三维引擎如何从数据、场景、命令一路走到 WebGL 绘制。</p>
+
+				<h2>先建立 Cesium 的分层心智模型</h2>
+				<div class="lesson-grid">
+					<section><h3>应用层</h3><p>`Viewer`、`CesiumWidget`、Entity API、Camera、Imagery/Terrain 配置。大多数业务从这里进入。</p></section>
+					<section><h3>场景层</h3><p>`Scene` 管理 canvas、frameState、primitives、globe、camera、render loop。</p></section>
+					<section><h3>数据表达层</h3><p>Entity、DataSource、Primitive、GeometryInstance、Appearance、3D Tiles、Globe、Terrain、Imagery。</p></section>
+					<section><h3>渲染命令层</h3><p>Primitive update 产生 `DrawCommand` / `ComputeCommand`，命令进入 frameState.commandList。</p></section>
+					<section><h3>Renderer 层</h3><p>ShaderProgram、VertexArray、RenderState、Texture、Framebuffer 对 WebGL 做封装。</p></section>
+					<section><h3>GPU 层</h3><p>WebGL 执行 draw call，顶点着色、片元着色、深度测试、混合、输出到 framebuffer。</p></section>
+				</div>
+
+				<h2>为什么 Cesium 不直接让 Entity 画到 WebGL</h2>
+				<p>Entity 是面向业务的高级抽象，适合描述“这个对象是什么”。WebGL 需要的是 buffer、shader、uniform、render state。中间必须经过 Primitive 和 Command 层，把业务对象变成可执行的绘制命令。</p>
+
+				<h2>推荐学习顺序</h2>
+				<ol>
+					<li>先会用 `Viewer` 创建地球、相机、图层。</li>
+					<li>理解 Entity 和 Primitive 的区别。</li>
+					<li>理解 Scene 每帧如何 update 和 render。</li>
+					<li>理解 Primitive 如何产生 DrawCommand。</li>
+					<li>理解 DrawCommand 如何封装 WebGL draw call。</li>
+					<li>最后读 Globe、Terrain、Imagery、3D Tiles 的专用渲染管线。</li>
+				</ol>
+
+				<h2>官方参考</h2>
+				<ul>
+					<li><a href="https://github.com/CesiumGS/cesium/wiki/Architecture">Cesium Architecture Wiki</a></li>
+					<li><a href="https://github.com/CesiumGS/cesium">CesiumJS GitHub</a></li>
+					<li><a href="https://cesium.com/learn/cesiumjs/ref-doc/">CesiumJS API Reference</a></li>
+				</ul>
+				<div class="next-card"><span>下一步</span><a href="render-path.html">看完整渲染路径</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script>
+			<script src="../../enhance.js"></script>
+	</body>
+</html>
+

@@ -1,0 +1,34 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>动手练习 | Learn Pi</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Pi Agent 学习路径</strong><span>动手练习</span></div></div><nav><a href="../../index.html">首页</a><a href="architecture.html">重新开始</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="architecture.html">1. 架构设计</a><a href="lifecycle.html">2. 完整运行流程</a><a href="prompt-processing.html">3. 提示词处理</a><a href="tools.html">4. 工具调用</a><a href="sessions.html">5. 会话与压缩</a><a href="models.html">6. 模型接口</a><a href="frontend.html">7. 前端事件</a><a href="design-tradeoffs.html">8. 为什么这样设计</a><a class="active" href="labs.html">9. 动手练习</a></aside>
+			<article class="doc">
+				<p class="kicker">Part 9</p>
+				<h1>动手练习：从会读到会改</h1>
+				<p class="lead">真正理解 agent 运行方式，最好做几个小改动。下面每个练习都尽量小，但会迫使你穿过关键架构边界。</p>
+				<h2>练习 1：画出一次 prompt 调用图</h2>
+				<p>从 `main.ts` 开始，追到 `AgentSession.prompt()`、`Agent.run()`、`runLoop()`。输出一张调用图。</p>
+				<h2>练习 2：新增一个只读工具</h2>
+				<p>新增 `stats` 工具，返回某个文件的行数、字节数、后缀名。模仿 `ls.ts` 或 `grep.ts`，注册到 `tools/index.ts`。</p>
+				<h2>练习 3：观察 toolResult 如何驱动下一轮</h2>
+				<p>在测试里构造一个模型先调用 read，再根据 toolResult 返回最终回答。目标是理解 agent loop 为什么会多轮运行。</p>
+				<h2>练习 4：降低压缩阈值</h2>
+				<p>让 compaction 更容易触发，观察 summary message 插入位置。记录哪些历史被压缩，哪些近期消息保留。</p>
+				<h2>练习 5：给工具执行 UI 增加一个字段</h2>
+				<p>例如在 bash 工具展示里显示 timeout。这样你会同时读工具定义、工具事件和 interactive component。</p>
+				<h2>练习 6：写一篇自己的架构解释</h2>
+				<p>用这句话开头：Pi Agent 运行一次任务时，模型只负责决定下一步，真正的执行和状态管理由 Pi 负责。然后自己补全 500 字。</p>
+				<div class="next-card"><span>完成标准</span><a href="architecture.html">你能不看源码说清楚四层架构和一次 toolCall 流程</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script>
+			<script src="../../enhance.js"></script>
+	</body>
+</html>
+
+
+
+

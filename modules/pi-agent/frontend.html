@@ -1,0 +1,50 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>前端事件 | Learn Pi</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Pi Agent 学习路径</strong><span>前端事件</span></div></div><nav><a href="../../index.html">首页</a><a href="models.html">模型</a><a href="design-tradeoffs.html">设计</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="architecture.html">1. 架构设计</a><a href="lifecycle.html">2. 完整运行流程</a><a href="prompt-processing.html">3. 提示词处理</a><a href="tools.html">4. 工具调用</a><a href="sessions.html">5. 会话与压缩</a><a href="models.html">6. 模型接口</a><a class="active" href="frontend.html">7. 前端事件</a><a href="design-tradeoffs.html">8. 为什么这样设计</a><a href="labs.html">9. 动手练习</a><a href="mini-agent.html">从零开发 Mini Agent</a><a href="custom-model-api.html">自研模型接入</a><a href="glossary.html">术语表</a><a href="callgraph.html">源码调用图</a><a href="faq.html">FAQ</a><a href="../cesium/index.html">Cesium 学习路径</a></aside>
+			<article class="doc">
+				<p class="kicker">Part 7</p>
+				<h1>前端如何实时展示 Agent 运行过程</h1>
+				<p class="lead">Pi 的终端前端不是等待最后结果，而是订阅事件流。模型输出、工具执行、diff、命令结果都会实时更新。</p>
+				<h2>核心事件</h2>
+				<pre><code>agent_start
+turn_start
+message_start
+message_update
+tool_execution_start
+tool_execution_update
+tool_execution_end
+message_end
+turn_end
+agent_end</code></pre>
+				<h2>事件从哪里来</h2>
+				<p>`agent-loop.ts` 在关键节点 emit AgentEvent。`Agent` 负责维护订阅者。`AgentSession` 订阅这些事件，做 session persistence、compaction、retry、extension broadcast。interactive-mode 再订阅 AgentSessionEvent 更新 UI。</p>
+				<h2>为什么用事件</h2>
+				<ul>
+					<li>UI 可以流式显示，不需要等整个任务完成。</li>
+					<li>会话保存可以和 UI 并行，不污染主循环。</li>
+					<li>扩展可以监听工具执行或 turn 生命周期。</li>
+					<li>测试可以断言事件序列是否正确。</li>
+				</ul>
+				<h2>关键源码</h2>
+				<ul>
+					<li>`packages/agent/src/types.ts`：AgentEvent 类型。</li>
+					<li>`packages/agent/src/agent-loop.ts`：事件 emit 位置。</li>
+					<li>`packages/coding-agent/src/core/agent-session.ts`：事件转成 session event。</li>
+					<li>`packages/coding-agent/src/modes/interactive/interactive-mode.ts`：事件到 UI。</li>
+					<li>`packages/coding-agent/src/modes/interactive/components/tool-execution.ts`：工具执行展示。</li>
+				</ul>
+				<div class="next-card"><span>下一步</span><a href="design-tradeoffs.html">理解为什么这样设计，以及其他方案</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script>
+			<script src="../../enhance.js"></script>
+	</body>
+</html>
+
+
+
+

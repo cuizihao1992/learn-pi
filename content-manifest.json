@@ -2,45 +2,80 @@
   "site": {
     "name": "Source Learning Lab",
     "charter": "pages/charter.html",
-    "rule": "Every module needs an overview, a complete lifecycle or render path, source entry points, design tradeoffs, debugging material, labs, and a module charter."
+    "dashboard": "pages/dashboard.html",
+    "rule": "Common pages stay in pages/. Topic learning content lives under modules/{module-slug}/. Old pages URLs are compatibility redirects."
   },
   "moduleConvention": {
     "moduleRoot": "modules/{module-slug}/",
     "exampleRoot": "examples/{module-slug}/",
-    "required": ["charter.html"],
-    "recommended": ["index.html", "lifecycle.html", "debugging.html", "glossary.html", "labs.html"]
+    "required": [
+      "charter.html",
+      "index.html"
+    ],
+    "recommended": [
+      "render-path.html",
+      "lifecycle.html",
+      "debugging.html",
+      "glossary.html",
+      "labs.html"
+    ]
   },
   "modules": [
     {
       "slug": "pi-agent",
       "name": "Pi Agent",
+      "root": "modules/pi-agent/",
       "charter": "modules/pi-agent/charter.html",
-      "legacyPages": [
-        "pages/architecture.html",
-        "pages/lifecycle.html",
-        "pages/mini-agent.html",
-        "pages/custom-model-api.html"
+      "entry": "modules/pi-agent/index.html",
+      "pages": [
+        "index.html",
+        "architecture.html",
+        "lifecycle.html",
+        "prompt-processing.html",
+        "tools.html",
+        "sessions.html",
+        "models.html",
+        "frontend.html",
+        "design-tradeoffs.html",
+        "labs.html",
+        "mini-agent.html",
+        "mini-agent-roadmap.html",
+        "pi-debugging.html",
+        "custom-model-api.html",
+        "glossary.html",
+        "callgraph.html",
+        "faq.html"
       ]
     },
     {
       "slug": "cesium",
       "name": "Cesium",
+      "root": "modules/cesium/",
       "charter": "modules/cesium/charter.html",
-      "legacyPages": [
-        "pages/cesium.html",
-        "pages/cesium-render-path.html",
-        "pages/cesium-debugging.html"
+      "entry": "modules/cesium/index.html",
+      "pages": [
+        "index.html",
+        "render-path.html",
+        "debugging.html",
+        "glossary.html"
       ]
     },
     {
       "slug": "openlayers",
       "name": "OpenLayers",
+      "root": "modules/openlayers/",
       "charter": "modules/openlayers/charter.html",
-      "legacyPages": [
-        "pages/openlayers.html",
-        "pages/openlayers-render-path.html",
-        "pages/openlayers-debugging.html"
+      "entry": "modules/openlayers/index.html",
+      "pages": [
+        "index.html",
+        "render-path.html",
+        "debugging.html"
       ]
     }
+  ],
+  "commonPages": [
+    "pages/dashboard.html",
+    "pages/charter.html",
+    "pages/knowledge-check.html"
   ]
 }

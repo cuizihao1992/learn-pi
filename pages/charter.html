@@ -11,9 +11,9 @@
 				<a href="../modules/cesium/charter.html">Cesium 模块宪章</a>
 				<a href="../modules/openlayers/charter.html">OpenLayers 模块宪章</a>
 				<a href="../modules/_template/charter.html">新模块模板</a>
-				<a href="architecture.html">Pi Agent</a>
-				<a href="cesium.html">Cesium</a>
-				<a href="openlayers.html">OpenLayers</a>
+				<a href="../modules/pi-agent/index.html">Pi Agent</a>
+				<a href="../modules/cesium/index.html">Cesium</a>
+				<a href="../modules/openlayers/index.html">OpenLayers</a>
 			</aside>
 			<article class="doc">
 				<p class="kicker">General Charter</p>
@@ -49,11 +49,11 @@
 examples/{module-slug}/
   ...                   # 可运行示例代码</code></pre>
 
-				<h2>四、为什么现有页面暂时不全量搬迁</h2>
-				<p>当前已有很多公开 URL，例如 `pages/mini-agent.html`、`pages/cesium-render-path.html`。直接搬迁会破坏旧链接。更稳妥的策略是：</p>
+				<h2>四、模块化后的兼容策略</h2>
+				<p>专题内容已经整理到 `modules/` 目录下；旧的公开 URL，例如 `pages/mini-agent.html`、`pages/cesium-render-path.html`，保留为兼容跳转页，避免旧链接失效。后续策略是：</p>
 				<ul>
-					<li>保留现有 `pages/` URL，保证 GitHub Pages 链接不失效。</li>
-					<li>新增 `modules/` 作为未来内容规范目录。</li>
+					<li>`pages/` 只放全站级页面和旧链接跳转页。</li>
+					<li>`modules/` 是未来内容规范目录。</li>
 					<li>每个模块先补模块宪章，后续新增页面优先放入对应模块目录。</li>
 					<li>必要时再逐步加 redirect/索引页，而不是一次性迁移。</li>
 				</ul>

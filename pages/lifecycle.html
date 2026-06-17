@@ -1,133 +1,21 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-CN">
-	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>完整运行流程 | Learn Pi</title><link rel="stylesheet" href="../styles.css" /></head>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta http-equiv="refresh" content="0; url=../modules/pi-agent/lifecycle.html" />
+		<title>完整运行流程 | Learn Pi 已迁移 | 源码学习实验室</title>
+		<link rel="canonical" href="../modules/pi-agent/lifecycle.html" />
+		<link rel="stylesheet" href="../styles.css" />
+	</head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Learn Pi</strong><span>完整运行流程</span></div></div><nav><a href="../index.html">首页</a><a href="architecture.html">架构</a><a href="prompt-processing.html">提示词</a><a href="tools.html">工具</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar">
-				<a href="architecture.html">1. 架构设计</a><a class="active" href="lifecycle.html">2. 完整运行流程</a><a href="prompt-processing.html">3. 提示词处理</a><a href="tools.html">4. 工具调用</a><a href="sessions.html">5. 会话与压缩</a><a href="models.html">6. 模型接口</a><a href="frontend.html">7. 前端事件</a><a href="design-tradeoffs.html">8. 为什么这样设计</a><a href="labs.html">9. 动手练习</a><a href="mini-agent.html">从零开发 Mini Agent</a><a href="custom-model-api.html">自研模型接入</a><a href="glossary.html">术语表</a><a href="callgraph.html">源码调用图</a><a href="faq.html">FAQ</a><a href="cesium.html">Cesium 学习路径</a>
-			</aside>
 			<article class="doc">
-				<p class="kicker">Part 2</p>
-				<h1>完整例子：从一句话到模型、工具、前端</h1>
-				<p class="lead">假设用户输入：帮我在 README 里增加安装说明，然后运行测试确认没有问题。下面按真实运行顺序拆开。</p>
-
-				<h2>0. 原始输入</h2>
-				<pre><code>帮我在 README 里增加安装说明，然后运行测试确认没有问题</code></pre>
-				<p>这句话先进入某个模式层：交互终端是 `interactive-mode.ts`，一次性输出是 `print-mode.ts`，机器调用是 `rpc-mode.ts`。这些模式层都不会自己实现 agent 推理，而是调用 `AgentSession.prompt()`。</p>
-
-				<h2>1. AgentSession.prompt 做预处理</h2>
-				<ul>
-					<li>判断当前 agent 是否正在运行。如果正在运行，新输入可能进入 steering 或 follow-up 队列。</li>
-					<li>展开 prompt template，例如用户输入某个 slash command 或模板命令时，会把参数替换进模板。</li>
-					<li>合并图片附件，形成文本 + image content。</li>
-					<li>加入 pending next-turn messages，例如扩展或系统临时追加的上下文。</li>
-					<li>构造 `role: "user"` 的 AgentMessage。</li>
-				</ul>
-				<pre><code>{
-  role: "user",
-  content: "帮我在 README 里增加安装说明，然后运行测试确认没有问题",
-  images: [],
-  source: "interactive"
-}</code></pre>
-
-				<h2>2. Agent.run 进入核心循环</h2>
-				<p>`Agent` 会把当前状态转换成 `AgentLoopConfig`。这里包含模型、工具列表、系统提示词、streamFn、beforeToolCall、afterToolCall、prepareNextTurn、队列读取函数等。</p>
-				<pre><code>Agent.state
-  messages: 历史消息 + 当前用户消息
-  tools: read, bash, edit, write, grep, find, ls
-  model: 当前选择的大模型
-  thinkingLevel: off/minimal/low/medium/high</code></pre>
-
-				<h2>3. runLoop 第一次调用模型</h2>
-				<p>模型看到的不是一句话，而是完整上下文。</p>
-				<pre><code>[
-  system: "你是 Pi coding agent... 工具使用规则... 项目上下文...",
-  user/assistant/toolResult: "历史消息，或压缩后的 summary",
-  user: "帮我在 README 里增加安装说明，然后运行测试确认没有问题"
-]
-
-tools = [read, bash, edit, write, grep, find, ls]</code></pre>
-
-				<h2>4. 模型决定先读文件</h2>
-				<p>模型不能直接访问文件系统，它只能返回 toolCall。</p>
-				<pre><code>{
-  type: "toolCall",
-  id: "call_read_1",
-  name: "read",
-  input: { "path": "README.md" }
-}</code></pre>
-				<p>`runLoop` 发现 assistant message 里有 toolCall，于是进入 `executeToolCalls()`。</p>
-
-				<h2>5. Pi 执行 read 工具并回填结果</h2>
-				<pre><code>prepareToolCall
-  -> 找到 read 工具
-  -> validateToolArguments 校验参数
-  -> beforeToolCall hook
-  -> executePreparedToolCall
-  -> afterToolCall hook
-  -> createToolResultMessage</code></pre>
-				<pre><code>{
-  role: "toolResult",
-  toolCallId: "call_read_1",
-  content: "README.md 当前内容..."
-}</code></pre>
-
-				<h2>6. 第二次调用模型：模型基于文件内容决定编辑</h2>
-				<pre><code>{
-  type: "toolCall",
-  id: "call_edit_1",
-  name: "edit",
-  input: {
-    "path": "README.md",
-    "edits": [
-      {
-        "oldText": "## 本地预览\n\n直接用浏览器打开 `index.html` 即可。",
-        "newText": "## 安装\n\n```bash\nnpm install\n```\n\n## 本地预览\n\n直接用浏览器打开 `index.html` 即可。"
-      }
-    ]
-  }
-}</code></pre>
-
-				<h2>7. edit 工具不是简单替换字符串</h2>
-				<p>edit 工具会处理路径解析、换行符、BOM、oldText 唯一性、模糊匹配、diff 生成、并发写入队列等问题。执行后会把修改结果和 diff 返回给模型。</p>
-
-				<h2>8. 模型继续调用 bash 验证</h2>
-				<pre><code>{
-  type: "toolCall",
-  id: "call_bash_1",
-  name: "bash",
-  input: { "command": "npm test", "timeout": 120000 }
-}</code></pre>
-				<p>bash 输出会被截断、清理二进制内容，并作为 toolResult 回到上下文。</p>
-
-				<h2>9. 模型生成最终回答</h2>
-				<p>当模型不再返回 toolCall，而是返回普通文本，runLoop 结束当前 turn。如果没有 follow-up message，agent_end 发出，本次运行结束。</p>
-				<pre><code>已完成：
-- README.md 已增加安装说明
-- 已运行 npm test
-- 测试通过</code></pre>
-
-				<h2>10. 前端怎么实时看到这些</h2>
-				<p>整个过程都在发事件，UI 不是最后才知道结果。</p>
-				<pre><code>message_start
-message_update
-tool_execution_start(read)
-tool_execution_end(read)
-tool_execution_start(edit)
-tool_execution_end(edit)
-tool_execution_start(bash)
-tool_execution_end(bash)
-turn_end
-agent_end</code></pre>
-				<div class="next-card"><span>下一步</span><a href="prompt-processing.html">专门看提示词到底被做了哪些处理</a></div>
+				<p class="kicker">Moved</p>
+				<h1>页面已移动到模块目录</h1>
+				<p class="lead">为了让学习站更适合长期扩展，这个页面已经整理到对应模块下。</p>
+				<p><a class="primary-link" href="../modules/pi-agent/lifecycle.html">打开新页面</a></p>
 			</article>
 		</main>
-		<script src="../theme.js"></script>
-			<script src="../enhance.js"></script>
 	</body>
 </html>
-
-
-
-

@@ -1,159 +1,21 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-CN">
-	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Cesium 完整渲染路径 | Learn Pi</title><link rel="stylesheet" href="../styles.css" /></head>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta http-equiv="refresh" content="0; url=../modules/cesium/render-path.html" />
+		<title>Cesium 完整渲染路径 | Learn Pi 已迁移 | 源码学习实验室</title>
+		<link rel="canonical" href="../modules/cesium/render-path.html" />
+		<link rel="stylesheet" href="../styles.css" />
+	</head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Learn Cesium</strong><span>完整渲染路径</span></div></div><nav><a href="../index.html">首页</a><a href="cesium.html">Cesium 总览</a><a href="architecture.html">Pi 路径</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="cesium.html">Cesium 总览</a><a class="active" href="cesium-render-path.html">完整渲染路径</a><a href="architecture.html">返回 Pi 路径</a></aside>
 			<article class="doc">
-				<p class="kicker">Rendering Pipeline</p>
-				<h1>Cesium 完整渲染路径：从 Viewer 到 GPU</h1>
-				<p class="lead">这一章回答一个核心问题：你在 Cesium 里添加一个对象后，它到底如何一步步变成屏幕上的像素？</p>
-
-				<h2>一句话总览</h2>
-				<pre><code>Viewer
-  -> CesiumWidget
-  -> Scene
-  -> frameState
-  -> PrimitiveCollection / Globe / 3D Tiles
-  -> Primitive.update()
-  -> DrawCommand / ComputeCommand
-  -> Scene command execution
-  -> Renderer
-  -> WebGL
-  -> GPU pixels</code></pre>
-
-				<h2>1. Viewer：应用入口</h2>
-				<p>`Viewer` 是最常用的入口。它帮你创建 canvas、CesiumWidget、Scene、Camera、Clock、DataSourceDisplay、EntityCollection、ImageryLayerCollection 等。业务代码通常写：</p>
-				<pre><code>const viewer = new Cesium.Viewer("container");
-viewer.entities.add({
-  position: Cesium.Cartesian3.fromDegrees(116.39, 39.9),
-  point: { pixelSize: 10, color: Cesium.Color.RED }
-});</code></pre>
-				<p>这时你添加的是 Entity。Entity 还不是 WebGL 绘制命令，它只是业务描述。</p>
-
-				<h2>2. Entity 到 Primitive</h2>
-				<p>Entity API 是高级抽象。Cesium 内部会通过 DataSourceDisplay 和各种 Visualizer，把 Entity 转成更底层的 Primitive 或相关渲染对象。</p>
-				<pre><code>Entity
-  -> DataSourceDisplay.update()
-  -> Visualizer.update()
-  -> Primitive / Billboard / Label / Geometry updater</code></pre>
-				<p>如果你直接用 `scene.primitives.add(new Primitive(...))`，则跳过 Entity 层，直接进入底层渲染对象。</p>
-
-				<h2>3. Scene 每帧更新</h2>
-				<p>`Scene` 是渲染调度中心。每一帧，它会准备 frameState，更新相机、时间、视锥、pass、环境状态，然后让场景里的对象产生命令。</p>
-				<pre><code>Scene.render()
-  -> initializeFrame()
-  -> updateAndExecuteCommands()
-  -> render()
-  -> postRender events</code></pre>
-				<p>官方架构文档也把 Scene 描述为和 canvas 一一对应的图形对象与状态容器，并说明 Primitive 是添加到 Scene 中、会被绘制的对象。</p>
-
-				<h2>4. Primitive.update 产生命令</h2>
-				<p>Primitive 的职责不是马上调用 WebGL，而是在 update 阶段把自己转换成渲染命令，放入 `frameState.commandList`。</p>
-				<pre><code>Primitive.update(frameState)
-  -> 准备 geometry / vertex array
-  -> 准备 appearance / shader
-  -> 准备 renderState / uniformMap
-  -> 创建 DrawCommand
-  -> frameState.commandList.push(drawCommand)</code></pre>
-				<p>这就是 Cesium 很重要的设计：对象先产生命令，Scene 再统一排序、分 pass、执行命令。</p>
-
-				<h2>5. DrawCommand 封装一次绘制</h2>
-				<p>`DrawCommand` 可以理解为“一次 WebGL draw call 的完整说明书”。它通常包含：</p>
-				<ul>
-					<li>vertexArray：顶点数据。</li>
-					<li>shaderProgram：顶点/片元着色器。</li>
-					<li>uniformMap：每帧传给 shader 的变量。</li>
-					<li>renderState：深度测试、混合、剔除等状态。</li>
-					<li>pass：opaque、translucent、overlay、pick 等渲染阶段。</li>
-					<li>boundingVolume：视锥裁剪和调试。</li>
-				</ul>
-				<pre><code>DrawCommand {
-  vertexArray,
-  shaderProgram,
-  uniformMap,
-  renderState,
-  pass,
-  boundingVolume
-}</code></pre>
-
-				<h2>6. Scene 统一执行命令</h2>
-				<p>Scene 会对 commandList 做裁剪、排序、按 pass 执行。opaque 和 translucent 通常不能随便混着画，因为透明物体需要特殊排序和混合。</p>
-				<pre><code>commandList
-  -> culling
-  -> pass sorting
-  -> executeCommand()
-  -> command.execute(context, passState)</code></pre>
-
-				<h2>7. Renderer 封装 WebGL</h2>
-				<p>Renderer 层把 WebGL 对象包装成 Cesium 内部对象：`Context`、`ShaderProgram`、`VertexArray`、`Texture`、`Framebuffer`、`RenderState`。这样上层不需要到处直接操作 WebGL API。</p>
-				<pre><code>DrawCommand.execute()
-  -> bind shaderProgram
-  -> bind vertexArray
-  -> apply renderState
-  -> set uniforms
-  -> gl.drawElements / gl.drawArrays</code></pre>
-
-				<h2>8. Globe / Terrain / Imagery 的特殊路径</h2>
-				<p>地球不是一个普通三角形。Globe 会管理地形瓦片、影像图层、瓦片加载、LOD、裁剪、shader 混合。逻辑上仍然会走“对象产生 command，Scene 执行 command”的路径，只是它内部的 tile pipeline 更复杂。</p>
-				<pre><code>Scene.globe
-  -> Globe.update()
-  -> QuadtreePrimitive
-  -> terrain tile selection
-  -> imagery layer texture
-  -> terrain/imagery draw commands</code></pre>
-
-				<h2>9. 3D Tiles 的特殊路径</h2>
-				<p>3D Tiles 会先做 tileset traversal，根据相机选择可见 tile，再加载 glTF/mesh/metadata，最后生成 draw commands。</p>
-				<pre><code>Cesium3DTileset.update()
-  -> traversal / screen space error
-  -> request visible tiles
-  -> prepare tile content
-  -> push draw commands</code></pre>
-
-				<h2>10. 为什么这样设计</h2>
-				<ul>
-					<li><strong>Entity 友好：</strong>业务代码容易写。</li>
-					<li><strong>Primitive 高效：</strong>性能敏感场景可以跳过高级抽象。</li>
-					<li><strong>Command 可调度：</strong>Scene 能统一排序、裁剪、分 pass、做 picking。</li>
-					<li><strong>Renderer 可复用：</strong>WebGL 状态管理集中，不污染高层对象。</li>
-					<li><strong>适合海量数据：</strong>Terrain、Imagery、3D Tiles 都可以用各自的 tile pipeline 产生命令。</li>
-				</ul>
-
-				<h2>和 Pi Agent 的类比</h2>
-				<table class="compare-table">
-					<thead><tr><th>Pi Agent</th><th>Cesium</th><th>共同点</th></tr></thead>
-					<tbody>
-						<tr><td>用户 prompt</td><td>业务 Entity/Primitive</td><td>都是高层意图。</td></tr>
-						<tr><td>AgentSession</td><td>Viewer/Scene</td><td>都是运行时调度中心。</td></tr>
-						<tr><td>toolCall</td><td>DrawCommand</td><td>都是“下一步要执行什么”的结构化命令。</td></tr>
-						<tr><td>工具执行</td><td>Renderer/WebGL 执行</td><td>真正落地动作在底层执行。</td></tr>
-						<tr><td>AgentEvent</td><td>frameState/commandList</td><td>中间状态让系统可观察、可调度。</td></tr>
-					</tbody>
-				</table>
-
-				<h2>源码阅读入口</h2>
-				<ul>
-					<li>`packages/engine/Source/Widgets/Viewer/Viewer.js`：应用入口。</li>
-					<li>`packages/engine/Source/Scene/Scene.js`：渲染调度中心。</li>
-					<li>`packages/engine/Source/Scene/Primitive.js`：Primitive 如何产生命令。</li>
-					<li>`packages/engine/Source/Renderer/DrawCommand.js`：绘制命令。</li>
-					<li>`packages/engine/Source/Renderer/Context.js`：WebGL 上下文封装。</li>
-					<li>`packages/engine/Source/Scene/Globe.js`：地球、地形和影像入口。</li>
-					<li>`packages/engine/Source/Scene/Cesium3DTileset.js`：3D Tiles 入口。</li>
-				</ul>
-
-				<h2>官方参考</h2>
-				<ul>
-					<li><a href="https://github.com/CesiumGS/cesium/wiki/Architecture">Cesium Architecture Wiki</a></li>
-					<li><a href="https://github.com/CesiumGS/cesium/wiki/Geometry-and-Appearances">Geometry and Appearances</a></li>
-					<li><a href="https://cesium.com/learn/cesiumjs/ref-doc/">CesiumJS API Reference</a></li>
-				</ul>
+				<p class="kicker">Moved</p>
+				<h1>页面已移动到模块目录</h1>
+				<p class="lead">为了让学习站更适合长期扩展，这个页面已经整理到对应模块下。</p>
+				<p><a class="primary-link" href="../modules/cesium/render-path.html">打开新页面</a></p>
 			</article>
 		</main>
-		<script src="../theme.js"></script>
-			<script src="../enhance.js"></script>
 	</body>
 </html>
-

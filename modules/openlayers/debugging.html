@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>OpenLayers 调试手册 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>OpenLayers 调试</strong><span>地图不显示时怎么查</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">OpenLayers</a><a href="render-path.html">渲染路径</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">OpenLayers 总览</a><a href="render-path.html">完整渲染路径</a><a class="active" href="debugging.html">调试手册</a><a href="../cesium/debugging.html">Cesium 调试</a></aside>
+			<article class="doc">
+				<p class="kicker">Debugging</p>
+				<h1>OpenLayers 地图不显示时怎么查</h1>
+				<p class="lead">二维地图问题通常发生在 target、View、Layer、Source、网络、投影、样式或 renderer。按链路查，不要只看最后的 canvas。</p>
+
+				<h2>常见问题定位表</h2>
+				<table class="compare-table"><thead><tr><th>现象</th><th>可能原因</th><th>检查点</th></tr></thead><tbody>
+					<tr><td>地图空白</td><td>target DOM 没尺寸；View 未设置；Layer 没加；瓦片请求失败</td><td>容器 CSS、Map options、Network 面板</td></tr>
+					<tr><td>瓦片加载 404</td><td>URL 模板、token、跨域、投影或 tile grid 错</td><td>Source URL、z/x/y、CORS</td></tr>
+					<tr><td>矢量要素不显示</td><td>坐标投影错、style 返回空、extent 不在视图内</td><td>Feature 坐标、View projection、styleFunction</td></tr>
+					<tr><td>点击选不中</td><td>hitTolerance 太小、layer filter、feature 不可见</td><td>forEachFeatureAtPixel、layerFilter</td></tr>
+					<tr><td>性能卡顿</td><td>Feature 太多、样式函数太重、频繁 setState</td><td>聚合、VectorTile、WebGL layer</td></tr>
+				</tbody></table>
+
+				<h2>调试顺序</h2>
+				<pre><code>1. target 容器是否有宽高
+2. new Map 是否成功创建
+3. View center/zoom/projection 是否合理
+4. layers 数组是否有图层
+5. layer.getSource() 是否存在
+6. Source state 是否 ready
+7. Network 是否加载瓦片/数据
+8. 坐标是否需要 fromLonLat
+9. styleFunction 是否返回可见样式
+10. renderer 是否报错</code></pre>
+
+				<h2>最容易犯的错：经纬度和投影</h2>
+				<p>OpenLayers 默认 View 常用 EPSG:3857，业务经纬度通常是 EPSG:4326。如果你直接把 `[116.39, 39.9]` 当成 Web Mercator 坐标，点会跑错位置。常见写法是用 `fromLonLat()` 转换。</p>
+				<pre><code>import {fromLonLat} from "ol/proj.js";
+
+const coordinate = fromLonLat([116.39, 39.9]);</code></pre>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

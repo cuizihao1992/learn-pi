@@ -1,32 +1,21 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-CN">
-	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>FAQ | Learn Pi</title><link rel="stylesheet" href="../styles.css" /></head>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta http-equiv="refresh" content="0; url=../modules/pi-agent/faq.html" />
+		<title>FAQ | Learn Pi 已迁移 | 源码学习实验室</title>
+		<link rel="canonical" href="../modules/pi-agent/faq.html" />
+		<link rel="stylesheet" href="../styles.css" />
+	</head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Learn Pi</strong><span>FAQ</span></div></div><nav><a href="../index.html">首页</a><a href="glossary.html">术语</a><a href="callgraph.html">调用图</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="architecture.html">1. 架构设计</a><a href="lifecycle.html">2. 完整运行流程</a><a href="prompt-processing.html">3. 提示词处理</a><a href="tools.html">4. 工具调用</a><a href="sessions.html">5. 会话与压缩</a><a href="models.html">6. 模型接口</a><a href="frontend.html">7. 前端事件</a><a href="design-tradeoffs.html">8. 为什么这样设计</a><a href="labs.html">9. 动手练习</a><a href="mini-agent.html">从零开发 Mini Agent</a><a href="custom-model-api.html">自研模型接入</a><a href="glossary.html">术语表</a><a href="callgraph.html">源码调用图</a><a class="active" href="faq.html">FAQ</a></aside>
 			<article class="doc">
-				<p class="kicker">Reference</p>
-				<h1>FAQ：新手最容易卡住的问题</h1>
-				<div class="faq-list">
-					<section><h2>模型是不是直接改文件？</h2><p>不是。模型只能返回 toolCall，比如 `edit({ path, edits })`。真正读写文件的是 Pi 的工具系统。</p></section>
-					<section><h2>用户 prompt 会原封不动发给模型吗？</h2><p>不会。用户 prompt 会被包装成 AgentMessage，并和 system prompt、历史消息、工具 schema、summary message 一起组成模型上下文。</p></section>
-					<section><h2>为什么工具结果还要发回模型？</h2><p>因为模型需要根据工具结果决定下一步。读完文件后才知道怎么改，测试失败后才知道怎么修。</p></section>
-					<section><h2>Agent 和 AgentSession 有什么区别？</h2><p>Agent 是通用状态化运行时；AgentSession 是 coding-agent 产品层中心，负责会话、工具、扩展、模型、压缩、UI 事件。</p></section>
-					<section><h2>为什么要有 pi-ai？</h2><p>为了把不同 provider 的消息、工具调用、stream、reasoning、usage 差异集中处理，让 Agent loop 保持稳定。</p></section>
-					<section><h2>为什么一个用户问题会调用多次模型？</h2><p>因为工具调用是多轮的：模型提出 toolCall，Pi 执行后返回 toolResult，模型再基于结果继续推理。</p></section>
-					<section><h2>上下文压缩会不会丢信息？</h2><p>会有取舍，所以摘要 prompt 要保留文件路径、函数名、错误、未完成任务。它牺牲完整细节，换取长任务可继续。</p></section>
-					<section><h2>前端为什么能实时显示工具执行？</h2><p>因为 runLoop 和 AgentSession 会持续 emit 事件，interactive-mode 订阅事件并用 pi-tui 差分渲染。</p></section>
-					<section><h2>为什么不让模型自己管理会话？</h2><p>会话是可靠状态，应该由程序管理。模型只负责推理下一步，不能承担持久化、一致性和恢复职责。</p></section>
-					<section><h2>读源码最应该先看哪里？</h2><p>先看 `main.ts`、`agent-session.ts`、`agent.ts`、`agent-loop.ts`、`tools/index.ts`。不要一开始就钻 provider 细节。</p></section>
-				</div>
-				<div class="next-card"><span>回到课程</span><a href="../index.html">打开课程目录</a></div>
+				<p class="kicker">Moved</p>
+				<h1>页面已移动到模块目录</h1>
+				<p class="lead">为了让学习站更适合长期扩展，这个页面已经整理到对应模块下。</p>
+				<p><a class="primary-link" href="../modules/pi-agent/faq.html">打开新页面</a></p>
 			</article>
 		</main>
-		<script src="../theme.js"></script>
-			<script src="../enhance.js"></script>
 	</body>
 </html>
-
-
-

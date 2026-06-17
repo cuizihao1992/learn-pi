@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Pi Agent 学习路径 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Pi Agent 学习路径</strong><span>从提示词到工具执行</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/dashboard.html">仪表盘</a><a href="charter.html">模块宪章</a><a href="../cesium/index.html">Cesium</a><a href="../openlayers/index.html">OpenLayers</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a class="active" href="index.html">Pi 总览</a><a href="architecture.html">架构设计</a><a href="lifecycle.html">完整流程</a><a href="prompt-processing.html">提示词处理</a><a href="tools.html">工具调用</a><a href="mini-agent.html">Mini Agent</a><a href="custom-model-api.html">自研模型接入</a><a href="pi-debugging.html">调试手册</a></aside>
+			<article class="doc">
+				<p class="kicker">Pi Agent Module</p>
+				<h1>Pi Agent：从用户提示词到真实工具执行</h1>
+				<p class="lead">这个模块专门回答一个问题：Agent 到底怎么把一句自然语言任务，变成模型调用、工具调用、文件修改、测试执行和前端事件更新。</p>
+
+				<h2>这个模块和其他模块的关系</h2>
+				<div class="lesson-grid">
+					<section><h3>Pi Agent</h3><p>研究“决策系统”：提示词、上下文、模型、工具、会话、压缩、事件。</p></section>
+					<section><h3>Cesium</h3><p>研究“三维渲染系统”：Viewer、Scene、Primitive、Command、Renderer、GPU。</p></section>
+					<section><h3>OpenLayers</h3><p>研究“二维地图系统”：Map、View、Layer、Source、Renderer、Canvas/WebGL。</p></section>
+					<section><h3>共同心智模型</h3><p>高层意图不会直接执行，都会先变成中间结构，再由运行时统一调度。</p></section>
+				</div>
+
+				<h2>推荐学习顺序</h2>
+				<ol>
+					<li><strong>架构设计：</strong>先知道 Pi 为什么拆成 coding-agent、agent-core、pi-ai、pi-tui。</li>
+					<li><strong>完整流程：</strong>用一个完整对话看 prompt、toolCall、toolResult、最终回答如何闭环。</li>
+					<li><strong>提示词处理：</strong>理解原始输入如何被系统提示词、上下文、工具定义包起来。</li>
+					<li><strong>工具调用：</strong>理解模型为什么不能直接改文件，必须请求运行时执行工具。</li>
+					<li><strong>模型接口：</strong>理解 OpenAI、Anthropic、自研模型如何被适配成统一消息流。</li>
+					<li><strong>Mini Agent：</strong>用 Node 写一个最小可运行版本，把抽象落到代码。</li>
+				</ol>
+
+				<h2>入口</h2>
+				<div class="track-grid">
+					<section><h3>主线课程</h3><p>从架构开始读，适合第一次系统学习。</p><a class="primary-link" href="architecture.html">开始学习</a></section>
+					<section><h3>完整例子</h3><p>直接看一次完整任务如何跑完。</p><a class="primary-link" href="lifecycle.html">看运行流程</a></section>
+					<section><h3>动手实现</h3><p>从零写一个 Node Mini Agent。</p><a class="primary-link" href="mini-agent.html">写 Mini Agent</a></section>
+				</div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

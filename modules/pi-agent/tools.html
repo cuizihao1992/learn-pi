@@ -1,0 +1,60 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>工具调用 | Learn Pi</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Pi Agent 学习路径</strong><span>工具调用系统</span></div></div><nav><a href="../../index.html">首页</a><a href="lifecycle.html">运行流程</a><a href="sessions.html">会话</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="architecture.html">1. 架构设计</a><a href="lifecycle.html">2. 完整运行流程</a><a href="prompt-processing.html">3. 提示词处理</a><a class="active" href="tools.html">4. 工具调用</a><a href="sessions.html">5. 会话与压缩</a><a href="models.html">6. 模型接口</a><a href="frontend.html">7. 前端事件</a><a href="design-tradeoffs.html">8. 为什么这样设计</a><a href="labs.html">9. 动手练习</a><a href="mini-agent.html">从零开发 Mini Agent</a><a href="custom-model-api.html">自研模型接入</a><a href="glossary.html">术语表</a><a href="callgraph.html">源码调用图</a><a href="faq.html">FAQ</a><a href="../cesium/index.html">Cesium 学习路径</a></aside>
+			<article class="doc">
+				<p class="kicker">Part 4</p>
+				<h1>工具调用系统：模型怎么“操作电脑”</h1>
+				<p class="lead">模型本身不能读文件、改文件、跑命令。它只能提出 toolCall。真正执行的是 Pi Agent。</p>
+
+				<h2>工具调用生命周期</h2>
+				<pre><code>assistant message contains toolCall
+  -> executeToolCalls()
+  -> prepareToolCall()
+  -> validateToolArguments()
+  -> beforeToolCall hook
+  -> tool.execute()
+  -> afterToolCall hook
+  -> createToolResultMessage()
+  -> push toolResult back to context</code></pre>
+
+				<h2>为什么有 ToolDefinition 和 AgentTool 两层</h2>
+				<div class="lesson-grid">
+					<section><h3>ToolDefinition</h3><p>面向描述、扩展系统、UI 渲染和工具管理。它告诉系统这个工具叫什么、参数是什么、如何展示。</p></section>
+					<section><h3>AgentTool</h3><p>面向 agent loop 执行。它包含 schema 和 execute 函数，是模型 toolCall 最终落地的地方。</p></section>
+				</div>
+
+				<h2>内置工具</h2>
+				<ul>
+					<li>`read`：读取文件内容，通常是模型理解项目的第一步。</li>
+					<li>`bash`：执行命令，验证、搜索、构建、测试。</li>
+					<li>`edit`：按 oldText/newText 修改文件，并生成 diff。</li>
+					<li>`write`：写入新文件或覆盖文件。</li>
+					<li>`grep/find/ls`：只读探索工具，用于定位文件和内容。</li>
+				</ul>
+
+				<h2>edit 工具为什么复杂</h2>
+				<p>编辑文件不是简单字符串替换。它要防止替错位置、处理不同换行符、避免并发写同一文件、生成可读 diff，并且在 oldText 不精确时给出可理解错误。</p>
+				<ul>
+					<li>`edit.ts`：参数准备、路径解析、工具定义、执行。</li>
+					<li>`edit-diff.ts`：内容匹配、diff 生成、换行符处理。</li>
+					<li>`file-mutation-queue.ts`：同一路径写操作串行化。</li>
+				</ul>
+
+				<h2>为什么工具结果还要发回模型</h2>
+				<p>因为 Pi Agent 不是预先写死流程。模型读完 README 后才知道要怎么编辑；编辑后看到 diff 才决定是否测试；测试后看到错误才决定是否修复。每个 toolResult 都是下一轮推理的输入。</p>
+
+				<div class="next-card"><span>下一步</span><a href="sessions.html">理解长对话如何保存和压缩</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script>
+			<script src="../../enhance.js"></script>
+	</body>
+</html>
+
+
+
+

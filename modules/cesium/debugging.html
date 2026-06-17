@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Cesium 渲染调试手册 | Learn Pi</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Cesium 调试手册</strong><span>看懂为什么没画出来</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">Cesium</a><a href="render-path.html">渲染路径</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">Cesium 总览</a><a href="render-path.html">完整渲染路径</a><a class="active" href="debugging.html">渲染调试手册</a><a href="glossary.html">Cesium 术语表</a></aside>
+			<article class="doc">
+				<p class="kicker">Debugging</p>
+				<h1>Cesium 没渲染出来时怎么查</h1>
+				<p class="lead">Cesium 渲染问题要沿着 Viewer -> Scene -> Primitive -> Command -> Renderer -> WebGL 查。不要只盯业务数据。</p>
+				<h2>常见问题定位</h2>
+				<table class="compare-table"><thead><tr><th>现象</th><th>可能原因</th><th>检查点</th></tr></thead><tbody>
+					<tr><td>对象完全不显示</td><td>坐标错、被裁剪、没进入 commandList、show=false</td><td>Primitive.update 是否执行；boundingVolume 是否正确</td></tr>
+					<tr><td>只有某些角度显示</td><td>剔除、深度、包围球、相机 near/far</td><td>cullingVolume、RenderState、debugShowBoundingVolume</td></tr>
+					<tr><td>透明物体异常</td><td>pass 错、排序错、blend state 错</td><td>Pass.TRANSLUCENT、RenderState.blending</td></tr>
+					<tr><td>shader 编译失败</td><td>GLSL 版本、attribute/uniform 名不匹配</td><td>ShaderProgram 创建日志</td></tr>
+					<tr><td>地形/影像不加载</td><td>网络、token、tile provider、LOD</td><td>terrainProvider、imageryLayers、Network 面板</td></tr>
+				</tbody></table>
+				<h2>渲染链路检查清单</h2>
+				<pre><code>1. Viewer 是否创建成功
+2. Scene 是否在 render
+3. 对象是否加入 scene.primitives 或 entities
+4. update 是否把命令 push 到 frameState.commandList
+5. DrawCommand 是否有 vertexArray / shaderProgram / renderState
+6. pass 是否正确
+7. boundingVolume 是否合理
+8. shader 是否编译通过
+9. WebGL 是否报错
+10. framebuffer / depth / blending 是否符合预期</code></pre>
+				<h2>最重要的一句话</h2>
+				<p>Cesium 里“数据存在”不等于“会画出来”。只有最终形成正确的 DrawCommand，并被 Scene 在正确 pass 执行，GPU 才会产生像素。</p>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>
