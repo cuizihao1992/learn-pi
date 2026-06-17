@@ -103,6 +103,7 @@
 
 html {
 	scroll-behavior: smooth;
+	-webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -111,6 +112,7 @@ body {
 		linear-gradient(90deg, rgba(0, 108, 103, 0.07), transparent 28%),
 		linear-gradient(180deg, #fbf8ef, var(--paper));
 	color: var(--ink);
+	overflow-x: hidden;
 }
 
 .reading-progress {
@@ -147,6 +149,7 @@ a {
 	background: var(--topbar-bg);
 	border-bottom: 1px solid var(--line);
 	backdrop-filter: blur(18px);
+	min-width: 0;
 }
 
 .theme-switcher {
@@ -193,6 +196,7 @@ a {
 	align-items: center;
 	gap: 12px;
 	min-width: 260px;
+	min-width: 0;
 }
 
 .brand img {
@@ -203,6 +207,7 @@ a {
 .brand strong,
 .brand span {
 	display: block;
+	overflow-wrap: anywhere;
 }
 
 .brand span {
@@ -217,6 +222,7 @@ nav {
 	gap: 10px;
 	flex-wrap: wrap;
 	justify-content: flex-end;
+	min-width: 0;
 }
 
 nav a {
@@ -225,6 +231,7 @@ nav a {
 	color: var(--muted);
 	padding: 8px 10px;
 	border-radius: 6px;
+	white-space: nowrap;
 }
 
 nav a:hover {
@@ -331,6 +338,7 @@ h1 {
 	line-height: 0.98;
 	letter-spacing: 0;
 	margin-bottom: 24px;
+	overflow-wrap: anywhere;
 }
 
 h2 {
@@ -521,6 +529,7 @@ h2 {
 	padding: 20px;
 	text-decoration: none;
 	box-shadow: var(--shadow);
+	overflow-wrap: anywhere;
 }
 
 .course-grid span {
@@ -601,6 +610,7 @@ h2 {
 	border-radius: 8px;
 	padding: 36px;
 	box-shadow: var(--shadow);
+	min-width: 0;
 }
 
 .page-search {
@@ -654,6 +664,7 @@ h2 {
 .doc li {
 	color: #3f4b50;
 	line-height: 1.78;
+	overflow-wrap: anywhere;
 }
 
 .doc .lead {
@@ -1005,12 +1016,14 @@ h2 {
 pre {
 	position: relative;
 	overflow: auto;
+	max-width: 100%;
 	background: var(--code-bg);
 	color: var(--code-fg);
 	border-radius: 8px;
 	padding: 16px;
 	line-height: 1.55;
 	font-size: 13px;
+	-webkit-overflow-scrolling: touch;
 }
 
 .copy-code {
@@ -1184,12 +1197,54 @@ footer a {
 	}
 
 	.topbar {
-		position: static;
+		position: sticky;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: 12px;
+		padding: 12px 16px;
+	}
+
+	.brand {
+		width: auto;
+	}
+
+	.brand img {
+		width: 34px;
+		height: 34px;
+		flex: 0 0 auto;
+	}
+
+	nav {
+		grid-column: 1 / -1;
+		flex-wrap: nowrap;
+		justify-content: flex-start;
+		overflow-x: auto;
+		padding-bottom: 4px;
+		scrollbar-width: none;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	nav::-webkit-scrollbar {
+		display: none;
+	}
+
+	nav a {
+		background: color-mix(in srgb, var(--panel) 72%, transparent);
+		border: 1px solid var(--line);
 	}
 
 	.theme-switcher {
-		justify-content: flex-start;
+		grid-column: 2;
+		grid-row: 1;
+		justify-content: flex-end;
+		align-self: center;
+		flex-wrap: nowrap;
 		max-width: none;
+	}
+
+	.theme-switcher button {
+		min-height: 32px;
+		padding: 4px 8px;
 	}
 
 	.workspace,
@@ -1217,7 +1272,21 @@ footer a {
 
 	.doc-sidebar {
 		position: static;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
+		display: flex;
+		overflow-x: auto;
+		gap: 8px;
+		padding: 10px;
+		scrollbar-width: none;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.doc-sidebar::-webkit-scrollbar {
+		display: none;
+	}
+
+	.doc-sidebar a {
+		flex: 0 0 auto;
+		white-space: nowrap;
 	}
 
 	.flow {
@@ -1235,17 +1304,118 @@ footer a {
 
 @media (max-width: 640px) {
 	main,
+	.doc-layout,
 	footer {
 		width: min(100% - 20px, 1240px);
 	}
 
+	body {
+		background: var(--paper);
+	}
+
+	.topbar {
+		top: 0;
+		padding: 10px;
+	}
+
+	.brand {
+		gap: 10px;
+	}
+
+	.brand strong {
+		font-size: 15px;
+	}
+
+	.brand span {
+		display: none;
+	}
+
+	nav {
+		gap: 8px;
+		margin-inline: -2px;
+	}
+
+	.theme-switcher {
+		gap: 5px;
+		max-width: 178px;
+		overflow-x: auto;
+		scrollbar-width: none;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.theme-switcher::-webkit-scrollbar {
+		display: none;
+	}
+
+	.theme-switcher button {
+		flex: 0 0 auto;
+		width: 30px;
+		min-height: 30px;
+		justify-content: center;
+		padding: 0;
+		font-size: 0;
+	}
+
+	.theme-switcher span {
+		width: 12px;
+		height: 12px;
+	}
+
+	nav a {
+		min-height: 38px;
+		display: inline-flex;
+		align-items: center;
+		padding: 7px 10px;
+		font-size: 13px;
+	}
+
 	.workspace {
 		min-height: auto;
-		padding-top: 42px;
+		padding: 28px 0 34px;
+		gap: 22px;
 	}
 
 	h1 {
-		font-size: 42px;
+		font-size: clamp(34px, 10vw, 42px);
+		line-height: 1.08;
+		margin-bottom: 16px;
+	}
+
+	h2 {
+		font-size: 23px;
+		line-height: 1.25;
+	}
+
+	.intro p:last-child,
+	.big-explain p,
+	.doc .lead {
+		font-size: 16px;
+		line-height: 1.72;
+	}
+
+	.hero-actions,
+	.page-search {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.primary-link,
+	.secondary-link {
+		width: 100%;
+		min-height: 44px;
+		text-align: center;
+	}
+
+	.metric {
+		padding: 18px;
+	}
+
+	.metric strong {
+		font-size: 34px;
+	}
+
+	.section {
+		padding: 28px 0 38px;
 	}
 
 	.module-grid,
@@ -1257,13 +1427,97 @@ footer a {
 		grid-template-columns: 1fr;
 	}
 
-	.doc {
-		padding: 24px 18px;
+	.course-grid a,
+	.track-grid section,
+	.module-card,
+	.deep-card,
+	.lesson-grid section,
+	.term-list section,
+	.faq-list section,
+	.big-explain,
+	.example-detail,
+	.code-detail {
+		padding: 16px;
+		min-height: 0;
+		box-shadow: none;
 	}
 
-	.doc-sidebar,
+	.course-grid h3,
+	.track-grid h2,
+	.track-grid h3 {
+		font-size: 18px;
+	}
+
+	.doc-layout {
+		padding: 16px 0 38px;
+		gap: 12px;
+	}
+
+	.doc {
+		padding: 20px 15px;
+		border-radius: 8px;
+		box-shadow: none;
+	}
+
+	.doc h1 {
+		font-size: clamp(30px, 9vw, 38px);
+		line-height: 1.1;
+	}
+
+	.doc h2 {
+		margin-top: 28px;
+		font-size: 22px;
+	}
+
+	.doc > ul,
+	.doc > ol {
+		padding-left: 20px;
+	}
+
 	.lesson-grid {
 		grid-template-columns: 1fr;
+	}
+
+	.doc-sidebar {
+		position: sticky;
+		top: 112px;
+		z-index: 10;
+		margin-inline: -10px;
+		border-radius: 0;
+		border-inline: 0;
+		background: var(--topbar-bg);
+		backdrop-filter: blur(16px);
+	}
+
+	.page-search {
+		gap: 8px;
+	}
+
+	.page-search input,
+	.search,
+	.select {
+		width: 100%;
+		font-size: 16px;
+	}
+
+	.compare-table {
+		display: block;
+		overflow-x: auto;
+		white-space: nowrap;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	pre {
+		margin-inline: -2px;
+		padding: 14px 12px;
+		font-size: 12px;
+	}
+
+	.copy-code {
+		position: sticky;
+		float: right;
+		top: 6px;
+		right: 6px;
 	}
 
 	.next-card {
@@ -1277,5 +1531,21 @@ footer a {
 
 	.step input {
 		grid-column: 2;
+	}
+
+	.flow,
+	.node,
+	.sequence-item {
+		min-height: 0;
+	}
+
+	.example-step,
+	.step {
+		padding: 13px;
+	}
+
+	footer {
+		padding-bottom: 28px;
+		font-size: 13px;
 	}
 }
