@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>内容宪章 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>源码学习实验室</strong><span>内容宪章</span></div></div><nav><a href="../index.html">首页</a><a href="dashboard.html">仪表盘</a><a href="openlayers.html">OpenLayers</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="dashboard.html">学习仪表盘</a><a class="active" href="charter.html">内容宪章</a><a href="architecture.html">Pi Agent</a><a href="cesium.html">Cesium</a><a href="openlayers.html">OpenLayers</a><a href="knowledge-check.html">知识测验</a></aside>
+			<article class="doc">
+				<p class="kicker">Charter</p>
+				<h1>源码学习实验室内容宪章</h1>
+				<p class="lead">这个网站后续会不断加入新项目。为了不变成零散笔记，每个新专题都按同一套结构写：先让小白知道它解决什么问题，再讲完整链路，再落到源码和练习。</p>
+
+				<h2>每个专题必须回答的 8 个问题</h2>
+				<ol>
+					<li><strong>它解决什么问题？</strong>先讲使用场景，不先堆类名。</li>
+					<li><strong>最小可运行例子是什么？</strong>用一段代码建立直觉。</li>
+					<li><strong>完整运行链路是什么？</strong>从用户 API 到底层执行，一步一步画出来。</li>
+					<li><strong>核心抽象有哪些？</strong>解释对象之间的边界和关系。</li>
+					<li><strong>为什么这样设计？</strong>必须和其他方案对比。</li>
+					<li><strong>怎么调试？</strong>列出常见故障、检查顺序、关键状态。</li>
+					<li><strong>源码从哪里读？</strong>给出文件路径、函数入口和调用图。</li>
+					<li><strong>怎么动手做？</strong>给出练习任务和完成标准。</li>
+				</ol>
+
+				<h2>统一章节模板</h2>
+				<pre><code>专题总览
+  -> 最小例子
+  -> 完整运行路径
+  -> 核心概念和术语
+  -> 关键源码入口
+  -> 为什么这样设计
+  -> 调试手册
+  -> 动手练习
+  -> FAQ / 常见误区</code></pre>
+
+				<h2>写作原则</h2>
+				<ul>
+					<li><strong>从问题开始：</strong>先说“为什么需要这个对象”，再说对象叫什么。</li>
+					<li><strong>坚持完整链路：</strong>不要只讲 API，要讲数据如何一路流到执行层。</li>
+					<li><strong>代码和概念互相映射：</strong>每个抽象都要能指到源码文件。</li>
+					<li><strong>给替代方案：</strong>讲“为什么不是另一种设计”。</li>
+					<li><strong>默认读者是新手：</strong>避免“显然”“很简单”这种跳步。</li>
+					<li><strong>保留工程判断：</strong>说明性能、复杂度、可测试性和扩展性取舍。</li>
+				</ul>
+
+				<h2>当前学习路径</h2>
+				<div class="track-grid">
+					<section><h3>Pi Agent</h3><p>学习 agent 如何处理提示词、调用模型、执行工具、保存会话、接入自研模型。</p><a class="primary-link" href="architecture.html">进入 Pi</a></section>
+					<section><h3>Cesium</h3><p>学习三维引擎如何从 Viewer、Scene、Primitive、DrawCommand 到 GPU。</p><a class="primary-link" href="cesium.html">进入 Cesium</a></section>
+					<section><h3>OpenLayers</h3><p>学习二维地图如何从 Map、View、Layer、Source 到 renderer 和 canvas/webgl。</p><a class="primary-link" href="openlayers.html">进入 OpenLayers</a></section>
+				</div>
+			</article>
+		</main>
+		<script src="../theme.js"></script><script src="../enhance.js"></script>
+	</body>
+</html>

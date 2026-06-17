@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>OpenLayers 完整渲染路径 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Learn OpenLayers</strong><span>完整渲染路径</span></div></div><nav><a href="../index.html">首页</a><a href="openlayers.html">OpenLayers</a><a href="cesium-render-path.html">Cesium 对照</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="openlayers.html">OpenLayers 总览</a><a class="active" href="openlayers-render-path.html">完整渲染路径</a><a href="openlayers-debugging.html">调试手册</a><a href="cesium-render-path.html">Cesium 渲染路径</a></aside>
+			<article class="doc">
+				<p class="kicker">Rendering Pipeline</p>
+				<h1>OpenLayers 完整渲染路径：从 Map 到 Canvas/WebGL</h1>
+				<p class="lead">这一章回答：你创建一个 TileLayer 或 VectorLayer 后，OpenLayers 如何加载数据、计算视图、选择 renderer，并最终画到屏幕上。</p>
+
+				<h2>一句话总览</h2>
+				<pre><code>new Map({ target, view, layers })
+  -> MapBrowserEventHandler / interactions
+  -> View state: center / resolution / rotation / projection
+  -> layerGroup
+  -> LayerRenderer
+  -> Source loads tiles/features/images
+  -> frameState / layerState
+  -> Canvas or WebGL renderer
+  -> browser paints pixels</code></pre>
+
+				<h2>1. Map 是调度中心</h2>
+				<p>`Map` 持有目标 DOM、View、LayerGroup、交互、控件。它监听 View 和 Layer 的变化，然后安排下一帧渲染。</p>
+				<pre><code>Map
+  -> target HTMLElement
+  -> View
+  -> LayerGroup
+  -> interactions
+  -> controls
+  -> renderer</code></pre>
+
+				<h2>2. View 决定地图怎么看</h2>
+				<p>View 不是图层，也不是数据。它描述当前视角：center、resolution/zoom、rotation、projection。Layer renderer 会根据 View state 计算需要加载哪些瓦片或哪些要素落在当前视口内。</p>
+				<pre><code>View state
+  center: 当前中心
+  resolution: 当前地图分辨率
+  zoom: resolution 的离散表达
+  rotation: 旋转角
+  projection: 坐标系</code></pre>
+
+				<h2>3. Layer 是视觉表达，Source 是数据来源</h2>
+				<p>官方 Basic Concepts 里把 Layer 定义为 Source 数据的视觉表示，并列出 Tile、Image、Vector、VectorTile 四类基本 Layer。这个分离非常重要：Source 管数据，Layer 管怎么展示。</p>
+				<pre><code>TileLayer
+  -> TileSource(OSM/XYZ/WMTS)
+  -> tile grid
+  -> image tiles
+
+VectorLayer
+  -> VectorSource
+  -> Feature collection
+  -> Style function
+
+VectorTileLayer
+  -> VectorTileSource
+  -> tile features
+  -> renderer draws tiled vectors</code></pre>
+
+				<h2>4. TileLayer 的渲染路径</h2>
+				<pre><code>Map render frame
+  -> TileLayerRenderer.prepareFrame()
+  -> Source.getTile(z, x, y)
+  -> tile cache / network loading
+  -> draw loaded tile images to canvas
+  -> handle opacity / extent / zIndex</code></pre>
+				<p>瓦片图层的关键是：根据当前 View resolution 选择 z/x/y 瓦片，加载图片，按瓦片网格贴到 canvas 上。</p>
+
+				<h2>5. VectorLayer 的渲染路径</h2>
+				<pre><code>Map render frame
+  -> VectorLayerRenderer.prepareFrame()
+  -> Source.getFeaturesInExtent()
+  -> styleFunction(feature, resolution)
+  -> build replay/instruction groups
+  -> draw geometries/text/images to canvas</code></pre>
+				<p>矢量图层的关键是：要素在客户端渲染。样式函数会把 Feature 转成绘制指令。</p>
+
+				<h2>6. VectorTileLayer 的路径</h2>
+				<p>VectorTile 结合了瓦片加载和客户端矢量渲染：数据按瓦片切分，但每个瓦片内是矢量要素，而不是图片。</p>
+				<pre><code>VectorTileLayer
+  -> choose visible vector tile coords
+  -> load MVT/GeoJSON vector tiles
+  -> parse features
+  -> apply styles
+  -> render tile-local vectors</code></pre>
+
+				<h2>7. Canvas 和 WebGL 的差别</h2>
+				<table class="compare-table"><thead><tr><th>渲染器</th><th>适合</th><th>特点</th></tr></thead><tbody>
+					<tr><td>Canvas</td><td>普通瓦片、普通矢量、小中等数据量</td><td>实现直观，调试容易，性能有限。</td></tr>
+					<tr><td>WebGL</td><td>大量点线面、矢量瓦片、图像处理</td><td>把更多工作交给 GPU，性能更好，但 shader 和状态更复杂。</td></tr>
+				</tbody></table>
+
+				<h2>8. OpenLayers 和 Cesium 的渲染链路类比</h2>
+				<table class="compare-table"><thead><tr><th>OpenLayers</th><th>Cesium</th><th>共同点</th></tr></thead><tbody>
+					<tr><td>Map</td><td>Viewer / Scene</td><td>运行时入口和调度中心。</td></tr>
+					<tr><td>View</td><td>Camera</td><td>决定当前看哪里、怎么看。</td></tr>
+					<tr><td>Layer</td><td>Primitive / Globe / Tileset</td><td>可渲染对象。</td></tr>
+					<tr><td>Source</td><td>TerrainProvider / ImageryProvider / Tile content</td><td>数据来源和加载。</td></tr>
+					<tr><td>LayerRenderer</td><td>DrawCommand / Renderer</td><td>把对象转成底层绘制动作。</td></tr>
+				</tbody></table>
+
+				<h2>9. 源码阅读入口</h2>
+				<ul>
+					<li>`src/ol/Map.js`：地图入口和渲染调度。</li>
+					<li>`src/ol/View.js`：视图状态和约束。</li>
+					<li>`src/ol/layer/Base.js`、`Layer.js`：图层基础类。</li>
+					<li>`src/ol/source/Source.js`：Source 基础类。</li>
+					<li>`src/ol/renderer/`：Canvas/WebGL renderer。</li>
+					<li>`src/ol/layer/Tile.js`、`Vector.js`、`VectorTile.js`：典型 Layer。</li>
+				</ul>
+			</article>
+		</main>
+		<script src="../theme.js"></script><script src="../enhance.js"></script>
+	</body>
+</html>

@@ -113,6 +113,24 @@ body {
 	color: var(--ink);
 }
 
+.reading-progress {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 100;
+	height: 4px;
+	background: transparent;
+}
+
+.reading-progress span {
+	display: block;
+	width: 0;
+	height: 100%;
+	background: var(--teal);
+	transition: width 120ms linear;
+}
+
 a {
 	color: inherit;
 }
@@ -219,6 +237,36 @@ nav a:hover {
 	gap: 12px;
 	flex-wrap: wrap;
 	margin-top: 24px;
+}
+
+.track-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 14px;
+}
+
+.track-grid section {
+	background: var(--panel);
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	padding: 20px;
+	box-shadow: var(--shadow);
+}
+
+.track-grid h2 {
+	margin-top: 0;
+	margin-bottom: 12px;
+}
+
+.track-grid p,
+.track-grid li {
+	color: #3f4b50;
+	line-height: 1.68;
+}
+
+:root[data-theme="graphite"] .track-grid p,
+:root[data-theme="graphite"] .track-grid li {
+	color: var(--muted);
 }
 
 .primary-link,
@@ -553,6 +601,37 @@ h2 {
 	border-radius: 8px;
 	padding: 36px;
 	box-shadow: var(--shadow);
+}
+
+.page-search {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 24px;
+	padding-bottom: 18px;
+	border-bottom: 1px solid var(--line);
+}
+
+.page-search input {
+	width: min(420px, 100%);
+	min-height: 42px;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	background: var(--panel);
+	color: var(--ink);
+	padding: 10px 12px;
+	font: inherit;
+}
+
+.page-search span {
+	color: var(--muted);
+	font-size: 13px;
+	font-weight: 800;
+}
+
+.search-hit {
+	background: color-mix(in srgb, var(--teal-soft) 75%, transparent);
+	border-radius: 6px;
 }
 
 .doc h1 {
@@ -924,6 +1003,7 @@ h2 {
 }
 
 pre {
+	position: relative;
 	overflow: auto;
 	background: var(--code-bg);
 	color: var(--code-fg);
@@ -931,6 +1011,21 @@ pre {
 	padding: 16px;
 	line-height: 1.55;
 	font-size: 13px;
+}
+
+.copy-code {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	border: 1px solid var(--line);
+	background: var(--panel);
+	color: var(--teal);
+	border-radius: 6px;
+	padding: 5px 8px;
+	font: inherit;
+	font-size: 12px;
+	font-weight: 900;
+	cursor: pointer;
 }
 
 .deep-grid {
@@ -1110,6 +1205,7 @@ footer a {
 	}
 
 	.course-grid,
+	.track-grid,
 	.sequence,
 	.deep-grid {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1154,6 +1250,7 @@ footer a {
 
 	.module-grid,
 	.course-grid,
+	.track-grid,
 	.sequence,
 	.deep-grid,
 	.task-grid {

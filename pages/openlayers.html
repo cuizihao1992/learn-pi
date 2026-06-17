@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>OpenLayers 学习路径 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Learn OpenLayers</strong><span>二维地图渲染路径</span></div></div><nav><a href="../index.html">首页</a><a href="openlayers-render-path.html">渲染路径</a><a href="openlayers-debugging.html">调试</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="charter.html">内容宪章</a><a class="active" href="openlayers.html">OpenLayers 总览</a><a href="openlayers-render-path.html">完整渲染路径</a><a href="openlayers-debugging.html">调试手册</a><a href="architecture.html">Pi Agent</a><a href="cesium.html">Cesium</a></aside>
+			<article class="doc">
+				<p class="kicker">OpenLayers Path</p>
+				<h1>OpenLayers 学习路径：从 Map 到像素</h1>
+				<p class="lead">OpenLayers 是 Web 二维地图引擎。它的核心不是“画一张图”，而是把地图视图、图层、数据源、投影、交互和渲染器组织成一个可扩展系统。</p>
+
+				<h2>最小例子</h2>
+				<pre><code>import Map from "ol/Map.js";
+import View from "ol/View.js";
+import TileLayer from "ol/layer/Tile.js";
+import OSM from "ol/source/OSM.js";
+
+const map = new Map({
+  target: "map",
+  layers: [
+    new TileLayer({ source: new OSM() })
+  ],
+  view: new View({
+    center: [0, 0],
+    zoom: 2
+  })
+});</code></pre>
+				<p>官方 API 文档也强调：Map 是核心组件；要渲染一个地图，需要 target container、View 和一个或多个 Layer。</p>
+
+				<h2>核心分层</h2>
+				<div class="lesson-grid">
+					<section><h3>Map</h3><p>应用入口，持有 target、layers、view、controls、interactions，负责统一调度渲染。</p></section>
+					<section><h3>View</h3><p>描述“怎么看地图”：中心点、分辨率/zoom、旋转、投影、约束。</p></section>
+					<section><h3>Layer</h3><p>数据的视觉表达。OpenLayers 官方概念里常见 Layer 类型包括 Tile、Image、Vector、VectorTile。</p></section>
+					<section><h3>Source</h3><p>数据来源。Source 负责加载瓦片、影像、矢量要素、WMS/WMTS/XYZ/OSM 等。</p></section>
+					<section><h3>Renderer</h3><p>把 Layer 的数据转成 Canvas 或 WebGL 绘制动作。不同 Layer 类型有不同 renderer。</p></section>
+					<section><h3>Interaction / Control</h3><p>交互和控件层，处理拖拽、缩放、选择、绘制、比例尺等用户行为。</p></section>
+				</div>
+
+				<h2>OpenLayers 和 Cesium 的区别</h2>
+				<table class="compare-table"><thead><tr><th>点</th><th>OpenLayers</th><th>Cesium</th></tr></thead><tbody>
+					<tr><td>主要场景</td><td>二维 Web 地图、GIS 数据、瓦片和矢量</td><td>三维地球、地形、3D Tiles、空间可视化</td></tr>
+					<tr><td>核心入口</td><td>Map + View + Layer + Source</td><td>Viewer + Scene + Primitive + Globe</td></tr>
+					<tr><td>渲染抽象</td><td>Layer Renderer，Canvas/WebGL</td><td>Primitive -> DrawCommand -> Renderer/WebGL</td></tr>
+					<tr><td>相机/视图</td><td>View 管中心、分辨率、旋转、投影</td><td>Camera 管三维位置、方向、视锥</td></tr>
+				</tbody></table>
+
+				<h2>推荐学习顺序</h2>
+				<ol>
+					<li>Map/View/Layer/Source 四件套。</li>
+					<li>TileLayer + OSM/XYZ 的瓦片加载路径。</li>
+					<li>VectorLayer + VectorSource + Feature + Style 的矢量渲染。</li>
+					<li>VectorTileLayer 的切片矢量数据路径。</li>
+					<li>Renderer 如何选择 Canvas 或 WebGL。</li>
+					<li>交互和事件：pointer、select、modify、draw。</li>
+				</ol>
+
+				<h2>官方参考</h2>
+				<ul>
+					<li><a href="https://openlayers.org/">OpenLayers 官方网站</a></li>
+					<li><a href="https://openlayers.org/doc/tutorials/concepts.html">OpenLayers Basic Concepts</a></li>
+					<li><a href="https://openlayers.org/en/latest/apidoc/">OpenLayers API Reference</a></li>
+					<li><a href="https://github.com/openlayers/openlayers">OpenLayers GitHub</a></li>
+				</ul>
+				<div class="next-card"><span>下一步</span><a href="openlayers-render-path.html">看 OpenLayers 完整渲染路径</a></div>
+			</article>
+		</main>
+		<script src="../theme.js"></script><script src="../enhance.js"></script>
+	</body>
+</html>

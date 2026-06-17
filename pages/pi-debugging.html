@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Pi Agent 调试手册 | Learn Pi</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Pi 调试手册</strong><span>看懂一次 agent 为什么失败</span></div></div><nav><a href="../index.html">首页</a><a href="callgraph.html">调用图</a><a href="mini-agent.html">Mini Agent</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="dashboard.html">学习仪表盘</a><a href="lifecycle.html">完整流程</a><a href="tools.html">工具调用</a><a class="active" href="pi-debugging.html">Pi 调试手册</a><a href="knowledge-check.html">知识测验</a></aside>
+			<article class="doc">
+				<p class="kicker">Debugging</p>
+				<h1>Pi Agent 出问题时怎么定位</h1>
+				<p class="lead">调试 agent 不要一上来怀疑模型。先判断问题发生在：提示词组装、模型响应、工具参数、工具执行、上下文压缩、前端渲染中的哪一层。</p>
+				<h2>故障分层检查</h2>
+				<table class="compare-table"><thead><tr><th>现象</th><th>优先检查</th><th>源码入口</th></tr></thead><tbody>
+					<tr><td>模型没调用工具</td><td>system prompt 是否包含工具说明；tools 是否传入模型；模型是否支持 tool calling</td><td>`system-prompt.ts`、`agent-loop.ts`、`pi-ai` provider</td></tr>
+					<tr><td>工具参数不合法</td><td>tool schema、validateToolArguments、模型输出 JSON</td><td>`executeToolCalls()`、`types.ts`</td></tr>
+					<tr><td>文件没改对</td><td>edit oldText 是否唯一；fuzzy match；line ending</td><td>`edit.ts`、`edit-diff.ts`</td></tr>
+					<tr><td>长对话突然忘事</td><td>是否触发 compaction；summary 是否保留关键路径</td><td>`compaction.ts`</td></tr>
+					<tr><td>UI 没显示工具状态</td><td>AgentEvent 是否 emit；AgentSession 是否转发；组件是否订阅</td><td>`agent-loop.ts`、`interactive-mode.ts`</td></tr>
+				</tbody></table>
+				<h2>最小调试路线</h2>
+				<pre><code>1. 记录用户原始 prompt
+2. 打印进入模型前的 messages/tools
+3. 查看模型返回的是文本还是 toolCall
+4. 如果有 toolCall，检查 name/input/id
+5. 查看 toolResult 是否被 push 回上下文
+6. 检查下一轮模型是否收到 toolResult
+7. 检查 agent_end 前的 newMessages</code></pre>
+				<h2>调试心法</h2>
+				<p>Agent 问题通常不是单点 bug，而是链路断了。你要像追踪数据流一样追踪 message、toolCall、toolResult 和 event。</p>
+			</article>
+		</main>
+		<script src="../theme.js"></script><script src="../enhance.js"></script>
+	</body>
+</html>

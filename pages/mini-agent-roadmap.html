@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Mini Agent 产品化路线 | Learn Pi</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Mini Agent 路线</strong><span>从玩具到可用</span></div></div><nav><a href="../index.html">首页</a><a href="mini-agent.html">Mini Agent</a><a href="pi-debugging.html">调试</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="mini-agent.html">从零开发 Mini Agent</a><a class="active" href="mini-agent-roadmap.html">产品化路线</a><a href="custom-model-api.html">自研模型接入</a><a href="pi-debugging.html">Pi 调试手册</a></aside>
+			<article class="doc">
+				<p class="kicker">Roadmap</p>
+				<h1>Mini Agent 如何变成真正可用的 Agent</h1>
+				<p class="lead">50 行 agent loop 只能说明原理。要做成可用产品，还要补齐安全、状态、UI、错误恢复、观测和模型兼容。</p>
+				<h2>升级路线</h2>
+				<ol>
+					<li><strong>工具 schema 校验：</strong>防止模型输出坏参数。</li>
+					<li><strong>事件系统：</strong>把 message、tool、error、done 都变成事件。</li>
+					<li><strong>流式输出：</strong>提升用户感知，支持前端实时渲染。</li>
+					<li><strong>会话持久化：</strong>保存 messages、toolResult、usage、错误。</li>
+					<li><strong>权限沙箱：</strong>限制文件路径、命令、网络和环境变量。</li>
+					<li><strong>上下文压缩：</strong>长任务必须有 summary 和截断策略。</li>
+					<li><strong>模型适配层：</strong>支持 OpenAI-compatible、自研模型和不同 provider。</li>
+					<li><strong>评测集：</strong>用真实任务验证工具调用成功率和恢复能力。</li>
+				</ol>
+				<h2>和 Pi 的对应关系</h2>
+				<p>Pi Agent 可以看成 Mini Agent 的工程化版本：`Agent` 负责状态，`runLoop` 负责调度，`AgentSession` 负责产品运行时，`pi-ai` 负责模型适配，tools 负责真实执行。</p>
+			</article>
+		</main>
+		<script src="../theme.js"></script><script src="../enhance.js"></script>
+	</body>
+</html>

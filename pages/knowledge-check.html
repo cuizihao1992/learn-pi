@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>知识测验 | Learn Pi</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>知识测验</strong><span>检验是否真的理解</span></div></div><nav><a href="../index.html">首页</a><a href="dashboard.html">仪表盘</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="dashboard.html">学习仪表盘</a><a class="active" href="knowledge-check.html">知识测验</a><a href="faq.html">FAQ</a><a href="cesium-glossary.html">Cesium 术语</a></aside>
+			<article class="doc">
+				<p class="kicker">Quiz</p>
+				<h1>10 个问题检验你的理解</h1>
+				<div class="faq-list">
+					<section><h2>1. 模型为什么不能直接改文件？</h2><p>因为模型只输出文本或结构化 toolCall。真实文件操作必须由程序工具执行。</p></section>
+					<section><h2>2. toolResult 为什么要放回 messages？</h2><p>模型需要基于工具结果决定下一步，形成多轮推理。</p></section>
+					<section><h2>3. Agent 和 AgentSession 最大区别是什么？</h2><p>Agent 是通用运行时状态；AgentSession 是 coding-agent 产品运行时中心。</p></section>
+					<section><h2>4. 自研模型接入 Agent 最省事路线是什么？</h2><p>实现 OpenAI-compatible `/v1/chat/completions` adapter。</p></section>
+					<section><h2>5. JSON 是模型天然输入吗？</h2><p>不是。JSON 是 API 协议，服务层会把它转成模型 prompt/token。</p></section>
+					<section><h2>6. Cesium Entity 和 Primitive 有什么区别？</h2><p>Entity 是业务抽象，Primitive 更接近渲染层，会产生命令。</p></section>
+					<section><h2>7. DrawCommand 包含哪些核心信息？</h2><p>vertexArray、shaderProgram、uniformMap、renderState、pass、boundingVolume。</p></section>
+					<section><h2>8. Cesium 为什么需要 commandList？</h2><p>Scene 可以统一裁剪、排序、分 pass、执行命令。</p></section>
+					<section><h2>9. OpenLayers 的 Layer 和 Source 为什么分开？</h2><p>Source 负责数据加载，Layer 负责视觉表达。这样同一种数据源可以用不同方式展示，Layer 也能统一参与渲染调度。</p></section>
+					<section><h2>10. OpenLayers View 主要决定什么？</h2><p>决定中心点、分辨率/zoom、旋转和投影，进而影响需要加载哪些瓦片、哪些要素处在视口内。</p></section>
+					<section><h2>11. Pi、Cesium、OpenLayers 的共同架构思想是什么？</h2><p>高层意图先转成结构化中间对象或命令，再由底层统一调度执行。</p></section>
+					<section><h2>12. 一个系统可扩展的关键是什么？</h2><p>边界清晰：模型/工具/状态/UI，或 Entity/Primitive/Command/Renderer，或 Map/View/Layer/Source/Renderer 各司其职。</p></section>
+				</div>
+			</article>
+		</main>
+		<script src="../theme.js"></script><script src="../enhance.js"></script>
+	</body>
+</html>

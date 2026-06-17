@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>学习仪表盘 | Learn Pi</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习仪表盘</strong><span>Pi Agent + Cesium + OpenLayers</span></div></div><nav><a href="../index.html">首页</a><a href="charter.html">宪章</a><a href="architecture.html">Pi</a><a href="cesium.html">Cesium</a><a href="openlayers.html">OpenLayers</a><a href="knowledge-check.html">测验</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a class="active" href="dashboard.html">学习仪表盘</a><a href="charter.html">内容宪章</a><a href="mini-agent.html">Mini Agent</a><a href="cesium-render-path.html">Cesium 渲染路径</a><a href="openlayers-render-path.html">OpenLayers 渲染路径</a><a href="knowledge-check.html">知识测验</a><a href="pi-debugging.html">Pi 调试手册</a><a href="cesium-debugging.html">Cesium 调试手册</a><a href="openlayers-debugging.html">OpenLayers 调试手册</a></aside>
+			<article class="doc">
+				<p class="kicker">Dashboard</p>
+				<h1>三条学习路径怎么走</h1>
+				<p class="lead">现在有三条并列路线：Pi Agent 学“模型决策到工具执行”，Cesium 学“三维数据到 GPU 像素”，OpenLayers 学“二维地图数据到 Canvas/WebGL”。三者共同点都是高层意图先转成中间结构，再由底层统一调度执行。</p>
+				<div class="track-grid">
+					<section><h2>Pi Agent 路径</h2><ol><li>架构设计</li><li>完整对话流程</li><li>提示词处理</li><li>工具调用</li><li>Mini Agent 实现</li><li>自研模型接入</li><li>调试与扩展</li></ol><a class="primary-link" href="architecture.html">进入 Pi 路径</a></section>
+					<section><h2>Cesium 路径</h2><ol><li>Viewer 和 Scene</li><li>Entity 到 Primitive</li><li>Primitive 到 DrawCommand</li><li>Renderer 到 WebGL</li><li>Globe/Terrain/3D Tiles</li><li>渲染调试</li></ol><a class="primary-link" href="cesium.html">进入 Cesium 路径</a></section>
+					<section><h2>OpenLayers 路径</h2><ol><li>Map/View/Layer/Source</li><li>TileLayer 渲染</li><li>VectorLayer 渲染</li><li>VectorTile 路径</li><li>Canvas/WebGL renderer</li><li>地图调试</li></ol><a class="primary-link" href="openlayers.html">进入 OpenLayers 路径</a></section>
+				</div>
+				<h2>每学完一章要能回答什么</h2>
+				<ul>
+					<li>Pi：模型到底做决策还是执行？工具结果为什么要回填？</li>
+					<li>Cesium：Entity 为什么不能直接 draw？DrawCommand 包含哪些 WebGL 信息？</li>
+					<li>OpenLayers：Layer 和 Source 为什么分开？View 如何决定瓦片和要素渲染？</li>
+					<li>共同点：为什么大型系统都喜欢中间命令层？</li>
+				</ul>
+			</article>
+		</main>
+		<script src="../theme.js"></script><script src="../enhance.js"></script>
+	</body>
+</html>
