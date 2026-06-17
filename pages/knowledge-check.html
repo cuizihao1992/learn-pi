@@ -7,7 +7,7 @@
 			<aside class="doc-sidebar"><a href="dashboard.html">学习仪表盘</a><a class="active" href="knowledge-check.html">知识测验</a><a href="../modules/pi-agent/faq.html">FAQ</a><a href="../modules/cesium/glossary.html">Cesium 术语</a></aside>
 			<article class="doc">
 				<p class="kicker">Quiz</p>
-				<h1>13 个问题检验你的理解</h1>
+				<h1>16 个问题检验你的理解</h1>
 				<div class="faq-list">
 					<section><h2>1. 模型为什么不能直接改文件？</h2><p>因为模型只输出文本或结构化 toolCall。真实文件操作必须由程序工具执行。</p></section>
 					<section><h2>2. toolResult 为什么要放回 messages？</h2><p>模型需要基于工具结果决定下一步，形成多轮推理。</p></section>
@@ -21,7 +21,10 @@
 					<section><h2>10. OpenLayers View 主要决定什么？</h2><p>决定中心点、分辨率/zoom、旋转和投影，进而影响需要加载哪些瓦片、哪些要素处在视口内。</p></section>
 					<section><h2>11. 3D Gaussian Splatting 的场景表示是什么？</h2><p>是一组可优化的 3D 高斯椭球，每个高斯通常包含位置、尺度/旋转或协方差、不透明度、颜色或球谐系数。</p></section>
 					<section><h2>12. 高斯泼溅训练时为什么需要可微 rasterizer？</h2><p>因为渲染图要和真实照片计算 loss，再把梯度传回每个高斯参数，决定它该移动、变形、变透明还是改变颜色。</p></section>
-					<section><h2>13. Pi、Cesium、OpenLayers、高斯泼溅的共同架构思想是什么？</h2><p>高层意图先转成结构化中间对象或命令，再由底层统一调度执行。可扩展的关键是边界清晰，各层各司其职。</p></section>
+					<section><h2>13. K 线本质上记录什么？</h2><p>记录一个周期内的开盘、收盘、最高、最低，是市场成交结果的压缩表达，不是未来预测机器。</p></section>
+					<section><h2>14. 技术指标为什么会失效？</h2><p>因为指标大多来自历史价格和成交量，存在滞后、噪声、市场环境变化、低流动性和重大消息冲击等问题。</p></section>
+					<section><h2>15. 一个买入信号至少要拆成哪些部分？</h2><p>环境、位置、触发、确认、失效、仓位和复盘。没有失效条件的信号不是计划，只是愿望。</p></section>
+					<section><h2>16. Pi、Cesium、OpenLayers、高斯泼溅、股票 K 线的共同架构思想是什么？</h2><p>高层意图或现象先转成结构化中间对象，再由底层规则统一解释、调度或执行。可扩展的关键是边界清晰，各层各司其职。</p></section>
 				</div>
 			</article>
 		</main>

@@ -12,7 +12,7 @@
 				<img src="https://pi.dev/logo-auto.svg" alt="Pi logo" />
 				<div>
 					<strong>源码学习实验室</strong>
-					<span>Pi Agent、Mini Agent、Cesium、OpenLayers、Gaussian Splatting 的长期学习站</span>
+					<span>Pi Agent、Mini Agent、Cesium、OpenLayers、Gaussian Splatting、股票 K 线 的长期学习站</span>
 				</div>
 			</div>
 			<nav aria-label="页面导航">
@@ -24,6 +24,7 @@
 				<a href="modules/cesium/index.html">Cesium</a>
 				<a href="modules/openlayers/index.html">OpenLayers</a>
 				<a href="modules/gaussian-splatting/index.html">Gaussian Splatting</a>
+				<a href="modules/stock-kline/index.html">股票 K 线</a>
 				<a href="pages/search.html">全站检索</a>
 				<a href="https://github.com/cuizihao1992/learn-pi">GitHub</a>
 			</nav>
@@ -35,31 +36,32 @@
 					<p class="kicker">Learn Pi Agent From Source</p>
 					<h1 id="page-title">从源码链路学懂复杂系统怎么运行</h1>
 					<p>
-						这个网站重构为可持续扩展的学习站。当前有五个并列模块：
+						这个网站重构为可持续扩展的学习站。当前有六个并列模块：
 						Pi Agent 学开源 Agent 架构，Mini Agent 学从零实现最小 Agent，Cesium 学三维引擎如何走到 GPU，
-						OpenLayers 学二维地图如何从 Map、Layer、Source 走到 Canvas/WebGL，Gaussian Splatting 学照片如何训练成可实时渲染的 3D 场景。
+						OpenLayers 学二维地图如何从 Map、Layer、Source 走到 Canvas/WebGL，Gaussian Splatting 学照片如何训练成可实时渲染的 3D 场景，股票 K 线学价格、成交量、指标、信号和风控。
 					</p>
 					<div class="hero-actions">
 						<a class="primary-link" href="pages/dashboard.html">打开学习仪表盘</a>
-						<a class="secondary-link" href="modules/index.html">查看五大模块</a>
+						<a class="secondary-link" href="modules/index.html">查看六大模块</a>
 						<a class="secondary-link" href="pages/search.html">搜索本站内容</a>
 					</div>
 				</div>
 				<aside class="quick-panel">
-					<div class="metric"><span>学习模块</span><strong>5</strong></div>
-					<div class="metric"><span>专题页面</span><strong>25+</strong></div>
+					<div class="metric"><span>学习模块</span><strong>6</strong></div>
+					<div class="metric"><span>专题页面</span><strong>33+</strong></div>
 					<div class="metric"><span>可持续扩展</span><strong>∞</strong></div>
 				</aside>
 			</section>
 
 			<section class="section">
-				<div class="section-head"><div><p class="kicker">Modules</p><h2>五个并列学习模块</h2></div></div>
+				<div class="section-head"><div><p class="kicker">Modules</p><h2>六个并列学习模块</h2></div></div>
 				<div class="module-grid">
 					<section class="module-card"><h3>Pi Agent</h3><p>研究 Pi 源码：提示词、模型、工具、会话、事件和架构取舍。</p><a class="primary-link" href="modules/pi-agent/index.html">进入 Pi Agent</a></section>
 					<section class="module-card"><h3>Mini Agent</h3><p>从零实现自己的最小 Agent：Node MVP、模型兼容、产品化路线。</p><a class="primary-link" href="modules/mini-agent/index.html">进入 Mini Agent</a></section>
 					<section class="module-card"><h3>Cesium</h3><p>理解三维引擎如何从 Viewer、Scene、Primitive、DrawCommand 走到 GPU。</p><a class="primary-link" href="modules/cesium/index.html">进入 Cesium</a></section>
 					<section class="module-card"><h3>OpenLayers</h3><p>理解二维地图如何从 Map、View、Layer、Source 走到 Canvas/WebGL。</p><a class="primary-link" href="modules/openlayers/index.html">进入 OpenLayers</a></section>
 					<section class="module-card"><h3>Gaussian Splatting</h3><p>理解 3D Gaussian Splatting 如何从照片、相机位姿、点云优化到实时渲染。</p><a class="primary-link" href="modules/gaussian-splatting/index.html">进入高斯泼溅</a></section>
+					<section class="module-card"><h3>股票 K 线</h3><p>学习 K 线、均线、MACD、RSI、成交量、买卖信号、长短线和风控复盘。</p><a class="primary-link" href="modules/stock-kline/index.html">进入股票 K 线</a></section>
 				</div>
 			</section>
 
@@ -67,7 +69,7 @@
 				<div class="section-head">
 					<div>
 						<p class="kicker">Module Roadmap</p>
-						<h2>五个模块分别学什么</h2>
+						<h2>六个模块分别学什么</h2>
 					</div>
 				</div>
 				<div class="module-roadmap-grid">
@@ -119,6 +121,16 @@
 							<li><a href="modules/gaussian-splatting/debugging.html">调试手册</a></li>
 							<li><a href="modules/gaussian-splatting/charter.html">模块宪章</a></li>
 							<li><a href="pages/search.html">搜索相关内容</a></li>
+						</ol>
+					</section>
+					<section>
+						<div><span>K</span><h3>股票 K 线学习路径</h3><p>目标是把图形、指标、现实背景、买卖信号和风控连成一个入门系统。</p></div>
+						<ol>
+							<li><a href="modules/stock-kline/index.html">模块总览</a></li>
+							<li><a href="modules/stock-kline/kline-basics.html">K 线基础</a></li>
+							<li><a href="modules/stock-kline/indicators.html">指标底层逻辑</a></li>
+							<li><a href="modules/stock-kline/signals.html">买卖信号整理</a></li>
+							<li><a href="modules/stock-kline/risk-journal.html">风控日志</a></li>
 						</ol>
 					</section>
 				</div>

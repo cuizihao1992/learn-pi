@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>股票 K 线学习路径 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>股票 K 线学习路径</strong><span>K Line, Indicators, Signals</span></div></div><nav><a href="../../index.html">首页</a><a href="../index.html">全部模块</a><a href="kline-basics.html">K 线</a><a href="indicators.html">指标</a><a href="signals.html">信号</a><a href="../../pages/search.html">检索</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a class="active" href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="kline-basics.html">K 线基础</a><a href="indicators.html">指标底层逻辑</a><a href="signals.html">买卖信号整理</a><a href="long-short.html">长短线分类</a><a href="context.html">结合现实解释</a><a href="risk-journal.html">风控与日志</a></aside>
+			<article class="doc">
+				<p class="kicker">Stock K Line</p>
+				<h1>股票如何看 K 线：从图形直觉到交易系统</h1>
+				<p class="lead">看 K 线不是背图形，也不是看到金叉就买、看到死叉就卖。K 线是市场在某段时间里成交后的痕迹，指标是对这些痕迹的二次加工。真正有用的学习方式，是把图表信号放回趋势、位置、成交量、市场环境、基本面、风险收益比和自己的交易周期里解释。</p>
+
+				<h2>先建立一个总模型</h2>
+				<pre><code>现实事件和预期
+  -> 投资者形成分歧
+  -> 买卖订单推动价格
+  -> K 线记录一段时间内多空力量结果
+  -> 指标压缩历史数据，提示趋势/动量/波动/成交量
+  -> 交易者组合信号，制定计划
+  -> 仓位、止损、复盘决定长期生存</code></pre>
+				<p>这条链路很重要。很多新手把指标当成“预测机器”，于是陷入追涨杀跌。更稳的理解是：指标只告诉你历史数据呈现出某种状态，例如趋势增强、动量衰减、波动扩张、成交量异常。它不告诉你未来一定发生什么。未来是否继续，要看资金、基本面、消息、市场情绪和大盘环境是否支持。</p>
+
+				<h2>本模块学什么</h2>
+				<div class="lesson-grid">
+					<section><h3>K 线基础</h3><p>学习单根 K 线、组合 K 线、缺口、支撑阻力、趋势线、平台、箱体、突破和回踩。重点不是背名字，而是理解每个形态背后的订单含义。</p><a class="primary-link" href="kline-basics.html">进入 K 线基础</a></section>
+					<section><h3>指标逻辑</h3><p>学习均线、MACD、RSI、KDJ、布林带、成交量、OBV、VWAP、ATR、ADX 等指标。每个指标都拆成“算什么、说明什么、何时失真”。</p><a class="primary-link" href="indicators.html">进入指标逻辑</a></section>
+					<section><h3>买卖信号</h3><p>把信号拆成买入、卖出、观望三类，再按趋势延续、反转、突破、回踩、止损、止盈分类。所有信号都要有确认和失效条件。</p><a class="primary-link" href="signals.html">进入信号系统</a></section>
+					<section><h3>长短线分类</h3><p>同一个指标在分钟线、日线、周线上的含义不同。短线重流动性和触发，中线重趋势和结构，长线重基本面和估值。</p><a class="primary-link" href="long-short.html">进入长短线</a></section>
+					<section><h3>现实解释</h3><p>学习如何把财报、利率、行业景气、政策、指数环境、市场情绪和资金面放进图表解释中，避免只看图不看世界。</p><a class="primary-link" href="context.html">进入现实解释</a></section>
+					<section><h3>风控日志</h3><p>学习仓位、止损、盈亏比、胜率、回撤、交易日志、复盘模板。不会风控的人，即使看对很多次，也可能一次亏掉。</p><a class="primary-link" href="risk-journal.html">进入风控日志</a></section>
+				</div>
+
+				<h2>入门者最容易犯的 10 个错误</h2>
+				<ol>
+					<li><strong>只看一个指标：</strong>例如 MACD 金叉就买，却不看股价是不是在长期下降趋势里。</li>
+					<li><strong>忽略周期：</strong>5 分钟线的上涨不等于日线趋势反转，日线回调也不一定破坏周线趋势。</li>
+					<li><strong>把放量理解成绝对利好：</strong>放量只说明分歧和成交活跃，可能是主力买，也可能是恐慌卖。</li>
+					<li><strong>把支撑当成铁底：</strong>支撑只是过去有人愿意买的区域，不代表未来一定守住。</li>
+					<li><strong>追求最低点和最高点：</strong>多数稳定系统赚的是中间一段，而不是完美抄底逃顶。</li>
+					<li><strong>没有失效条件：</strong>买入前不知道错了怎么办，亏损后就容易幻想。</li>
+					<li><strong>用结果倒推逻辑：</strong>涨了就说信号有效，跌了就说主力洗盘，没有固定规则。</li>
+					<li><strong>忽略流动性：</strong>小成交量股票容易滑点、难止损，图形看起来漂亮也可能无法执行。</li>
+					<li><strong>把技术面和基本面割裂：</strong>技术面能显示资金行为，但长期趋势常常受业绩、现金流、行业周期影响。</li>
+					<li><strong>仓位过大：</strong>判断正确不等于过程不波动，仓位过大会让正常回撤变成心理崩溃。</li>
+				</ol>
+
+				<h2>一个完整分析样例</h2>
+				<p>假设某股票长期下跌后，日线在低位横盘三个月，成交量逐渐萎缩。某天公司发布业绩改善预告，股价跳空高开并放量突破箱体上沿。新手可能只看到“放量突破，买”。更完整的分析应该是：</p>
+				<ul>
+					<li><strong>环境：</strong>大盘是否处于风险偏好改善阶段？同行业是否一起上涨？如果只有个股孤立上涨，持续性要打折。</li>
+					<li><strong>位置：</strong>突破发生在长期低位平台，还是已经连续上涨很久后的高位？低位突破和高位加速风险完全不同。</li>
+					<li><strong>成交量：</strong>放量是否明显超过过去 20 日均量？如果只是小幅放量，突破可能缺少资金确认。</li>
+					<li><strong>触发：</strong>收盘价是否站上箱体上沿，而不是盘中冲高回落？收盘确认比盘中瞬间突破更可靠。</li>
+					<li><strong>失效：</strong>如果回到箱体内，说明突破失败；如果跌破突破日低点，短线资金可能撤退。</li>
+					<li><strong>计划：</strong>买入点、止损点、目标区、仓位比例、复盘时间都要提前写清楚。</li>
+				</ul>
+
+				<h2>本模块的学习路线</h2>
+				<ol>
+					<li>先读 K 线基础，不急着看指标。</li>
+					<li>再读指标逻辑，理解每个指标的数学含义和滞后性。</li>
+					<li>然后读信号系统，把信号拆成条件，而不是背口诀。</li>
+					<li>接着读长短线分类，明确你到底在交易哪个周期。</li>
+					<li>最后读现实解释和风控日志，把图表分析变成可执行计划。</li>
+				</ol>
+
+				<h2>资料边界</h2>
+				<p>本模块参考投资者教育和技术分析基础资料。SEC 的 Investor.gov 和 FINRA 投资者教育材料都强调投资有风险，风险承受能力和投资者保护非常重要；CFA Institute 的技术分析资料也提醒移动平均等工具需要结合历史表现、市场条件和方法限制理解。这里会尽量把指标讲细，但不会把任何指标说成确定性答案。</p>
+				<ul>
+					<li><a href="https://www.sec.gov/resources-investors">SEC investor resources</a></li>
+					<li><a href="https://www.finra.org/investors/investing/investing-basics/risk">FINRA risk basics</a></li>
+					<li><a href="https://www.investor.gov/introduction-investing/investing-basics/glossary/technical-analysis">Investor.gov technical analysis glossary</a></li>
+					<li><a href="https://rpc.cfainstitute.org/blogs/enterprising-investor/2022/technical-analysis-revisited-moving-averages-above-average-returns">CFA Institute: moving averages and technical analysis</a></li>
+				</ul>
+				<div class="next-card"><span>下一步</span><a href="kline-basics.html">从 K 线本身开始</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

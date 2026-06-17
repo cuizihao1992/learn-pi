@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>总宪章 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" /></head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>源码学习实验室</strong><span>总宪章</span></div></div><nav><a href="../index.html">首页</a><a href="dashboard.html">仪表盘</a><a href="../modules/pi-agent/charter.html">Pi 宪章</a><a href="../modules/mini-agent/charter.html">Mini Agent 宪章</a><a href="../modules/cesium/charter.html">Cesium 宪章</a><a href="../modules/openlayers/charter.html">OpenLayers 宪章</a><a href="../modules/gaussian-splatting/charter.html">Gaussian Splatting 宪章</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>源码学习实验室</strong><span>总宪章</span></div></div><nav><a href="../index.html">首页</a><a href="dashboard.html">仪表盘</a><a href="../modules/pi-agent/charter.html">Pi 宪章</a><a href="../modules/mini-agent/charter.html">Mini Agent 宪章</a><a href="../modules/cesium/charter.html">Cesium 宪章</a><a href="../modules/openlayers/charter.html">OpenLayers 宪章</a><a href="../modules/gaussian-splatting/charter.html">Gaussian Splatting 宪章</a><a href="../modules/stock-kline/charter.html">股票 K 线宪章</a></nav></header>
 		<main class="doc-layout">
 			<aside class="doc-sidebar">
 				<a href="dashboard.html">学习仪表盘</a>
@@ -12,12 +12,14 @@
 				<a href="../modules/cesium/charter.html">Cesium 模块宪章</a>
 				<a href="../modules/openlayers/charter.html">OpenLayers 模块宪章</a>
 				<a href="../modules/gaussian-splatting/charter.html">Gaussian Splatting 模块宪章</a>
+				<a href="../modules/stock-kline/charter.html">股票 K 线模块宪章</a>
 				<a href="../modules/_template/charter.html">新模块模板</a>
 				<a href="../modules/pi-agent/index.html">Pi Agent</a>
 				<a href="../modules/mini-agent/index.html">Mini Agent</a>
 				<a href="../modules/cesium/index.html">Cesium</a>
 				<a href="../modules/openlayers/index.html">OpenLayers</a>
 				<a href="../modules/gaussian-splatting/index.html">Gaussian Splatting</a>
+				<a href="../modules/stock-kline/index.html">股票 K 线</a>
 			</aside>
 			<article class="doc">
 				<p class="kicker">General Charter</p>
@@ -40,7 +42,7 @@
 				</ol>
 
 				<h2>三、推荐模块目录结构</h2>
-				<p>你的判断是合理的：每个模块放在独立目录下更适合长期扩展。当前固定为五大块：Pi Agent、Mini Agent、Cesium、OpenLayers、Gaussian Splatting。这样每个专题的宪章、页面、示例、资源互不污染，后续加 React、Mapbox、LangChain、数据库内核等专题也不会乱。</p>
+				<p>你的判断是合理的：每个模块放在独立目录下更适合长期扩展。当前固定为六大块：Pi Agent、Mini Agent、Cesium、OpenLayers、Gaussian Splatting、股票 K 线。这样每个专题的宪章、页面、示例、资源互不污染，后续加 React、Mapbox、LangChain、数据库内核等专题也不会乱。</p>
 				<pre><code>modules/{module-slug}/
   charter.html          # 模块宪章：目标、边界、章节标准
   index.html            # 模块入口
@@ -90,6 +92,7 @@ examples/{module-slug}/
 					<section class="module-card"><h3>Cesium</h3><p>从 Viewer、Scene、Primitive、DrawCommand 到 WebGL/GPU。</p><a class="primary-link" href="../modules/cesium/charter.html">查看 Cesium 宪章</a></section>
 					<section class="module-card"><h3>OpenLayers</h3><p>从 Map、View、Layer、Source 到 Canvas/WebGL renderer。</p><a class="primary-link" href="../modules/openlayers/charter.html">查看 OpenLayers 宪章</a></section>
 					<section class="module-card"><h3>Gaussian Splatting</h3><p>从照片、相机位姿、稀疏点云到可微 rasterization 和实时 viewer。</p><a class="primary-link" href="../modules/gaussian-splatting/charter.html">查看 Gaussian Splatting 宪章</a></section>
+					<section class="module-card"><h3>股票 K 线</h3><p>从 K 线、指标、量价、现实背景到买卖信号、风控和交易日志。</p><a class="primary-link" href="../modules/stock-kline/charter.html">查看股票 K 线宪章</a></section>
 				</div>
 			</article>
 		</main>

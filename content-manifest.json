@@ -4,7 +4,7 @@
     "charter": "pages/charter.html",
     "dashboard": "pages/dashboard.html",
     "search": "pages/search.html",
-    "rule": "The site is organized as five first-class modules: pi-agent, mini-agent, cesium, openlayers, and gaussian-splatting. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
+    "rule": "The site is organized as six first-class modules: pi-agent, mini-agent, cesium, openlayers, gaussian-splatting, and stock-kline. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
     "modules": "modules/index.html"
   },
   "moduleConvention": {
@@ -98,6 +98,24 @@
         "index.html",
         "render-path.html",
         "debugging.html"
+      ]
+    },
+    {
+      "slug": "stock-kline",
+      "name": "Stock K Line",
+      "root": "modules/stock-kline/",
+      "charter": "modules/stock-kline/charter.html",
+      "entry": "modules/stock-kline/index.html",
+      "purpose": "Learn stock candlestick charts, technical indicators, signal interpretation, timeframes, context, and risk control.",
+      "pages": [
+        "index.html",
+        "charter.html",
+        "kline-basics.html",
+        "indicators.html",
+        "signals.html",
+        "long-short.html",
+        "context.html",
+        "risk-journal.html"
       ]
     }
   ],

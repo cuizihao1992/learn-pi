@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>长短线分类 | 股票 K 线学习</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>长短线分类</strong><span>Timeframe Matters</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">股票 K 线</a><a href="signals.html">信号</a><a href="context.html">现实解释</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="kline-basics.html">K 线基础</a><a href="indicators.html">指标底层逻辑</a><a href="signals.html">买卖信号整理</a><a class="active" href="long-short.html">长短线分类</a><a href="context.html">现实解释</a><a href="risk-journal.html">风控日志</a></aside>
+			<article class="doc">
+				<p class="kicker">Timeframes</p>
+				<h1>短线、中线、长线：同一个信号，周期不同含义不同</h1>
+				<p class="lead">很多亏损来自周期混乱：用日内信号买入，却用长线理由死扛；用长期基本面选股，却被 5 分钟线波动吓出去。交易前必须先回答：你交易的是哪个周期？你的信号、仓位、止损和复盘是否匹配这个周期？</p>
+
+				<h2>1. 三类周期</h2>
+				<table class="compare-table">
+					<thead><tr><th>类型</th><th>常见持有时间</th><th>主要看什么</th><th>核心风险</th></tr></thead>
+					<tbody>
+						<tr><td>短线</td><td>日内到数天</td><td>分时、成交量、VWAP、短均线、题材情绪</td><td>噪声大、滑点、追高、执行压力。</td></tr>
+						<tr><td>中线</td><td>数周到数月</td><td>日线/周线趋势、平台突破、行业强弱、财报预期</td><td>回撤较大、趋势假突破、基本面变化。</td></tr>
+						<tr><td>长线</td><td>数月到数年</td><td>商业模式、估值、盈利质量、行业周期、周月线</td><td>估值压缩、业绩恶化、长期叙事错误。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>2. 短线怎么用 K 线和指标</h2>
+				<p>短线关注的是资金短期行为。它更依赖成交量、流动性、消息刺激、市场情绪和执行纪律。短线不是“看得更准”，而是止损更快、复盘更频繁、对滑点更敏感。</p>
+				<ul>
+					<li><strong>常用周期：</strong>1 分钟、5 分钟、15 分钟、日线背景。</li>
+					<li><strong>常用工具：</strong>VWAP、分时均价线、量比、日内高低点、开盘区间、短均线。</li>
+					<li><strong>买入逻辑：</strong>强势股回踩 VWAP 不破、突破早盘高点、放量拉升后缩量回踩。</li>
+					<li><strong>卖出逻辑：</strong>跌破 VWAP、冲高放量回落、跌破日内关键低点、题材退潮。</li>
+					<li><strong>风险控制：</strong>止损要小而坚决，不能把短线亏损变成长线持仓。</li>
+				</ul>
+				<p>短线最怕两个问题：第一是把噪声当信号，第二是仓位过大导致无法执行。短线图形会快速变化，指标也会频繁变化，如果没有固定触发条件，很容易变成情绪交易。</p>
+
+				<h2>3. 中线怎么用 K 线和指标</h2>
+				<p>中线更关注日线和周线结构。它不需要抓住每天的小波动，而是寻找趋势从弱到强、从盘整到突破、从回调到恢复的阶段。中线信号通常比短线慢，但质量更高，也更适合普通上班族学习。</p>
+				<ul>
+					<li><strong>常用周期：</strong>日线为主，周线定方向，小时线找局部买点。</li>
+					<li><strong>常用工具：</strong>20 日、60 日均线，MACD，成交量，箱体，趋势线，ATR。</li>
+					<li><strong>买入逻辑：</strong>长期平台放量突破、上升趋势回踩 20/60 日线、周线底部结构完成。</li>
+					<li><strong>卖出逻辑：</strong>跌破关键平台、日线趋势破坏、周线放量长上影、基本面预期反转。</li>
+					<li><strong>风险控制：</strong>止损范围比短线大，仓位应更小，允许正常波动。</li>
+				</ul>
+				<p>中线交易特别重视“位置”。同样是 MACD 金叉，低位平台突破后的金叉和高位连续上涨后的金叉完全不同。前者可能是趋势启动，后者可能只是最后一段加速。</p>
+
+				<h2>4. 长线怎么用 K 线和指标</h2>
+				<p>长线不能只靠 K 线。长期持有的核心是企业价值、行业空间、盈利质量、资产负债表、现金流、估值和管理层。K 线在长线里主要用于观察市场对基本面的定价过程、选择分批买入区域、避免明显技术破位后的过度自信。</p>
+				<ul>
+					<li><strong>常用周期：</strong>周线、月线、季线，日线只用于执行。</li>
+					<li><strong>常用工具：</strong>长期均线、历史估值区间、周线平台、成交量异常、相对强弱。</li>
+					<li><strong>买入逻辑：</strong>基本面长期向好，估值合理，技术面从长期下跌转为底部抬高。</li>
+					<li><strong>卖出逻辑：</strong>基本面恶化、估值极端透支、长期趋势破坏且逻辑不再成立。</li>
+					<li><strong>风险控制：</strong>分批建仓，避免一次性买在估值和情绪高点。</li>
+				</ul>
+				<p>长线最容易犯的错，是用“长期看好”掩盖买入价格过高、仓位过重、逻辑变化。长期投资可以承受波动，但不能无视事实变化。</p>
+
+				<h2>5. 多周期共振</h2>
+				<p>多周期共振不是玄学，而是让大周期方向和小周期触发一致。比如周线刚突破长期平台，日线回踩平台不破，小时线出现放量反包。这时周线提供背景，日线提供结构，小时线提供执行点。</p>
+				<pre><code>周线：方向和大结构
+日线：主要交易计划
+小时线：入场和加减仓细节
+分钟线：短线执行和风控</code></pre>
+				<p>如果周期互相冲突，要降低仓位或观望。例如周线仍是下降趋势，日线出现小反弹，分钟线很强，这可能只是下跌趋势里的短线反弹。你可以短线参与，但不能把它当成长线反转。</p>
+
+				<h2>6. 长短线信号对照表</h2>
+				<table class="compare-table">
+					<thead><tr><th>信号</th><th>短线解释</th><th>中线解释</th><th>长线解释</th></tr></thead>
+					<tbody>
+						<tr><td>放量突破</td><td>日内资金进攻，可快进快出</td><td>平台突破，观察回踩确认</td><td>长期结构改善，但仍需基本面支持</td></tr>
+						<tr><td>跌破均线</td><td>短线止损或减仓</td><td>看是否跌破 20/60 日线和前低</td><td>单日跌破意义有限，看周月线和基本面</td></tr>
+						<tr><td>RSI 超买</td><td>可能短线过热，防冲高回落</td><td>强趋势中可继续高位运行</td><td>参考价值较低，不能替代估值判断</td></tr>
+						<tr><td>MACD 底背离</td><td>短线反弹预警</td><td>配合结构突破才更有意义</td><td>只能提示下跌放缓，不代表长期价值</td></tr>
+					</tbody>
+				</table>
+
+				<h2>7. 你应该选择哪种周期</h2>
+				<p>选择周期不是看哪个赚钱快，而是看你的时间、性格、资金规模、知识结构和执行能力。上班族很难盯盘做日内短线；情绪容易波动的人不适合高频交易；没有基本面研究能力的人不应该只靠长期叙事重仓单股。</p>
+				<ul>
+					<li>如果你能盯盘、执行快、能接受高频止损，可以学习短线，但必须小仓练。</li>
+					<li>如果你时间有限但愿意复盘，日线/周线中线更合适。</li>
+					<li>如果你愿意研究财报和行业，长线可以成为主框架，技术面只辅助择时。</li>
+					<li>如果你还不确定，就先用模拟盘和历史回放找自己能坚持的周期。</li>
+				</ul>
+
+				<div class="next-card"><span>下一步</span><a href="context.html">把图表信号放回现实市场</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>
