@@ -17,6 +17,7 @@
 			</div>
 			<nav aria-label="页面导航">
 				<a href="pages/dashboard.html">学习仪表盘</a>
+				<a href="modules/index.html">全部模块</a>
 				<a href="pages/charter.html">内容宪章</a>
 				<a href="modules/pi-agent/index.html">Pi Agent</a>
 				<a href="modules/mini-agent/index.html">Mini Agent</a>
@@ -39,6 +40,7 @@
 					</p>
 					<div class="hero-actions">
 						<a class="primary-link" href="pages/dashboard.html">打开学习仪表盘</a>
+						<a class="secondary-link" href="modules/index.html">查看四大模块</a>
 						<a class="secondary-link" href="pages/search.html">搜索本站内容</a>
 					</div>
 				</div>
@@ -62,32 +64,51 @@
 			<section class="section">
 				<div class="section-head">
 					<div>
-						<p class="kicker">Course Map</p>
-						<h2>课程目录</h2>
+						<p class="kicker">Module Roadmap</p>
+						<h2>四个模块分别学什么</h2>
 					</div>
 				</div>
-				<div class="course-grid">
-					<a href="modules/pi-agent/architecture.html"><span>01</span><h3>架构设计</h3><p>先建立四层心智模型：coding-agent、agent-core、pi-ai、pi-tui。</p></a>
-					<a href="modules/pi-agent/lifecycle.html"><span>02</span><h3>完整运行流程</h3><p>用“修改 README 并测试”的例子，完整走一遍 prompt、模型、工具、前端。</p></a>
-					<a href="modules/pi-agent/prompt-processing.html"><span>03</span><h3>提示词处理</h3><p>解释原始用户输入如何被包装、展开、合并上下文并发给模型。</p></a>
-					<a href="modules/pi-agent/tools.html"><span>04</span><h3>工具调用</h3><p>模型如何通过 toolCall 请求 Pi 执行 read、edit、bash 等真实动作。</p></a>
-					<a href="modules/pi-agent/sessions.html"><span>05</span><h3>会话与压缩</h3><p>为什么 session 是树，长对话如何压缩，summary message 保留什么。</p></a>
-					<a href="modules/pi-agent/models.html"><span>06</span><h3>模型接口</h3><p>pi-ai 如何屏蔽 OpenAI、Anthropic、Google 等 provider 的差异。</p></a>
-					<a href="modules/pi-agent/frontend.html"><span>07</span><h3>前端事件</h3><p>message_update、tool_execution_end 等事件如何驱动终端 UI 实时更新。</p></a>
-					<a href="modules/pi-agent/design-tradeoffs.html"><span>08</span><h3>为什么这样设计</h3><p>对比单体大循环、模型全权控制、provider 分叉等替代方案。</p></a>
-					<a href="modules/pi-agent/labs.html"><span>09</span><h3>动手练习</h3><p>用 6 个小任务把源码理解落到可验证的改动上。</p></a>
-					<a href="modules/mini-agent/index.html"><span>造</span><h3>从零开发 Mini Agent</h3><p>用 Node MVP 实现模型调用、toolCall、工具执行、toolResult 闭环。</p></a>
-					<a href="modules/mini-agent/model-api.html"><span>接</span><h3>自研模型接入</h3><p>讲清楚训练 vs 中间层，如何兼容 OpenAI/Anthropic 接口让 Agent 使用。</p></a>
-					<a href="modules/pi-agent/glossary.html"><span>术</span><h3>术语表</h3><p>把 AgentMessage、Message、AgentTool、ToolDefinition、turn 等名词分清。</p></a>
-					<a href="modules/pi-agent/callgraph.html"><span>图</span><h3>源码调用图</h3><p>按文件和函数跳转路径阅读：入口、工具、前端事件、压缩流程。</p></a>
-					<a href="modules/pi-agent/faq.html"><span>问</span><h3>FAQ</h3><p>回答新手最容易误解的问题：模型是否直接改文件、为什么要 toolResult 等。</p></a>
-					<a href="modules/cesium/index.html"><span>3D</span><h3>Cesium 学习路径</h3><p>并列学习三维引擎：从 Viewer、Scene、Primitive、DrawCommand 到 WebGL/GPU。</p></a>
-					<a href="modules/openlayers/index.html"><span>2D</span><h3>OpenLayers 学习路径</h3><p>学习二维地图：Map、View、Layer、Source、Renderer、Canvas/WebGL。</p></a>
-					<a href="pages/charter.html"><span>章</span><h3>内容宪章</h3><p>后续新增任何项目，都按统一模板：完整链路、源码入口、设计取舍、调试和练习。</p></a>
-					<a href="modules/pi-agent/charter.html"><span>Pi</span><h3>Pi Agent 模块宪章</h3><p>规定 Pi 源码学习目标、源码入口、内容标准和扩展计划。</p></a>
-					<a href="modules/mini-agent/charter.html"><span>MA</span><h3>Mini Agent 模块宪章</h3><p>规定如何从零实现 Agent、接入模型接口、走向可用产品。</p></a>
-					<a href="modules/cesium/charter.html"><span>Ce</span><h3>Cesium 模块宪章</h3><p>规定 Cesium 路径如何讲清 Viewer、Scene、Primitive、Command、GPU。</p></a>
-					<a href="modules/openlayers/charter.html"><span>OL</span><h3>OpenLayers 模块宪章</h3><p>规定 OpenLayers 路径如何讲清 Map、View、Layer、Source、Renderer。</p></a>
+				<div class="module-roadmap-grid">
+					<section>
+						<div><span>Pi</span><h3>Pi Agent 源码阅读</h3><p>目标是读懂一个真实开源 Agent 的架构。</p></div>
+						<ol>
+							<li><a href="modules/pi-agent/architecture.html">架构设计</a></li>
+							<li><a href="modules/pi-agent/lifecycle.html">完整运行流程</a></li>
+							<li><a href="modules/pi-agent/prompt-processing.html">提示词处理</a></li>
+							<li><a href="modules/pi-agent/tools.html">工具调用</a></li>
+							<li><a href="modules/pi-agent/callgraph.html">源码调用图</a></li>
+						</ol>
+					</section>
+					<section>
+						<div><span>MA</span><h3>Mini Agent 从零实现</h3><p>目标是自己写出一个最小可运行 Agent。</p></div>
+						<ol>
+							<li><a href="modules/mini-agent/index.html">Node MVP</a></li>
+							<li><a href="modules/mini-agent/model-api.html">模型接口兼容</a></li>
+							<li><a href="modules/mini-agent/roadmap.html">产品化路线</a></li>
+							<li><a href="examples/mini-agent-node/mini-agent.mjs">示例代码</a></li>
+							<li><a href="modules/mini-agent/charter.html">模块宪章</a></li>
+						</ol>
+					</section>
+					<section>
+						<div><span>3D</span><h3>Cesium 渲染路径</h3><p>目标是理解三维数据如何变成 GPU 像素。</p></div>
+						<ol>
+							<li><a href="modules/cesium/index.html">模块总览</a></li>
+							<li><a href="modules/cesium/render-path.html">完整渲染路径</a></li>
+							<li><a href="modules/cesium/debugging.html">调试手册</a></li>
+							<li><a href="modules/cesium/glossary.html">术语表</a></li>
+							<li><a href="modules/cesium/charter.html">模块宪章</a></li>
+						</ol>
+					</section>
+					<section>
+						<div><span>2D</span><h3>OpenLayers 渲染路径</h3><p>目标是理解二维地图如何组织数据和渲染。</p></div>
+						<ol>
+							<li><a href="modules/openlayers/index.html">模块总览</a></li>
+							<li><a href="modules/openlayers/render-path.html">完整渲染路径</a></li>
+							<li><a href="modules/openlayers/debugging.html">调试手册</a></li>
+							<li><a href="modules/openlayers/charter.html">模块宪章</a></li>
+							<li><a href="pages/search.html">搜索相关内容</a></li>
+						</ol>
+					</section>
 				</div>
 			</section>
 

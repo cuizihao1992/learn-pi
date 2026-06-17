@@ -31,6 +31,14 @@ python -m http.server 4173
 
 然后访问 `http://127.0.0.1:4173/`。
 
+## Search Index
+
+新增或移动页面后，重新生成检索索引：
+
+```bash
+node scripts/build-search-index.mjs
+```
+
 ## Deployment
 
 仓库通过 GitHub Pages 部署。推送到 `main` 后，GitHub Actions 会发布静态站点。
