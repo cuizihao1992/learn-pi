@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Mini Agent 模块宪章 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Mini Agent 模块宪章</strong><span>从零实现自己的 Agent</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/charter.html">总宪章</a><a href="index.html">Mini Agent</a><a href="../pi-agent/index.html">Pi Agent</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="../../pages/charter.html">总宪章</a><a class="active" href="charter.html">Mini Agent 宪章</a><a href="index.html">MVP 实现</a><a href="model-api.html">模型接口兼容</a><a href="roadmap.html">产品化路线</a></aside>
+			<article class="doc">
+				<p class="kicker">Module Charter</p>
+				<h1>Mini Agent 模块宪章</h1>
+				<p class="lead">这个模块不是继续讲 Pi 源码，而是让小白能从零写出自己的最小 Agent。它负责把“Agent 的运行原理”落到可运行代码、接口兼容和产品化扩展上。</p>
+				<h2>学习目标</h2>
+				<ul><li>理解最小 Agent Loop：模型决策、工具执行、结果回填。</li><li>能用 Node.js 跑通一个 OpenAI-compatible Mini Agent。</li><li>知道自己的模型如何通过中间层兼容 OpenAI/Anthropic 风格接口。</li><li>知道 MVP 到可用产品还缺哪些工程能力。</li></ul>
+				<h2>模块边界</h2>
+				<p>Pi Agent 模块研究现成开源项目 Pi 的架构；Mini Agent 模块研究如何自己实现一个最小 Agent。两个模块互相参照，但不混在一个目录里。</p>
+				<h2>必须覆盖的内容</h2>
+				<ol><li>MVP 代码必须能被复制和运行。</li><li>每个工具调用都要讲清楚请求格式、执行位置、回填格式。</li><li>模型接口章节必须区分“训练能力”和“中间层协议转换”。</li><li>产品化路线必须覆盖权限、会话、压缩、流式事件、错误恢复。</li></ol>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

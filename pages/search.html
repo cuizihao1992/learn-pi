@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>全站检索 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../styles.css" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>全站检索</strong><span>搜索本项目页面和示例代码</span></div></div>
+			<nav><a href="../index.html">首页</a><a href="dashboard.html">仪表盘</a><a href="charter.html">总宪章</a><a href="../modules/pi-agent/index.html">Pi</a><a href="../modules/mini-agent/index.html">Mini Agent</a><a href="../modules/cesium/index.html">Cesium</a><a href="../modules/openlayers/index.html">OpenLayers</a></nav>
+		</header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar">
+				<a href="dashboard.html">学习仪表盘</a>
+				<a href="charter.html">总宪章</a>
+				<a class="active" href="search.html">全站检索</a>
+				<a href="../modules/pi-agent/index.html">Pi Agent</a>
+				<a href="../modules/mini-agent/index.html">Mini Agent</a>
+				<a href="../modules/cesium/index.html">Cesium</a>
+				<a href="../modules/openlayers/index.html">OpenLayers</a>
+			</aside>
+			<article class="doc search-doc">
+				<p class="kicker">Search</p>
+				<h1>搜索本项目</h1>
+				<p class="lead">输入关键词，可以跨四个模块搜索页面、宪章和示例代码。英文、路径和代码符号使用开源 Lunr.js；中文内容同时使用本地子串匹配。</p>
+
+				<div class="site-search-panel" data-site-search>
+					<label class="site-search-box">
+						<span>关键词</span>
+						<input type="search" placeholder="例如：toolCall、DrawCommand、VectorLayer、模型接口" autocomplete="off" data-search-input />
+					</label>
+					<div class="search-filter-row" aria-label="模块过滤">
+						<button type="button" class="active" data-module-filter="all">全部</button>
+						<button type="button" data-module-filter="pi-agent">Pi Agent</button>
+						<button type="button" data-module-filter="mini-agent">Mini Agent</button>
+						<button type="button" data-module-filter="cesium">Cesium</button>
+						<button type="button" data-module-filter="openlayers">OpenLayers</button>
+						<button type="button" data-module-filter="common">公共页</button>
+					</div>
+					<p class="site-search-status" data-search-status>正在加载索引...</p>
+					<div class="site-search-results" data-search-results></div>
+				</div>
+			</article>
+		</main>
+		<script src="../vendor/lunr.min.js"></script>
+		<script src="../theme.js"></script>
+		<script src="../site-search.js"></script>
+	</body>
+</html>

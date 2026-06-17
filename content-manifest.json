@@ -3,7 +3,8 @@
     "name": "Source Learning Lab",
     "charter": "pages/charter.html",
     "dashboard": "pages/dashboard.html",
-    "rule": "Common pages stay in pages/. Topic learning content lives under modules/{module-slug}/. Old pages URLs are compatibility redirects."
+    "search": "pages/search.html",
+    "rule": "The site is organized as four first-class modules: pi-agent, mini-agent, cesium, and openlayers. Common pages stay in pages/. Old pages URLs are compatibility redirects."
   },
   "moduleConvention": {
     "moduleRoot": "modules/{module-slug}/",
@@ -13,11 +14,11 @@
       "index.html"
     ],
     "recommended": [
-      "render-path.html",
-      "lifecycle.html",
       "debugging.html",
       "glossary.html",
-      "labs.html"
+      "labs.html",
+      "render-path.html",
+      "roadmap.html"
     ]
   },
   "modules": [
@@ -27,6 +28,7 @@
       "root": "modules/pi-agent/",
       "charter": "modules/pi-agent/charter.html",
       "entry": "modules/pi-agent/index.html",
+      "purpose": "Understand the Pi open-source agent architecture and key source code.",
       "pages": [
         "index.html",
         "architecture.html",
@@ -38,13 +40,23 @@
         "frontend.html",
         "design-tradeoffs.html",
         "labs.html",
-        "mini-agent.html",
-        "mini-agent-roadmap.html",
         "pi-debugging.html",
-        "custom-model-api.html",
         "glossary.html",
         "callgraph.html",
         "faq.html"
+      ]
+    },
+    {
+      "slug": "mini-agent",
+      "name": "Mini Agent",
+      "root": "modules/mini-agent/",
+      "charter": "modules/mini-agent/charter.html",
+      "entry": "modules/mini-agent/index.html",
+      "purpose": "Build a minimal agent from scratch and learn model API compatibility.",
+      "pages": [
+        "index.html",
+        "model-api.html",
+        "roadmap.html"
       ]
     },
     {
@@ -53,6 +65,7 @@
       "root": "modules/cesium/",
       "charter": "modules/cesium/charter.html",
       "entry": "modules/cesium/index.html",
+      "purpose": "Understand the 3D rendering path from Viewer to GPU.",
       "pages": [
         "index.html",
         "render-path.html",
@@ -66,6 +79,7 @@
       "root": "modules/openlayers/",
       "charter": "modules/openlayers/charter.html",
       "entry": "modules/openlayers/index.html",
+      "purpose": "Understand the 2D map rendering path from Map/View/Layer/Source to Canvas/WebGL.",
       "pages": [
         "index.html",
         "render-path.html",
@@ -76,6 +90,7 @@
   "commonPages": [
     "pages/dashboard.html",
     "pages/charter.html",
+    "pages/search.html",
     "pages/knowledge-check.html"
   ]
 }

@@ -4,17 +4,20 @@
 
 当前模块：
 
-- `modules/pi-agent/`：学习 Agent 如何处理提示词、调用模型、执行工具、保存会话、接入自研模型。
+- `modules/pi-agent/`：学习 Pi Agent 源码如何处理提示词、调用模型、执行工具、保存会话和事件。
+- `modules/mini-agent/`：从零实现最小 Agent，包含 Node MVP、模型接口兼容和产品化路线。
 - `modules/cesium/`：学习三维渲染如何从 Viewer、Scene、Primitive、DrawCommand 走到 WebGL/GPU。
 - `modules/openlayers/`：学习二维地图如何从 Map、View、Layer、Source 走到 Canvas/WebGL。
 
 ## Directory Rules
 
 - `index.html`：全站首页。
-- `pages/`：只放全站级页面，例如仪表盘、总宪章、测验，以及旧 URL 的兼容跳转页。
+- `pages/`：只放全站级页面，例如仪表盘、总宪章、全站检索、测验，以及旧 URL 的兼容跳转页。
 - `modules/{module}/`：放某个专题的学习内容，每个模块至少有 `index.html` 和 `charter.html`。
 - `examples/{module}/`：放可运行示例代码。
 - `content-manifest.json`：机器可读的模块清单。
+- `search-index.json`：前端检索索引，由静态页面直接读取。
+- `vendor/lunr.min.js`：开源前端检索库 Lunr.js，本地 vendored，避免运行时依赖 CDN。
 
 旧的 `pages/*.html` 专题链接会继续保留为跳转页，避免历史链接失效；新增内容优先放进对应的 `modules/` 目录。
 

@@ -639,6 +639,103 @@ h2 {
 	font-weight: 800;
 }
 
+.site-search-panel {
+	display: grid;
+	gap: 16px;
+}
+
+.site-search-box {
+	display: grid;
+	gap: 8px;
+}
+
+.site-search-box span {
+	color: var(--muted);
+	font-size: 13px;
+	font-weight: 900;
+}
+
+.site-search-box input {
+	width: 100%;
+	min-height: 52px;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	background: var(--panel);
+	color: var(--ink);
+	padding: 12px 14px;
+	font: inherit;
+	font-size: 17px;
+}
+
+.search-filter-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.search-filter-row button {
+	border: 1px solid var(--line);
+	background: var(--panel);
+	color: var(--muted);
+	border-radius: 999px;
+	padding: 8px 12px;
+	font: inherit;
+	font-size: 13px;
+	font-weight: 900;
+	cursor: pointer;
+}
+
+.search-filter-row button.active {
+	border-color: var(--teal);
+	background: var(--teal-soft);
+	color: var(--teal);
+}
+
+.site-search-status {
+	margin: 0;
+	color: var(--muted);
+	font-weight: 800;
+}
+
+.site-search-results {
+	display: grid;
+	gap: 12px;
+}
+
+.search-result-card {
+	display: grid;
+	gap: 6px;
+	padding: 16px;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	background: var(--section-bg);
+	text-decoration: none;
+}
+
+.search-result-card:hover {
+	border-color: var(--teal);
+	box-shadow: inset 4px 0 0 var(--teal);
+}
+
+.search-result-card span,
+.search-result-card small {
+	color: var(--muted);
+	font-size: 12px;
+	font-weight: 800;
+	overflow-wrap: anywhere;
+}
+
+.search-result-card strong {
+	color: var(--ink);
+	font-size: 18px;
+}
+
+.search-result-card p {
+	margin: 0;
+	color: #3f4b50;
+	line-height: 1.62;
+}
+
 .search-hit {
 	background: color-mix(in srgb, var(--teal-soft) 75%, transparent);
 	border-radius: 6px;
@@ -1494,10 +1591,27 @@ footer a {
 	}
 
 	.page-search input,
+	.site-search-box input,
 	.search,
 	.select {
 		width: 100%;
 		font-size: 16px;
+	}
+
+	.search-filter-row {
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		padding-bottom: 2px;
+		scrollbar-width: none;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.search-filter-row::-webkit-scrollbar {
+		display: none;
+	}
+
+	.search-filter-row button {
+		flex: 0 0 auto;
 	}
 
 	.compare-table {

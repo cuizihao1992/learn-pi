@@ -2,21 +2,23 @@
 <html lang="zh-CN">
 	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>学习仪表盘 | Learn Pi</title><link rel="stylesheet" href="../styles.css" /></head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习仪表盘</strong><span>Pi Agent + Cesium + OpenLayers</span></div></div><nav><a href="../index.html">首页</a><a href="charter.html">宪章</a><a href="../modules/pi-agent/index.html">Pi</a><a href="../modules/cesium/index.html">Cesium</a><a href="../modules/openlayers/index.html">OpenLayers</a><a href="knowledge-check.html">测验</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习仪表盘</strong><span>Pi Agent + Mini Agent + Cesium + OpenLayers</span></div></div><nav><a href="../index.html">首页</a><a href="charter.html">宪章</a><a href="../modules/pi-agent/index.html">Pi</a><a href="../modules/mini-agent/index.html">Mini Agent</a><a href="../modules/cesium/index.html">Cesium</a><a href="../modules/openlayers/index.html">OpenLayers</a><a href="knowledge-check.html">测验</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a class="active" href="dashboard.html">学习仪表盘</a><a href="charter.html">总宪章</a><a href="../modules/pi-agent/charter.html">Pi 模块宪章</a><a href="../modules/cesium/charter.html">Cesium 模块宪章</a><a href="../modules/openlayers/charter.html">OpenLayers 模块宪章</a><a href="../modules/pi-agent/mini-agent.html">Mini Agent</a><a href="../modules/cesium/render-path.html">Cesium 渲染路径</a><a href="../modules/openlayers/render-path.html">OpenLayers 渲染路径</a><a href="knowledge-check.html">知识测验</a><a href="../modules/pi-agent/pi-debugging.html">Pi 调试手册</a><a href="../modules/cesium/debugging.html">Cesium 调试手册</a><a href="../modules/openlayers/debugging.html">OpenLayers 调试手册</a></aside>
+			<aside class="doc-sidebar"><a class="active" href="dashboard.html">学习仪表盘</a><a href="charter.html">总宪章</a><a href="../modules/pi-agent/charter.html">Pi 模块宪章</a><a href="../modules/cesium/charter.html">Cesium 模块宪章</a><a href="../modules/openlayers/charter.html">OpenLayers 模块宪章</a><a href="../modules/mini-agent/index.html">Mini Agent</a><a href="../modules/cesium/render-path.html">Cesium 渲染路径</a><a href="../modules/openlayers/render-path.html">OpenLayers 渲染路径</a><a href="knowledge-check.html">知识测验</a><a href="../modules/pi-agent/pi-debugging.html">Pi 调试手册</a><a href="../modules/cesium/debugging.html">Cesium 调试手册</a><a href="../modules/openlayers/debugging.html">OpenLayers 调试手册</a><a href="search.html">全站检索</a></aside>
 			<article class="doc">
 				<p class="kicker">Dashboard</p>
-				<h1>三条学习路径怎么走</h1>
-				<p class="lead">现在有三条并列路线：Pi Agent 学“模型决策到工具执行”，Cesium 学“三维数据到 GPU 像素”，OpenLayers 学“二维地图数据到 Canvas/WebGL”。三者共同点都是高层意图先转成中间结构，再由底层统一调度执行。</p>
+				<h1>四个学习模块怎么走</h1>
+				<p class="lead">现在有四个并列模块：Pi Agent 负责读懂开源 Agent 架构，Mini Agent 负责从零实现自己的 Agent，Cesium 负责三维渲染链路，OpenLayers 负责二维地图渲染链路。四者共同点都是高层意图先转成中间结构，再由底层统一调度执行。</p>
 				<div class="track-grid">
-					<section><h2>Pi Agent 路径</h2><ol><li>模块总览</li><li>架构设计</li><li>完整对话流程</li><li>提示词处理</li><li>工具调用</li><li>Mini Agent 实现</li><li>自研模型接入</li><li>调试与扩展</li></ol><a class="primary-link" href="../modules/pi-agent/index.html">进入 Pi 路径</a></section>
+					<section><h2>Pi Agent</h2><ol><li>模块总览</li><li>架构设计</li><li>完整对话流程</li><li>提示词处理</li><li>工具调用</li><li>会话与压缩</li><li>源码调用图</li></ol><a class="primary-link" href="../modules/pi-agent/index.html">进入 Pi Agent</a></section>
+					<section><h2>Mini Agent</h2><ol><li>Node MVP</li><li>工具调用闭环</li><li>OpenAI-compatible 接口</li><li>自研模型适配</li><li>产品化路线</li></ol><a class="primary-link" href="../modules/mini-agent/index.html">进入 Mini Agent</a></section>
 					<section><h2>Cesium 路径</h2><ol><li>Viewer 和 Scene</li><li>Entity 到 Primitive</li><li>Primitive 到 DrawCommand</li><li>Renderer 到 WebGL</li><li>Globe/Terrain/3D Tiles</li><li>渲染调试</li></ol><a class="primary-link" href="../modules/cesium/index.html">进入 Cesium 路径</a></section>
 					<section><h2>OpenLayers 路径</h2><ol><li>Map/View/Layer/Source</li><li>TileLayer 渲染</li><li>VectorLayer 渲染</li><li>VectorTile 路径</li><li>Canvas/WebGL renderer</li><li>地图调试</li></ol><a class="primary-link" href="../modules/openlayers/index.html">进入 OpenLayers 路径</a></section>
 				</div>
 				<h2>每学完一章要能回答什么</h2>
 				<ul>
 					<li>Pi：模型到底做决策还是执行？工具结果为什么要回填？</li>
+					<li>Mini Agent：最小 Agent Loop 为什么必须有 toolResult 回填？</li>
 					<li>Cesium：Entity 为什么不能直接 draw？DrawCommand 包含哪些 WebGL 信息？</li>
 					<li>OpenLayers：Layer 和 Source 为什么分开？View 如何决定瓦片和要素渲染？</li>
 					<li>共同点：为什么大型系统都喜欢中间命令层？</li>
@@ -25,7 +27,7 @@
 				<p>后续新增模块时，先复制新模块宪章模板，再写模块入口和完整链路页。不要直接散落新增页面。</p>
 				<div class="track-grid">
 					<section><h3>总宪章</h3><p>全站通用写作标准和目录规范。</p><a class="primary-link" href="charter.html">查看</a></section>
-					<section><h3>模块宪章模板</h3><p>新项目加入前先复制这个模板。</p><a class="primary-link" href="../modules/_template/charter.html">查看</a></section>
+					<section><h3>站内检索</h3><p>用 Lunr.js + 中文子串检索搜索本项目页面。</p><a class="primary-link" href="search.html">搜索</a></section>
 					<section><h3>内容清单</h3><p>机器可读的模块注册表。</p><a class="primary-link" href="../content-manifest.json">查看 JSON</a></section>
 				</div>
 			</article>
