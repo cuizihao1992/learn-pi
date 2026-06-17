@@ -70,6 +70,7 @@
       "pages": [
         "index.html",
         "render-path.html",
+        "custom-shader.html",
         "debugging.html",
         "glossary.html"
       ]

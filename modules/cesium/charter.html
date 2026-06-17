@@ -2,15 +2,15 @@
 <html lang="zh-CN">
 	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Cesium 模块宪章 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Cesium 模块宪章</strong><span>三维渲染链路</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/charter.html">总宪章</a><a href="../cesium/index.html">Cesium 课程</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Cesium 模块宪章</strong><span>三维渲染链路</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/charter.html">总宪章</a><a href="../cesium/index.html">Cesium 课程</a><a href="custom-shader.html">自定义着色器</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="../../pages/charter.html">总宪章</a><a class="active" href="charter.html">Cesium 宪章</a><a href="../cesium/index.html">Cesium 总览</a><a href="../cesium/render-path.html">渲染路径</a><a href="../cesium/debugging.html">调试手册</a></aside>
+			<aside class="doc-sidebar"><a href="../../pages/charter.html">总宪章</a><a class="active" href="charter.html">Cesium 宪章</a><a href="../cesium/index.html">Cesium 总览</a><a href="../cesium/render-path.html">渲染路径</a><a href="../cesium/custom-shader.html">自定义着色器</a><a href="../cesium/debugging.html">调试手册</a></aside>
 			<article class="doc">
 				<p class="kicker">Module Charter</p>
 				<h1>Cesium 模块宪章</h1>
 				<p class="lead">本模块目标是让读者理解三维地球引擎如何把业务对象、瓦片、地形、影像和 3D Tiles 转换成 WebGL 绘制。</p>
 				<h2>完成标准</h2>
-				<ul><li>能说清 Viewer、Scene、Primitive、DrawCommand、Renderer 的职责。</li><li>能画出 `Entity -> Visualizer -> Primitive -> DrawCommand -> WebGL`。</li><li>能解释 Globe、Terrain、Imagery、3D Tiles 为什么有特殊路径。</li><li>能按渲染链路定位“为什么没画出来”。</li></ul>
+				<ul><li>能说清 Viewer、Scene、Primitive、DrawCommand、Renderer 的职责。</li><li>能画出 `Entity -> Visualizer -> Primitive -> DrawCommand -> WebGL`。</li><li>能解释 Globe、Terrain、Imagery、3D Tiles 为什么有特殊路径。</li><li>能解释 `CustomShader`、`Material/Fabric`、`Appearance`、`PostProcessStage` 分别插入哪一层。</li><li>能按渲染链路定位“为什么没画出来”。</li></ul>
 				<h2>核心链路</h2>
 				<pre><code>Viewer
   -> CesiumWidget
@@ -24,7 +24,7 @@
 				<h2>源码入口</h2>
 				<ul><li>`packages/engine/Source/Widgets/Viewer/Viewer.js`</li><li>`packages/engine/Source/Scene/Scene.js`</li><li>`packages/engine/Source/Scene/Primitive.js`</li><li>`packages/engine/Source/Renderer/DrawCommand.js`</li><li>`packages/engine/Source/Renderer/Context.js`</li><li>`packages/engine/Source/Scene/Globe.js`</li><li>`packages/engine/Source/Scene/Cesium3DTileset.js`</li></ul>
 				<h2>模块内容标准</h2>
-				<ul><li>任何渲染章节都必须说明对象如何进入 commandList。</li><li>必须区分 Entity 和 Primitive。</li><li>必须解释 pass、RenderState、ShaderProgram、VertexArray。</li><li>调试内容必须沿 Viewer -> Scene -> Command -> Renderer 查。</li></ul>
+				<ul><li>任何渲染章节都必须说明对象如何进入 commandList。</li><li>必须区分 Entity 和 Primitive。</li><li>必须解释 pass、RenderState、ShaderProgram、VertexArray。</li><li>自定义 shader 内容必须说明它最后如何影响 DrawCommand 或后处理命令。</li><li>调试内容必须沿 Viewer -> Scene -> Command -> Renderer 查。</li></ul>
 				<h2>后续可补内容</h2>
 				<ul><li>3D Tiles traversal 专章。</li><li>Terrain/Imagery 瓦片选择专章。</li><li>自定义 Primitive 实战。</li><li>Shader 和后处理专章。</li></ul>
 			</article>

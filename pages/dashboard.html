@@ -4,7 +4,7 @@
 	<body>
 		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习仪表盘</strong><span>Pi Agent + Mini Agent + Cesium + OpenLayers + Gaussian Splatting + 股票 K 线</span></div></div><nav><a href="../index.html">首页</a><a href="charter.html">宪章</a><a href="../modules/pi-agent/index.html">Pi</a><a href="../modules/mini-agent/index.html">Mini Agent</a><a href="../modules/cesium/index.html">Cesium</a><a href="../modules/openlayers/index.html">OpenLayers</a><a href="../modules/gaussian-splatting/index.html">Gaussian Splatting</a><a href="../modules/stock-kline/index.html">股票 K 线</a><a href="knowledge-check.html">测验</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a class="active" href="dashboard.html">学习仪表盘</a><a href="charter.html">总宪章</a><a href="../modules/pi-agent/charter.html">Pi 模块宪章</a><a href="../modules/mini-agent/charter.html">Mini Agent 模块宪章</a><a href="../modules/cesium/charter.html">Cesium 模块宪章</a><a href="../modules/openlayers/charter.html">OpenLayers 模块宪章</a><a href="../modules/gaussian-splatting/charter.html">Gaussian Splatting 模块宪章</a><a href="../modules/stock-kline/charter.html">股票 K 线模块宪章</a><a href="../modules/mini-agent/index.html">Mini Agent</a><a href="../modules/cesium/render-path.html">Cesium 渲染路径</a><a href="../modules/openlayers/render-path.html">OpenLayers 渲染路径</a><a href="../modules/gaussian-splatting/render-path.html">Gaussian Splatting 路径</a><a href="../modules/stock-kline/indicators.html">股票指标逻辑</a><a href="../modules/stock-kline/signals.html">买卖信号整理</a><a href="knowledge-check.html">知识测验</a><a href="search.html">全站检索</a></aside>
+			<aside class="doc-sidebar"><a class="active" href="dashboard.html">学习仪表盘</a><a href="charter.html">总宪章</a><a href="../modules/pi-agent/charter.html">Pi 模块宪章</a><a href="../modules/mini-agent/charter.html">Mini Agent 模块宪章</a><a href="../modules/cesium/charter.html">Cesium 模块宪章</a><a href="../modules/openlayers/charter.html">OpenLayers 模块宪章</a><a href="../modules/gaussian-splatting/charter.html">Gaussian Splatting 模块宪章</a><a href="../modules/stock-kline/charter.html">股票 K 线模块宪章</a><a href="../modules/mini-agent/index.html">Mini Agent</a><a href="../modules/cesium/render-path.html">Cesium 渲染路径</a><a href="../modules/cesium/custom-shader.html">Cesium 自定义着色器</a><a href="../modules/openlayers/render-path.html">OpenLayers 渲染路径</a><a href="../modules/gaussian-splatting/render-path.html">Gaussian Splatting 路径</a><a href="../modules/stock-kline/indicators.html">股票指标逻辑</a><a href="../modules/stock-kline/signals.html">买卖信号整理</a><a href="knowledge-check.html">知识测验</a><a href="search.html">全站检索</a></aside>
 			<article class="doc">
 				<p class="kicker">Dashboard</p>
 				<h1>六个学习模块怎么走</h1>
@@ -12,7 +12,7 @@
 				<div class="track-grid">
 					<section><h2>Pi Agent</h2><ol><li>模块总览</li><li>架构设计</li><li>完整对话流程</li><li>提示词处理</li><li>工具调用</li><li>会话与压缩</li><li>源码调用图</li></ol><a class="primary-link" href="../modules/pi-agent/index.html">进入 Pi Agent</a></section>
 					<section><h2>Mini Agent</h2><ol><li>Node MVP</li><li>工具调用闭环</li><li>OpenAI-compatible 接口</li><li>自研模型适配</li><li>产品化路线</li></ol><a class="primary-link" href="../modules/mini-agent/index.html">进入 Mini Agent</a></section>
-					<section><h2>Cesium 路径</h2><ol><li>Viewer 和 Scene</li><li>Entity 到 Primitive</li><li>Primitive 到 DrawCommand</li><li>Renderer 到 WebGL</li><li>Globe/Terrain/3D Tiles</li><li>渲染调试</li></ol><a class="primary-link" href="../modules/cesium/index.html">进入 Cesium 路径</a></section>
+					<section><h2>Cesium 路径</h2><ol><li>Viewer 和 Scene</li><li>Entity 到 Primitive</li><li>Primitive 到 DrawCommand</li><li>自定义 shader 到 ShaderProgram</li><li>Globe/Terrain/3D Tiles</li><li>渲染调试</li></ol><a class="primary-link" href="../modules/cesium/index.html">进入 Cesium 路径</a></section>
 					<section><h2>OpenLayers 路径</h2><ol><li>Map/View/Layer/Source</li><li>TileLayer 渲染</li><li>VectorLayer 渲染</li><li>VectorTile 路径</li><li>Canvas/WebGL renderer</li><li>地图调试</li></ol><a class="primary-link" href="../modules/openlayers/index.html">进入 OpenLayers 路径</a></section>
 					<section><h2>Gaussian Splatting</h2><ol><li>照片与相机位姿</li><li>COLMAP 稀疏点云</li><li>高斯参数初始化</li><li>可微 rasterization</li><li>densify/prune 优化</li><li>实时 viewer 调试</li></ol><a class="primary-link" href="../modules/gaussian-splatting/index.html">进入高斯泼溅</a></section>
 					<section><h2>股票 K 线</h2><ol><li>K 线和量价</li><li>均线/MACD/RSI/KDJ</li><li>买卖信号拆解</li><li>短线中线长线</li><li>现实背景解释</li><li>仓位止损复盘</li></ol><a class="primary-link" href="../modules/stock-kline/index.html">进入股票 K 线</a></section>
@@ -21,7 +21,7 @@
 				<ul>
 					<li>Pi：模型到底做决策还是执行？工具结果为什么要回填？</li>
 					<li>Mini Agent：最小 Agent Loop 为什么必须有 toolResult 回填？</li>
-					<li>Cesium：Entity 为什么不能直接 draw？DrawCommand 包含哪些 WebGL 信息？</li>
+					<li>Cesium：Entity 为什么不能直接 draw？DrawCommand 包含哪些 WebGL 信息？CustomShader、Material、PostProcessStage 分别插入哪一层？</li>
 					<li>OpenLayers：Layer 和 Source 为什么分开？View 如何决定瓦片和要素渲染？</li>
 					<li>Gaussian Splatting：为什么一个 3D 场景可以表示成很多高斯椭球？训练阶段和渲染阶段分别在优化什么？</li>
 					<li>股票 K 线：指标到底在加工什么历史数据？一个买入信号为什么必须包含环境、位置、触发、确认、失效和仓位？</li>

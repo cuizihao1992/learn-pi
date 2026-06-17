@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Cesium 学习路径 | Learn Pi</title><link rel="stylesheet" href="../../styles.css" /></head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Cesium 学习路径</strong><span>完整渲染路径</span></div></div><nav><a href="../../index.html">首页</a><a href="render-path.html">渲染路径</a><a href="../mini-agent/index.html">Mini Agent</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Cesium 学习路径</strong><span>完整渲染路径</span></div></div><nav><a href="../../index.html">首页</a><a href="render-path.html">渲染路径</a><a href="custom-shader.html">自定义着色器</a><a href="../mini-agent/index.html">Mini Agent</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a class="active" href="index.html">Cesium 总览</a><a href="render-path.html">完整渲染路径</a><a href="../pi-agent/architecture.html">返回 Pi 路径</a></aside>
+			<aside class="doc-sidebar"><a class="active" href="index.html">Cesium 总览</a><a href="render-path.html">完整渲染路径</a><a href="custom-shader.html">自定义着色器</a><a href="debugging.html">调试手册</a><a href="glossary.html">术语表</a><a href="../pi-agent/architecture.html">返回 Pi 路径</a></aside>
 			<article class="doc">
 				<p class="kicker">Cesium Path</p>
 				<h1>Cesium 学习路径：从 Viewer 到 GPU</h1>
@@ -30,8 +30,12 @@
 					<li>理解 Scene 每帧如何 update 和 render。</li>
 					<li>理解 Primitive 如何产生 DrawCommand。</li>
 					<li>理解 DrawCommand 如何封装 WebGL draw call。</li>
+					<li>理解自定义 shader 如何进入 `ShaderProgram` 和 `DrawCommand`。</li>
 					<li>最后读 Globe、Terrain、Imagery、3D Tiles 的专用渲染管线。</li>
 				</ol>
+				<h2>新增重点章节</h2>
+				<p>如果你想知道 Cesium 里写的 GLSL 最后变成什么，可以直接读自定义着色器章节。它按 `CustomShader`、`Material/Fabric`、`Appearance`、`PostProcessStage` 和底层 `DrawCommand` 分类说明。</p>
+				<div class="next-card"><span>Shader 专章</span><a href="custom-shader.html">看自定义着色器到 DrawCommand 的完整链路</a></div>
 
 				<h2>官方参考</h2>
 				<ul>

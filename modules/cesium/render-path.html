@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Cesium 完整渲染路径 | Learn Pi</title><link rel="stylesheet" href="../../styles.css" /></head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Cesium 学习路径</strong><span>完整渲染路径</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">Cesium 总览</a><a href="../pi-agent/architecture.html">Pi 路径</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Cesium 学习路径</strong><span>完整渲染路径</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">Cesium 总览</a><a href="custom-shader.html">自定义着色器</a><a href="../pi-agent/architecture.html">Pi 路径</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="index.html">Cesium 总览</a><a class="active" href="render-path.html">完整渲染路径</a><a href="../pi-agent/architecture.html">返回 Pi 路径</a></aside>
+			<aside class="doc-sidebar"><a href="index.html">Cesium 总览</a><a class="active" href="render-path.html">完整渲染路径</a><a href="custom-shader.html">自定义着色器</a><a href="debugging.html">调试手册</a><a href="../pi-agent/architecture.html">返回 Pi 路径</a></aside>
 			<article class="doc">
 				<p class="kicker">Rendering Pipeline</p>
 				<h1>Cesium 完整渲染路径：从 Viewer 到 GPU</h1>
@@ -120,6 +120,13 @@ viewer.entities.add({
 					<li><strong>Renderer 可复用：</strong>WebGL 状态管理集中，不污染高层对象。</li>
 					<li><strong>适合海量数据：</strong>Terrain、Imagery、3D Tiles 都可以用各自的 tile pipeline 产生命令。</li>
 				</ul>
+				<h2>11. 自定义 shader 插在哪里</h2>
+				<p>自定义 shader 不是绕开这条路径，而是插入到路径中的某个层级：`CustomShader` 插入 Model/3D Tiles 的 shader pipeline；`Material/Fabric` 插入 Appearance 的材质片段；`PostProcessStage` 插入 Scene 渲染完成后的屏幕空间 pass；底层自定义 Primitive 则直接创建 `DrawCommand`。</p>
+				<pre><code>CustomShader / Material / Appearance / PostProcessStage
+  -> 影响 ShaderProgram 或后处理 shader
+  -> 进入 DrawCommand / post-process command
+  -> Renderer 统一执行</code></pre>
+				<p>详细例子见 <a href="custom-shader.html">Cesium 自定义着色器</a>。</p>
 
 				<h2>和 Pi Agent 的类比</h2>
 				<table class="compare-table">
