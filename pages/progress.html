@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>学习进度打卡 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习进度打卡</strong><span>把学习变成可见的闭环</span></div></div><nav><a href="../index.html">首页</a><a href="learning-paths.html">学习路线</a><a href="dashboard.html">仪表盘</a><a href="search.html">检索</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="learning-paths.html">学习路线</a><a class="active" href="progress.html">学习进度</a><a href="agent-project-checklist.html">Agent 项目清单</a><a href="interview-bank.html">面试题库</a><a href="knowledge-check.html">知识测验</a><a href="search.html">全站检索</a></aside>
+			<article class="doc">
+				<p class="kicker">Progress</p>
+				<h1>学习进度打卡表</h1>
+				<p class="lead">这个页面不是用来记录“看了多少页”，而是记录你是否能说清楚、画出来、写出来、跑起来。每完成一项，就在自己的笔记里打勾。</p>
+				<h2>四级掌握标准</h2>
+				<table class="compare-table">
+					<thead><tr><th>等级</th><th>判断标准</th><th>证据</th></tr></thead>
+					<tbody>
+						<tr><td>看过</td><td>知道这个概念出现在哪个模块。</td><td>能指出对应页面。</td></tr>
+						<tr><td>说清</td><td>能用自己的话解释为什么这样设计。</td><td>能写 5 句话解释。</td></tr>
+						<tr><td>画出</td><td>能画出输入、处理、输出和关键中间层。</td><td>能画链路图。</td></tr>
+						<tr><td>做成</td><td>能写代码或做一个最小 demo。</td><td>能运行示例并改一个功能。</td></tr>
+					</tbody>
+				</table>
+				<h2>Agent 主线打卡</h2>
+				<ul>
+					<li>能解释 prompt -> model -> toolCall -> toolResult -> final answer。</li>
+					<li>能运行 <a href="../examples/mini-agent-node/mini-agent.mjs">Mini Agent 示例代码</a>。</li>
+					<li>能说明 OpenAI-compatible adapter 是为了解决什么问题。</li>
+					<li>能给 Agent 加一个只读工具，并限制路径范围。</li>
+					<li>能设计短期记忆、用户画像和长期情景记忆。</li>
+					<li>能用 Markdown + 关键词检索做一个最小 RAG。</li>
+				</ul>
+				<h2>面试主线打卡</h2>
+				<ul>
+					<li>能两分钟回答长期陪伴 AI 的记忆机制。</li>
+					<li>能讲完整 RAG 数据工程链路。</li>
+					<li>能解释长上下文为什么不会完全替代 RAG。</li>
+					<li>能区分 FlashAttention、GQA、PagedAttention、RoPE Scaling 分别解决什么。</li>
+				</ul>
+				<h2>渲染地图主线打卡</h2>
+				<ul>
+					<li>能区分 OpenLayers、Mapbox、Cesium 的适用场景。</li>
+					<li>能解释 Map/View/Layer/Source。</li>
+					<li>能解释 source/layer/style/vector tile。</li>
+					<li>能解释 Entity、Primitive、DrawCommand。</li>
+					<li>能说明自定义 shader 在 Cesium 中进入哪一层。</li>
+				</ul>
+				<h2>金融量化主线打卡</h2>
+				<ul>
+					<li>能解释 K 线不是预测器，而是周期成交结果压缩。</li>
+					<li>能说明均线、MACD、RSI、KDJ 的底层输入是什么。</li>
+					<li>能把一个买入信号拆成环境、位置、触发、确认、失效和仓位。</li>
+					<li>能画出量化系统的数据、研究、回测、实盘和风控链路。</li>
+				</ul>
+				<div class="next-card"><span>下一步</span><a href="agent-project-checklist.html">进入 Agent 项目清单</a></div>
+			</article>
+		</main>
+		<script src="../theme.js"></script><script src="../enhance.js"></script>
+	</body>
+</html>

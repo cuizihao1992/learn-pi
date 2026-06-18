@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>全站概念索引 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>全站概念索引</strong><span>把术语放到一张地图上</span></div></div><nav><a href="../index.html">首页</a><a href="learning-paths.html">学习路线</a><a href="search.html">检索</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="learning-paths.html">学习路线</a><a class="active" href="concept-index.html">概念索引</a><a href="../modules/pi-agent/glossary.html">Pi 术语</a><a href="../modules/cesium/glossary.html">Cesium 术语</a><a href="search.html">全站检索</a></aside>
+			<article class="doc">
+				<p class="kicker">Concept Index</p>
+				<h1>全站概念索引</h1>
+				<p class="lead">当你被术语卡住时，不要硬读。先找到它属于哪条链路，再回到对应模块。</p>
+				<h2>Agent 与大模型</h2>
+				<table class="compare-table">
+					<thead><tr><th>概念</th><th>一句话</th><th>入口</th></tr></thead>
+					<tbody>
+						<tr><td>toolCall</td><td>模型提出“我要调用哪个工具和参数”。</td><td><a href="../modules/pi-agent/tools.html">工具调用</a></td></tr>
+						<tr><td>toolResult</td><td>运行时执行工具后，把真实结果回填给模型。</td><td><a href="../modules/mini-agent/index.html">Mini Agent</a></td></tr>
+						<tr><td>OpenAI-compatible</td><td>让不同模型伪装成同一种 API 协议。</td><td><a href="../modules/mini-agent/model-api.html">模型接口</a></td></tr>
+						<tr><td>RAG</td><td>先检索证据，再让模型回答。</td><td><a href="../modules/llm-agent-interview/rag-pipeline.html">RAG 工程</a></td></tr>
+						<tr><td>KV Cache</td><td>推理时保存历史 token 的 Key/Value，避免重复计算。</td><td><a href="../modules/llm-agent-interview/transformer-long-context.html">长文本优化</a></td></tr>
+					</tbody>
+				</table>
+				<h2>地图与渲染</h2>
+				<table class="compare-table">
+					<thead><tr><th>概念</th><th>一句话</th><th>入口</th></tr></thead>
+					<tbody>
+						<tr><td>Layer / Source</td><td>Layer 管展示，Source 管数据。</td><td><a href="../modules/openlayers/render-path.html">OpenLayers</a></td></tr>
+						<tr><td>Vector Tile</td><td>把矢量数据切成瓦片，按视口加载。</td><td><a href="../modules/mapbox/architecture.html">Mapbox</a></td></tr>
+						<tr><td>Primitive</td><td>Cesium 更接近渲染层的对象。</td><td><a href="../modules/cesium/render-path.html">Cesium</a></td></tr>
+						<tr><td>DrawCommand</td><td>Cesium 最终提交给渲染管线的绘制命令。</td><td><a href="../modules/cesium/render-path.html">渲染路径</a></td></tr>
+						<tr><td>3D Tiles</td><td>大规模三维空间数据的分层加载格式。</td><td><a href="../modules/digital-twin-city/assets-data.html">三维资产</a></td></tr>
+					</tbody>
+				</table>
+				<h2>金融与科学</h2>
+				<table class="compare-table">
+					<thead><tr><th>概念</th><th>一句话</th><th>入口</th></tr></thead>
+					<tbody>
+						<tr><td>K 线</td><td>一个周期内开高低收的压缩表达。</td><td><a href="../modules/stock-kline/kline-basics.html">K 线基础</a></td></tr>
+						<tr><td>回测</td><td>用历史数据检验策略规则。</td><td><a href="../modules/quant-trading/architecture.html">量化架构</a></td></tr>
+						<tr><td>Gaussian Splatting</td><td>用大量可优化 3D 高斯表示场景。</td><td><a href="../modules/gaussian-splatting/index.html">高斯泼溅</a></td></tr>
+						<tr><td>RTG</td><td>用放射性衰变热发电的同位素电源。</td><td><a href="../modules/nuclear-battery/principles.html">核电池原理</a></td></tr>
+					</tbody>
+				</table>
+			</article>
+		</main>
+		<script src="../theme.js"></script><script src="../enhance.js"></script>
+	</body>
+</html>

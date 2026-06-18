@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>内容生产模板 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>内容生产模板</strong><span>以后新增模块照这个来</span></div></div><nav><a href="../index.html">首页</a><a href="charter.html">总宪章</a><a href="learning-paths.html">学习路线</a><a href="progress.html">进度</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="charter.html">总宪章</a><a href="learning-paths.html">学习路线</a><a href="progress.html">学习进度</a><a class="active" href="content-template.html">内容模板</a><a href="../modules/index.html">全部模块</a><a href="concept-index.html">概念索引</a></aside>
+			<article class="doc">
+				<p class="kicker">Content Template</p>
+				<h1>新增内容时怎么写</h1>
+				<p class="lead">这个网站后续会继续长大，所以每次新增模块或章节都要有固定结构：先定义学习目标，再画完整链路，再解释关键抽象，最后给练习、测验、速查和下一步。</p>
+				<h2>新增模块必须回答</h2>
+				<ul>
+					<li>这个模块解决什么学习目标？</li>
+					<li>它和已有模块是什么关系？</li>
+					<li>小白学完能画出哪条链路？</li>
+					<li>最小可运行 demo 是什么？</li>
+					<li>容易混淆的概念有哪些？</li>
+					<li>如何自测是否真的理解？</li>
+				</ul>
+				<h2>推荐目录</h2>
+				<pre><code>modules/new-topic/
+  index.html          # 模块总览
+  charter.html        # 模块宪章
+  architecture.html   # 架构或核心模型
+  lifecycle.html      # 完整运行链路
+  debugging.html      # 调试手册
+  glossary.html       # 术语表
+  labs.html           # 动手练习</code></pre>
+				<h2>单页写作结构</h2>
+				<ol>
+					<li>一句话说明这页学什么。</li>
+					<li>用流程图或代码块画完整链路。</li>
+					<li>把核心抽象拆成表格。</li>
+					<li>解释为什么这样设计，而不是只描述是什么。</li>
+					<li>列出常见错误和调试方法。</li>
+					<li>给一个最小练习或验收标准。</li>
+					<li>链接到相关模块，形成学习网络。</li>
+				</ol>
+				<h2>页面质量检查</h2>
+				<table class="compare-table">
+					<thead><tr><th>检查项</th><th>通过标准</th></tr></thead>
+					<tbody>
+						<tr><td>小白友好</td><td>第一屏能看出为什么要学。</td></tr>
+						<tr><td>链路完整</td><td>能从输入走到输出，不只讲局部名词。</td></tr>
+						<tr><td>对比清楚</td><td>容易混淆的概念必须放表格。</td></tr>
+						<tr><td>能动手</td><td>至少有一个练习、任务或验收标准。</td></tr>
+						<tr><td>能检索</td><td>新增页面后重建 search-index.json。</td></tr>
+						<tr><td>不断链</td><td>跑链接扫描，所有相对链接存在。</td></tr>
+					</tbody>
+				</table>
+				<h2>新增后必须更新</h2>
+				<ul>
+					<li><code>content-manifest.json</code>：登记模块或公共页面。</li>
+					<li><code>README.md</code>：更新目录说明。</li>
+					<li><code>pages/learning-paths.html</code>：如果影响学习路线，要接进去。</li>
+					<li><code>pages/concept-index.html</code>：如果有新术语，要加入索引。</li>
+					<li><code>search-index.json</code>：运行构建脚本重建。</li>
+				</ul>
+			</article>
+		</main>
+		<script src="../theme.js"></script><script src="../enhance.js"></script>
+	</body>
+</html>

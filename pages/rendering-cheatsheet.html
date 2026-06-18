@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>地图渲染速查 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>地图渲染速查</strong><span>OpenLayers / Mapbox / Cesium</span></div></div><nav><a href="../index.html">首页</a><a href="learning-paths.html">学习路线</a><a href="../modules/cesium/index.html">Cesium</a><a href="../modules/mapbox/index.html">Mapbox</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="learning-paths.html">学习路线</a><a class="active" href="rendering-cheatsheet.html">渲染速查</a><a href="../modules/openlayers/index.html">OpenLayers</a><a href="../modules/mapbox/index.html">Mapbox</a><a href="../modules/cesium/index.html">Cesium</a><a href="../modules/digital-twin-city/index.html">数字孪生</a></aside>
+			<article class="doc">
+				<p class="kicker">Rendering Cheatsheet</p>
+				<h1>地图和三维渲染速查表</h1>
+				<p class="lead">如果你经常混淆 OpenLayers、Mapbox 和 Cesium，先记住一句：OpenLayers 偏传统 GIS，Mapbox 偏高性能二维矢量地图，Cesium 偏三维地球和大规模空间场景。</p>
+				<table class="compare-table">
+					<thead><tr><th>问题</th><th>OpenLayers</th><th>Mapbox</th><th>Cesium</th></tr></thead>
+					<tbody>
+						<tr><td>核心对象</td><td>Map / View / Layer / Source</td><td>Map / Style / Source / Layer</td><td>Viewer / Scene / Primitive / DrawCommand</td></tr>
+						<tr><td>主要场景</td><td>GIS 管理、投影、WMS/WFS、测绘</td><td>城市二维地图、矢量瓦片、业务图层</td><td>三维地球、3D Tiles、地形、卫星轨道</td></tr>
+						<tr><td>性能优势</td><td>GIS 能力全面，适配传统服务</td><td>矢量瓦片和 WebGL 管线高度优化</td><td>大规模三维空间裁剪和 LOD</td></tr>
+						<tr><td>学习入口</td><td><a href="../modules/openlayers/render-path.html">渲染路径</a></td><td><a href="../modules/mapbox/architecture.html">渲染架构</a></td><td><a href="../modules/cesium/render-path.html">渲染路径</a></td></tr>
+					</tbody>
+				</table>
+				<h2>从数据到像素</h2>
+				<pre><code>OpenLayers:
+Source 加载数据 -> Layer 定义展示 -> Renderer 生成 Canvas/WebGL 绘制
+
+Mapbox:
+Style 描述图层 -> Source 加载 vector tile -> bucket/layout -> WebGL draw
+
+Cesium:
+Entity/Primitive -> update -> DrawCommand -> commandList -> WebGL 执行</code></pre>
+				<h2>选择建议</h2>
+				<ul>
+					<li>做政企 GIS 管理系统：优先 OpenLayers。</li>
+					<li>做高性能二维城市地图：优先 Mapbox。</li>
+					<li>做三维地球、倾斜摄影、3D Tiles：优先 Cesium。</li>
+					<li>做数字孪生城市：通常 Mapbox + Cesium + 后端空间服务组合。</li>
+				</ul>
+			</article>
+		</main>
+		<script src="../theme.js"></script><script src="../enhance.js"></script>
+	</body>
+</html>
