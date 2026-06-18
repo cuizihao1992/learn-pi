@@ -2,13 +2,23 @@
 <html lang="zh-CN">
 	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>金融量化速查 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" /></head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>金融量化速查</strong><span>K 线、指标、策略、风控</span></div></div><nav><a href="../index.html">首页</a><a href="learning-paths.html">学习路线</a><a href="../modules/stock-kline/index.html">股票 K 线</a><a href="../modules/quant-trading/index.html">量化</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>金融量化速查</strong><span>经济、金融、K 线、策略、风控</span></div></div><nav><a href="../index.html">首页</a><a href="learning-paths.html">学习路线</a><a href="../modules/econ-finance/index.html">经济金融</a><a href="../modules/stock-kline/index.html">股票 K 线</a><a href="../modules/quant-trading/index.html">量化</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="learning-paths.html">学习路线</a><a class="active" href="finance-cheatsheet.html">金融速查</a><a href="../modules/stock-kline/index.html">股票 K 线</a><a href="../modules/stock-kline/indicators.html">指标逻辑</a><a href="../modules/quant-trading/index.html">量化交易</a><a href="../modules/quant-trading/architecture.html">量化架构</a></aside>
+			<aside class="doc-sidebar"><a href="learning-paths.html">学习路线</a><a class="active" href="finance-cheatsheet.html">金融速查</a><a href="../modules/econ-finance/index.html">经济金融</a><a href="../modules/econ-finance/economics.html">经济学</a><a href="../modules/econ-finance/finance.html">金融学</a><a href="../modules/stock-kline/index.html">股票 K 线</a><a href="../modules/stock-kline/indicators.html">指标逻辑</a><a href="../modules/quant-trading/index.html">量化交易</a><a href="../modules/quant-trading/architecture.html">量化架构</a></aside>
 			<article class="doc">
 				<p class="kicker">Finance Cheatsheet</p>
-				<h1>股票 K 线和量化交易速查</h1>
-				<p class="lead">这页只做入门框架，不构成投资建议。学习重点是：指标加工的是历史数据，信号必须配合环境和风控，量化系统必须经过回测、实盘和监控。</p>
+				<h1>经济金融、股票 K 线和量化交易速查</h1>
+				<p class="lead">这页只做入门框架，不构成投资建议。学习重点是：先理解经济和金融底层变量，再看技术指标和量化系统。指标加工的是历史数据，信号必须配合环境和风控，量化系统必须经过回测、实盘和监控。</p>
+				<h2>经济金融底层变量</h2>
+				<table class="compare-table">
+					<thead><tr><th>变量</th><th>核心含义</th><th>影响</th></tr></thead>
+					<tbody>
+						<tr><td>利率</td><td>资金的价格和折现率</td><td>影响债券、股票估值、融资成本。</td></tr>
+						<tr><td>通胀</td><td>总体价格水平变化</td><td>影响实际购买力和央行政策。</td></tr>
+						<tr><td>现金流</td><td>资产未来能带来的钱</td><td>估值的基础。</td></tr>
+						<tr><td>风险溢价</td><td>承担风险要求的额外收益</td><td>影响股票、信用债、房地产等资产价格。</td></tr>
+					</tbody>
+				</table>
 				<h2>指标到底在看什么</h2>
 				<table class="compare-table">
 					<thead><tr><th>指标</th><th>底层输入</th><th>主要含义</th><th>常见误区</th></tr></thead>

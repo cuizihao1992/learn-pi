@@ -7,7 +7,7 @@
     "progress": "pages/progress.html",
     "conceptIndex": "pages/concept-index.html",
     "search": "pages/search.html",
-    "rule": "The site is organized as eleven first-class modules: pi-agent, mini-agent, cesium, openlayers, mapbox, digital-twin-city, llm-agent-interview, gaussian-splatting, stock-kline, quant-trading, and nuclear-battery. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
+    "rule": "The site is organized as twelve first-class modules: pi-agent, mini-agent, cesium, openlayers, mapbox, digital-twin-city, llm-agent-interview, gaussian-splatting, econ-finance, stock-kline, quant-trading, and nuclear-battery. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
     "modules": "modules/index.html"
   },
   "moduleConvention": {
@@ -165,6 +165,20 @@
         "long-short.html",
         "context.html",
         "risk-journal.html"
+      ]
+    },
+    {
+      "slug": "econ-finance",
+      "name": "Economics and Finance",
+      "root": "modules/econ-finance/",
+      "entry": "modules/econ-finance/index.html",
+      "purpose": "Build a foundational framework for economics and finance, covering scarcity, incentives, markets, cash flows, interest rates, risk, macro cycles, and learning roadmap.",
+      "pages": [
+        "index.html",
+        "economics.html",
+        "finance.html",
+        "macro-cycle.html",
+        "roadmap.html"
       ]
     },
     {

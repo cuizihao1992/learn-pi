@@ -7,8 +7,8 @@
 			<aside class="doc-sidebar"><a class="active" href="dashboard.html">学习仪表盘</a><a href="learning-paths.html">学习路线</a><a href="progress.html">学习进度</a><a href="agent-project-checklist.html">Agent 项目清单</a><a href="interview-bank.html">面试题库</a><a href="concept-index.html">概念索引</a><a href="charter.html">总宪章</a><a href="../modules/pi-agent/charter.html">Pi 模块宪章</a><a href="../modules/mini-agent/charter.html">Mini Agent 模块宪章</a><a href="../modules/llm-agent-interview/index.html">LLM 面试</a><a href="../modules/llm-agent-interview/interview-playbook.html">面试答题模板</a><a href="../modules/cesium/charter.html">Cesium 模块宪章</a><a href="../modules/openlayers/charter.html">OpenLayers 模块宪章</a><a href="../modules/gaussian-splatting/charter.html">Gaussian Splatting 模块宪章</a><a href="../modules/stock-kline/charter.html">股票 K 线模块宪章</a><a href="../modules/cesium/custom-shader.html">Cesium 自定义着色器</a><a href="../modules/stock-kline/indicators.html">股票指标逻辑</a><a href="knowledge-check.html">知识测验</a><a href="search.html">全站检索</a></aside>
 			<article class="doc">
 				<p class="kicker">Dashboard</p>
-				<h1>十一个学习模块怎么走</h1>
-				<p class="lead">现在的学习站分为源码 Agent、从零实现、LLM 面试、三维渲染、二维地图、城市数字孪生、神经重建、股票 K 线、量化交易和能源科学。建议先看 <a href="learning-paths.html">学习路线</a>，再按兴趣进入渲染、地图、交易或科学专题。</p>
+				<h1>十二个学习模块怎么走</h1>
+				<p class="lead">现在的学习站分为源码 Agent、从零实现、LLM 面试、三维渲染、二维地图、城市数字孪生、神经重建、经济金融、股票 K 线、量化交易和能源科学。建议先看 <a href="learning-paths.html">学习路线</a>，再按兴趣进入渲染、地图、交易或科学专题。</p>
 				<div class="track-grid">
 					<section><h2>Pi Agent</h2><ol><li>模块总览</li><li>架构设计</li><li>完整对话流程</li><li>提示词处理</li><li>工具调用</li><li>会话与压缩</li><li>源码调用图</li></ol><a class="primary-link" href="../modules/pi-agent/index.html">进入 Pi Agent</a></section>
 					<section><h2>Mini Agent</h2><ol><li>Node MVP</li><li>工具调用闭环</li><li>OpenAI-compatible 接口</li><li>从零实战路线</li><li>前端事件流</li><li>记忆与 RAG</li><li>产品化路线</li></ol><a class="primary-link" href="../modules/mini-agent/practical-path.html">进入实战路线</a></section>
@@ -17,6 +17,7 @@
 					<section><h2>OpenLayers 路径</h2><ol><li>Map/View/Layer/Source</li><li>TileLayer 渲染</li><li>VectorLayer 渲染</li><li>VectorTile 路径</li><li>Canvas/WebGL renderer</li><li>地图调试</li></ol><a class="primary-link" href="../modules/openlayers/index.html">进入 OpenLayers 路径</a></section>
 					<section><h2>数字孪生城市</h2><ol><li>地图底座</li><li>三维资产</li><li>实时数据</li><li>Agent 工具调用</li><li>前后端架构</li><li>MVP 路线</li></ol><a class="primary-link" href="../modules/digital-twin-city/index.html">进入数字孪生</a></section>
 					<section><h2>Gaussian Splatting</h2><ol><li>照片与相机位姿</li><li>COLMAP 稀疏点云</li><li>高斯参数初始化</li><li>可微 rasterization</li><li>densify/prune 优化</li><li>实时 viewer 调试</li></ol><a class="primary-link" href="../modules/gaussian-splatting/index.html">进入高斯泼溅</a></section>
+					<section><h2>经济金融基础</h2><ol><li>稀缺和机会成本</li><li>供需和弹性</li><li>市场结构和市场失灵</li><li>现金流和折现</li><li>利率和风险溢价</li><li>宏观指标与周期</li></ol><a class="primary-link" href="../modules/econ-finance/index.html">进入经济金融</a></section>
 					<section><h2>股票 K 线</h2><ol><li>K 线和量价</li><li>均线/MACD/RSI/KDJ</li><li>买卖信号拆解</li><li>短线中线长线</li><li>现实背景解释</li><li>仓位止损复盘</li></ol><a class="primary-link" href="../modules/stock-kline/index.html">进入股票 K 线</a></section>
 				</div>
 				<h2>每学完一章要能回答什么</h2>
@@ -27,6 +28,7 @@
 					<li>Cesium：Entity 为什么不能直接 draw？DrawCommand 包含哪些 WebGL 信息？CustomShader、Material、PostProcessStage 分别插入哪一层？</li>
 					<li>OpenLayers：Layer 和 Source 为什么分开？View 如何决定瓦片和要素渲染？</li>
 					<li>Gaussian Splatting：为什么一个 3D 场景可以表示成很多高斯椭球？训练和渲染阶段分别优化什么？</li>
+					<li>经济金融：为什么价格能协调供需？为什么利率会影响资产估值？为什么风险必须有补偿？</li>
 					<li>股票 K 线：指标到底在加工什么历史数据？一个买入信号为什么必须包含环境、位置、触发、确认、失效和仓位？</li>
 					<li>共同点：为什么大型系统都喜欢中间命令层、索引层、调度层和可观测性？</li>
 				</ul>

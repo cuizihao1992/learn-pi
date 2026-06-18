@@ -12,6 +12,7 @@
 - `modules/digital-twin-city/`：学习数字孪生城市系统如何组合 Mapbox、Cesium、3D Tiles、实时数据、AI Agent、前后端架构和 MVP 路线。
 - `modules/llm-agent-interview/`：学习大模型 / Agent 算法面试高频题：记忆机制、RAG 数据工程、长上下文与 RAG、Transformer 长文本优化。
 - `modules/gaussian-splatting/`：学习 3D Gaussian Splatting 如何从照片、相机位姿、稀疏点云走到可微渲染和实时 viewer。
+- `modules/econ-finance/`：补齐经济学与金融学基础框架：稀缺、激励、供需、宏观周期、现金流、利率、风险和资产定价。
 - `modules/stock-kline/`：学习股票 K 线、技术指标、量价关系、买卖信号、长短线分类、现实解释和风控复盘。
 - `modules/quant-trading/`：学习量化交易如何从策略假设、数据、回测、实盘执行走到服务器资源和风控监控。
 - `modules/nuclear-battery/`：学习 RTG、放射性同位素电源、贝塔伏特电池，以及卫星原子钟和电源系统的区别。
