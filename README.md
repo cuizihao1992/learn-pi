@@ -19,7 +19,7 @@
 ## Directory Rules
 
 - `index.html`：全站首页。
-- `pages/`：只放全站级页面，例如仪表盘、总宪章、全站检索、测验，以及旧 URL 的兼容跳转页。
+- `pages/`：只放全站级页面，例如仪表盘、学习路线、总宪章、全站检索、测验，以及旧 URL 的兼容跳转页。
 - `modules/{module}/`：放某个专题的学习内容，每个模块至少有 `index.html`。
 - `examples/{module}/`：放可运行示例代码。
 - `content-manifest.json`：机器可读的模块清单。

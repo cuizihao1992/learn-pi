@@ -2,13 +2,13 @@
 <html lang="zh-CN">
 	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>学习仪表盘 | Learn Pi</title><link rel="stylesheet" href="../styles.css" /></head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习仪表盘</strong><span>Agent + LLM Interview + Rendering + Map + Trading + Energy</span></div></div><nav><a href="../index.html">首页</a><a href="charter.html">宪章</a><a href="../modules/index.html">全部模块</a><a href="../modules/pi-agent/index.html">Pi</a><a href="../modules/mini-agent/index.html">Mini Agent</a><a href="../modules/llm-agent-interview/index.html">LLM 面试</a><a href="../modules/cesium/index.html">Cesium</a><a href="knowledge-check.html">测验</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习仪表盘</strong><span>Agent + LLM Interview + Rendering + Map + Trading + Energy</span></div></div><nav><a href="../index.html">首页</a><a href="learning-paths.html">学习路线</a><a href="charter.html">宪章</a><a href="../modules/index.html">全部模块</a><a href="../modules/pi-agent/index.html">Pi</a><a href="../modules/mini-agent/index.html">Mini Agent</a><a href="../modules/llm-agent-interview/index.html">LLM 面试</a><a href="../modules/cesium/index.html">Cesium</a><a href="knowledge-check.html">测验</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a class="active" href="dashboard.html">学习仪表盘</a><a href="charter.html">总宪章</a><a href="../modules/pi-agent/charter.html">Pi 模块宪章</a><a href="../modules/mini-agent/charter.html">Mini Agent 模块宪章</a><a href="../modules/llm-agent-interview/index.html">LLM 面试</a><a href="../modules/llm-agent-interview/interview-playbook.html">面试答题模板</a><a href="../modules/cesium/charter.html">Cesium 模块宪章</a><a href="../modules/openlayers/charter.html">OpenLayers 模块宪章</a><a href="../modules/gaussian-splatting/charter.html">Gaussian Splatting 模块宪章</a><a href="../modules/stock-kline/charter.html">股票 K 线模块宪章</a><a href="../modules/cesium/custom-shader.html">Cesium 自定义着色器</a><a href="../modules/stock-kline/indicators.html">股票指标逻辑</a><a href="knowledge-check.html">知识测验</a><a href="search.html">全站检索</a></aside>
+			<aside class="doc-sidebar"><a class="active" href="dashboard.html">学习仪表盘</a><a href="learning-paths.html">学习路线</a><a href="charter.html">总宪章</a><a href="../modules/pi-agent/charter.html">Pi 模块宪章</a><a href="../modules/mini-agent/charter.html">Mini Agent 模块宪章</a><a href="../modules/llm-agent-interview/index.html">LLM 面试</a><a href="../modules/llm-agent-interview/interview-playbook.html">面试答题模板</a><a href="../modules/cesium/charter.html">Cesium 模块宪章</a><a href="../modules/openlayers/charter.html">OpenLayers 模块宪章</a><a href="../modules/gaussian-splatting/charter.html">Gaussian Splatting 模块宪章</a><a href="../modules/stock-kline/charter.html">股票 K 线模块宪章</a><a href="../modules/cesium/custom-shader.html">Cesium 自定义着色器</a><a href="../modules/stock-kline/indicators.html">股票指标逻辑</a><a href="knowledge-check.html">知识测验</a><a href="search.html">全站检索</a></aside>
 			<article class="doc">
 				<p class="kicker">Dashboard</p>
 				<h1>十一个学习模块怎么走</h1>
-				<p class="lead">现在的学习站分为源码 Agent、从零实现、LLM 面试、三维渲染、二维地图、城市数字孪生、神经重建、股票 K 线、量化交易和能源科学。建议先学 Agent 主线，再按兴趣进入渲染、地图、交易或科学专题。</p>
+				<p class="lead">现在的学习站分为源码 Agent、从零实现、LLM 面试、三维渲染、二维地图、城市数字孪生、神经重建、股票 K 线、量化交易和能源科学。建议先看 <a href="learning-paths.html">学习路线</a>，再按兴趣进入渲染、地图、交易或科学专题。</p>
 				<div class="track-grid">
 					<section><h2>Pi Agent</h2><ol><li>模块总览</li><li>架构设计</li><li>完整对话流程</li><li>提示词处理</li><li>工具调用</li><li>会话与压缩</li><li>源码调用图</li></ol><a class="primary-link" href="../modules/pi-agent/index.html">进入 Pi Agent</a></section>
 					<section><h2>Mini Agent</h2><ol><li>Node MVP</li><li>工具调用闭环</li><li>OpenAI-compatible 接口</li><li>从零实战路线</li><li>前端事件流</li><li>记忆与 RAG</li><li>产品化路线</li></ol><a class="primary-link" href="../modules/mini-agent/practical-path.html">进入实战路线</a></section>
@@ -34,6 +34,7 @@
 				<p>后续新增模块时，先确定模块边界，再写入口、完整链路页、调试页和必要示例。不要直接散落新增页面。</p>
 				<div class="track-grid">
 					<section><h3>总宪章</h3><p>全站通用写作标准和目录规范。</p><a class="primary-link" href="charter.html">查看</a></section>
+					<section><h3>学习路线</h3><p>按目标选择 Agent、面试、地图渲染、数字孪生、金融或科学技术路线。</p><a class="primary-link" href="learning-paths.html">选择路线</a></section>
 					<section><h3>站内检索</h3><p>用 Lunr.js + 中文字符串检索搜索本项目页面。</p><a class="primary-link" href="search.html">搜索</a></section>
 					<section><h3>内容清单</h3><p>机器可读的模块注册表。</p><a class="primary-link" href="../content-manifest.json">查看 JSON</a></section>
 				</div>

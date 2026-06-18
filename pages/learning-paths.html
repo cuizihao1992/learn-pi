@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>学习路线导航 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习路线导航</strong><span>按目标选择下一步</span></div></div><nav><a href="../index.html">首页</a><a href="dashboard.html">仪表盘</a><a href="../modules/index.html">全部模块</a><a href="search.html">检索</a><a href="charter.html">总宪章</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="dashboard.html">学习仪表盘</a><a class="active" href="learning-paths.html">学习路线</a><a href="../modules/index.html">全部模块</a><a href="../modules/mini-agent/practical-path.html">Agent 实战路线</a><a href="../modules/llm-agent-interview/index.html">LLM 面试路线</a><a href="../modules/digital-twin-city/index.html">数字孪生路线</a><a href="../modules/stock-kline/index.html">股票 K 线</a><a href="../modules/quant-trading/index.html">量化交易</a><a href="search.html">全站检索</a></aside>
+			<article class="doc">
+				<p class="kicker">Learning Paths</p>
+				<h1>不要从页面开始，从目标开始</h1>
+				<p class="lead">这个网站已经有 11 个模块。小白最容易卡住的地方不是资料不够，而是不知道先学哪条线。这里把内容按目标重组：想开发 Agent、准备面试、学地图渲染、做数字孪生、入门交易系统或理解科学技术，可以直接选路线。</p>
+
+				<h2>先选一个目标</h2>
+				<table class="compare-table">
+					<thead><tr><th>我想要</th><th>推荐路线</th><th>最终能力</th></tr></thead>
+					<tbody>
+						<tr><td>自己开发 Agent</td><td>Agent 产品实战路线</td><td>能写一个带工具、模型适配、记忆、RAG、前端事件流的最小产品。</td></tr>
+						<tr><td>准备大模型 / Agent 面试</td><td>LLM 面试路线</td><td>能讲清记忆机制、RAG、长上下文、Transformer 长文本优化。</td></tr>
+						<tr><td>理解地图和三维渲染</td><td>GIS / 渲染路线</td><td>能区分 OpenLayers、Mapbox、Cesium 的架构和适用场景。</td></tr>
+						<tr><td>做城市级可视化系统</td><td>数字孪生路线</td><td>能设计地图底座、三维资产、实时数据、Agent 分析和 MVP。</td></tr>
+						<tr><td>学习交易和量化</td><td>金融系统路线</td><td>能从 K 线、指标、风控走到策略、回测、实盘架构。</td></tr>
+						<tr><td>扩展科学技术视野</td><td>科学技术路线</td><td>能理解高斯分布、高斯泼溅、核电池和卫星原子钟的关键概念。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>路线一：Agent 产品实战</h2>
+				<p>适合目标：想从小白走到“能开发自己的 Agent”。</p>
+				<ol>
+					<li><a href="../modules/pi-agent/index.html">Pi Agent 总览</a>：先看真实 Agent 工程有哪些层。</li>
+					<li><a href="../modules/pi-agent/lifecycle.html">Pi 完整运行流程</a>：理解 prompt、model、toolCall、toolResult、final answer 的闭环。</li>
+					<li><a href="../modules/mini-agent/index.html">Mini Agent MVP</a>：用 Node 写出最小 Agent Loop。</li>
+					<li><a href="../modules/mini-agent/model-api.html">模型接口兼容</a>：理解 OpenAI-compatible、自研模型中间层、Anthropic 差异。</li>
+					<li><a href="../modules/mini-agent/practical-path.html">从零实战路线</a>：把命令行 Agent 做成带前端、记忆和 RAG 的小产品。</li>
+					<li><a href="../modules/llm-agent-interview/memory.html">AI 记忆机制</a>：给 Agent 加短期记忆、用户画像和长期情景记忆。</li>
+					<li><a href="../modules/llm-agent-interview/rag-pipeline.html">RAG 数据工程</a>：给 Agent 接知识库。</li>
+				</ol>
+				<pre><code>验收标准：
+用户在网页输入任务
+  -> Agent 能选择工具
+  -> 工具结果回填给模型
+  -> 前端能看到工具调用过程
+  -> Agent 能记住项目偏好
+  -> Agent 能从本地文档检索答案</code></pre>
+
+				<h2>路线二：LLM / Agent 面试</h2>
+				<p>适合目标：面试算法岗、Agent 应用岗、RAG 工程岗、大模型系统岗。</p>
+				<ol>
+					<li><a href="../modules/llm-agent-interview/index.html">面试总览</a>：先建立四大题框架。</li>
+					<li><a href="../modules/llm-agent-interview/memory.html">长期陪伴 AI 记忆机制</a>：分层存储、异步更新、冲突和遗忘。</li>
+					<li><a href="../modules/llm-agent-interview/rag-pipeline.html">RAG 向量数据工程</a>：数据清洗、语义切片、向量库、混合检索、rerank、评估。</li>
+					<li><a href="../modules/llm-agent-interview/long-context.html">长上下文 vs RAG</a>：讲清二者互补关系和 Long RAG。</li>
+					<li><a href="../modules/llm-agent-interview/transformer-long-context.html">Transformer 长文本优化</a>：O(n^2)、KV Cache、FlashAttention、GQA、PagedAttention、RoPE/ALiBi。</li>
+					<li><a href="../modules/llm-agent-interview/interview-playbook.html">答题模板</a>：把知识组织成两分钟答案。</li>
+				</ol>
+				<pre><code>答题骨架：
+先给结论
+  -> 画系统链路
+  -> 讲工程取舍
+  -> 讲失败模式
+  -> 讲评估指标
+  -> 落到真实系统怎么做</code></pre>
+
+				<h2>路线三：GIS / 渲染</h2>
+				<p>适合目标：想理解地图、WebGL、三维引擎、渲染命令如何到 GPU。</p>
+				<ol>
+					<li><a href="../modules/openlayers/index.html">OpenLayers 总览</a>：先学传统二维 GIS 的 Map、View、Layer、Source。</li>
+					<li><a href="../modules/openlayers/render-path.html">OpenLayers 渲染路径</a>：看瓦片、矢量、Canvas/WebGL 如何画出来。</li>
+					<li><a href="../modules/mapbox/index.html">Mapbox 总览</a>：理解 source、layer、style、vector tiles。</li>
+					<li><a href="../modules/mapbox/vs-cesium.html">Mapbox 与 Cesium 对比</a>：理解为什么 Mapbox 在二维场景通常更轻快。</li>
+					<li><a href="../modules/cesium/index.html">Cesium 总览</a>：进入三维地球和大规模 3D Tiles。</li>
+					<li><a href="../modules/cesium/render-path.html">Cesium 完整渲染路径</a>：从 Viewer、Scene、Primitive 到 DrawCommand。</li>
+					<li><a href="../modules/cesium/custom-shader.html">Cesium 自定义着色器</a>：理解 shader 最终如何进入渲染命令。</li>
+				</ol>
+
+				<h2>路线四：数字孪生城市</h2>
+				<p>适合目标：想做城市级地图可视化、应急系统、园区管理、设备监控。</p>
+				<ol>
+					<li><a href="../modules/digital-twin-city/index.html">数字孪生城市总览</a>：看完整系统分层。</li>
+					<li><a href="../modules/digital-twin-city/map-stack.html">地图底座</a>：理解 Mapbox、Cesium、OpenLayers 如何分工。</li>
+					<li><a href="../modules/digital-twin-city/assets-data.html">三维资产与数据</a>：理解 3D Tiles、BIM、倾斜摄影、点云和高斯泼溅。</li>
+					<li><a href="../modules/digital-twin-city/realtime-agent.html">实时数据与 Agent</a>：把告警、传感器、工具调用串起来。</li>
+					<li><a href="../modules/digital-twin-city/backend-frontend.html">前后端架构</a>：理解 API、队列、数据库、前端状态。</li>
+					<li><a href="../modules/digital-twin-city/mvp.html">MVP 路线</a>：先做最小闭环，不一开始做大屏。</li>
+				</ol>
+
+				<h2>路线五：金融系统</h2>
+				<p>适合目标：想入门股票技术分析和量化交易系统。</p>
+				<ol>
+					<li><a href="../modules/stock-kline/index.html">股票 K 线总览</a>：先建立价格、成交量、趋势、风控框架。</li>
+					<li><a href="../modules/stock-kline/kline-basics.html">K 线基础</a>：理解单根 K 线和组合形态。</li>
+					<li><a href="../modules/stock-kline/indicators.html">指标底层逻辑</a>：理解均线、MACD、RSI、KDJ、布林带到底在加工什么。</li>
+					<li><a href="../modules/stock-kline/signals.html">买卖信号整理</a>：按长短线组织信号，而不是孤立看指标。</li>
+					<li><a href="../modules/stock-kline/risk-journal.html">风控日志</a>：学会仓位、止损、复盘。</li>
+					<li><a href="../modules/quant-trading/index.html">量化交易总览</a>：从人工判断走到策略系统。</li>
+					<li><a href="../modules/quant-trading/architecture.html">量化系统架构</a>：理解数据、研究、回测、实盘、风控、监控。</li>
+				</ol>
+
+				<h2>路线六：科学技术</h2>
+				<p>适合目标：想保持好奇心，同时理解高斯、三维重建、空间电源这些硬核主题。</p>
+				<ol>
+					<li><a href="../modules/gaussian-splatting/index.html">Gaussian Splatting 总览</a>：理解照片到 3D 场景。</li>
+					<li><a href="../modules/gaussian-splatting/render-path.html">训练与渲染路径</a>：理解相机位姿、稀疏点云、高斯参数、可微渲染。</li>
+					<li><a href="../modules/gaussian-splatting/debugging.html">调试手册</a>：知道训练失败时看什么。</li>
+					<li><a href="../modules/nuclear-battery/index.html">核电池总览</a>：区分 RTG、贝塔伏特电池和普通电池。</li>
+					<li><a href="../modules/nuclear-battery/principles.html">工作原理</a>：理解放射性衰变、热电转换和能量密度。</li>
+					<li><a href="../modules/nuclear-battery/space-atomic-clock.html">卫星与原子钟</a>：分清原子钟是计时设备，不是核燃料电池。</li>
+				</ol>
+
+				<h2>如果只学一小时</h2>
+				<ul>
+					<li><strong>想做 Agent：</strong>看 <a href="../modules/mini-agent/practical-path.html">Mini Agent 实战路线</a> 的阶段 1 到阶段 4。</li>
+					<li><strong>想准备面试：</strong>看 <a href="../modules/llm-agent-interview/interview-playbook.html">面试答题模板</a>。</li>
+					<li><strong>想学地图：</strong>看 <a href="../modules/mapbox/vs-cesium.html">Mapbox 与 Cesium 对比</a>。</li>
+					<li><strong>想学交易：</strong>看 <a href="../modules/stock-kline/indicators.html">指标底层逻辑</a>。</li>
+					<li><strong>想拓展视野：</strong>看 <a href="../modules/gaussian-splatting/render-path.html">高斯泼溅训练与渲染路径</a>。</li>
+				</ul>
+
+				<div class="next-card"><span>建议从这里开始</span><a href="../modules/mini-agent/practical-path.html">进入 Agent 实战路线</a></div>
+			</article>
+		</main>
+		<script src="../theme.js"></script><script src="../enhance.js"></script>
+	</body>
+</html>
