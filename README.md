@@ -5,7 +5,7 @@
 当前模块：
 
 - `modules/pi-agent/`：学习 Pi Agent 源码如何处理提示词、调用模型、执行工具、保存会话和事件。
-- `modules/mini-agent/`：从零实现最小 Agent，包含 Node MVP、模型接口兼容和产品化路线。
+- `modules/mini-agent/`：从零实现自己的 Agent，包含 Node MVP、模型接口兼容、实战路线、记忆/RAG 接入和产品化路线。
 - `modules/cesium/`：学习三维渲染如何从 Viewer、Scene、Primitive、DrawCommand 走到 WebGL/GPU。
 - `modules/openlayers/`：学习二维地图如何从 Map、View、Layer、Source 走到 Canvas/WebGL。
 - `modules/mapbox/`：学习 Mapbox GL JS 的 source、layer、style、vector tiles、WebGL 渲染，以及与 Cesium 的性能和场景边界对比。

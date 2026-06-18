@@ -53,10 +53,11 @@
       "root": "modules/mini-agent/",
       "charter": "modules/mini-agent/charter.html",
       "entry": "modules/mini-agent/index.html",
-      "purpose": "Build a minimal agent from scratch and learn model API compatibility.",
+      "purpose": "Build a minimal agent from scratch, learn model API compatibility, and follow a hands-on path from CLI MVP to a usable web agent.",
       "pages": [
         "index.html",
         "model-api.html",
+        "practical-path.html",
         "roadmap.html"
       ]
     },
