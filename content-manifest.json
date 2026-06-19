@@ -130,6 +130,7 @@
       "pages": [
         "index.html",
         "memory.html",
+        "embedding-rag-multimodal.html",
         "rag-pipeline.html",
         "long-context.html",
         "transformer-long-context.html",
