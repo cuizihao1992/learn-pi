@@ -175,7 +175,11 @@
       "purpose": "Build a foundational framework for economics and finance, covering scarcity, incentives, markets, cash flows, interest rates, risk, macro cycles, and learning roadmap.",
       "pages": [
         "index.html",
+        "social-system.html",
         "money-flow.html",
+        "fiscal-money.html",
+        "urban-economics.html",
+        "globalization.html",
         "economics.html",
         "finance.html",
         "macro-cycle.html",
