@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>经济金融案例分析 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>经济金融案例分析</strong><span>用同一套框架拆现实问题</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">经济金融</a><a href="terms-map.html">术语地图</a><a href="macro-cycle.html">宏观周期</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="course-system.html">系统课程总纲</a><a href="social-system.html">社会运行总图</a><a href="money-flow.html">金钱流动与分配</a><a href="fiscal-money.html">财政与货币</a><a href="urban-economics.html">城市经济</a><a href="globalization.html">全球化规则</a><a href="economics.html">经济学基础</a><a href="finance.html">金融学基础</a><a href="macro-cycle.html">宏观周期</a><a class="active" href="case-study.html">案例分析</a><a href="terms-map.html">术语地图</a><a href="roadmap.html">学习路线</a></aside>
+			<article class="doc">
+				<p class="kicker">Case Study</p>
+				<h1>用经济金融框架分析现实问题</h1>
+				<p class="lead">案例页的目标不是给出唯一答案，而是训练同一套分析动作：先识别参与者，再画钱和风险的流向，最后区分现金流、折现率、信用、政策和预期分别在起什么作用。</p>
+
+				<h2>一、通用拆解模板</h2>
+				<pre><code>现象
+  -> 参与者：家庭、企业、政府、金融机构、海外部门
+  -> 约束：收入、成本、政策、信用、土地、技术、汇率
+  -> 现金流：谁付钱，谁收钱，谁承担风险
+  -> 价格机制：供给、需求、弹性、预期
+  -> 金融变量：利率、信用、杠杆、流动性、风险溢价
+  -> 结论边界：哪些条件一变，解释就会失效</code></pre>
+
+				<h2>二、六个入门案例</h2>
+				<table class="compare-table">
+					<thead><tr><th>案例</th><th>先问什么</th><th>核心变量</th><th>容易犯的错</th></tr></thead>
+					<tbody>
+						<tr><td>房租为什么贵</td><td>需求来自哪些人，供给为什么不容易增加？</td><td>人口流入、产业工资、土地供给、通勤、信贷、公共资源</td><td>只怪房东，不看城市集聚和供给约束。</td></tr>
+						<tr><td>利率上升为什么压估值</td><td>未来现金流折回今天时，折现率变了什么？</td><td>无风险利率、风险溢价、久期、盈利预期、流动性</td><td>只说“资金少了”，不看折现公式。</td></tr>
+						<tr><td>通胀为什么难受</td><td>价格上涨是需求太强、供给受限，还是成本传导？</td><td>CPI、PPI、工资、能源、汇率、货币信用、预期</td><td>把所有涨价都归因于货币超发。</td></tr>
+						<tr><td>汇率为什么会波动</td><td>资本为什么流入或流出，本币资产吸引力如何？</td><td>利差、贸易差额、资本流动、风险偏好、外汇储备</td><td>只看进出口，不看金融账户和预期。</td></tr>
+						<tr><td>失业率上升说明什么</td><td>是总需求不足，还是产业结构变化？</td><td>消费、投资、企业利润、岗位匹配、工资刚性、政策托底</td><td>只看单个企业裁员，不看劳动市场总量。</td></tr>
+						<tr><td>股市为什么和经济不同步</td><td>市场定价的是过去数据，还是未来预期？</td><td>盈利、折现率、风险偏好、流动性、估值位置、政策预期</td><td>看到 GDP 好就直接推导股市一定涨。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>三、完整示范：降息一定利好股市吗</h2>
+				<p>不能只回答“利好”。降息会降低折现率和融资成本，这通常支持估值；但降息也可能说明经济需求变弱，未来盈利要下修。如果市场早已预期降息，价格可能提前反映。真正要拆的是三条链。</p>
+				<table class="compare-table">
+					<thead><tr><th>链路</th><th>可能影响</th><th>要验证的数据</th></tr></thead>
+					<tbody>
+						<tr><td>折现率链</td><td>利率下降，未来现金流现值上升，高久期资产更敏感。</td><td>国债收益率、估值分位、成长股表现。</td></tr>
+						<tr><td>盈利链</td><td>融资成本下降，但如果需求弱，企业收入和利润仍可能下修。</td><td>PMI、利润增速、订单、库存、就业。</td></tr>
+						<tr><td>预期链</td><td>如果市场已经提前交易降息，落地时反而可能波动。</td><td>利率期货、债券收益率变化、事件前估值修复幅度。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>四、练习题</h2>
+				<ol>
+					<li>用通用模板解释“为什么大城市工资高但存钱难”。</li>
+					<li>用现金流和折现率解释“为什么高增长公司对利率更敏感”。</li>
+					<li>用财政货币框架解释“地方基建为什么会影响就业和债务”。</li>
+					<li>用全球化框架解释“美元走强为什么会影响新兴市场资产”。</li>
+				</ol>
+				<div class="next-card"><span>下一章</span><a href="terms-map.html">把案例里反复出现的术语连成地图</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>
