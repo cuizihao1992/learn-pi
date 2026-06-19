@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>TIL 学习日志 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>TIL 学习日志</strong><span>Today I Learned，先沉淀，再长成模块</span></div></div><nav><a href="../index.html">首页</a><a href="dashboard.html">仪表盘</a><a href="concept-index.html">概念索引</a><a href="search.html">检索</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="dashboard.html">学习仪表盘</a><a href="learning-paths.html">学习路线</a><a class="active" href="til.html">TIL 学习日志</a><a href="concept-index.html">概念索引</a><a href="progress.html">学习进度</a><a href="agent-project-checklist.html">Agent 项目清单</a><a href="interview-bank.html">面试题库</a><a href="search.html">全站检索</a></aside>
+			<article class="doc">
+				<p class="kicker">Today I Learned</p>
+				<h1>把零散学习变成可搜索资产</h1>
+				<p class="lead">TIL 不是正式教程，而是知识进入系统的入口。每次学到一个概念、一个工程坑、一个论文结论或一个现实案例，先用短条目记录下来；成熟后再迁移到对应模块。</p>
+
+				<h2>一、TIL 条目模板</h2>
+				<pre><code>标题：一句话说明今天学到什么
+日期：YYYY-MM-DD
+模块：LLM / Agent / Map / Finance / Rendering / Science
+一句话模型：这个知识点解释什么
+例子：一个最小例子或现实场景
+关联概念：3 到 5 个相关术语
+下一步：要补到哪个正式页面</code></pre>
+
+				<h2>二、推荐记录什么</h2>
+				<table class="compare-table">
+					<thead><tr><th>类型</th><th>例子</th><th>成熟后去哪里</th></tr></thead>
+					<tbody>
+						<tr><td>概念</td><td>Embedding 是语义坐标，RAG 用它找资料。</td><td><a href="concept-index.html">概念索引</a> / <a href="../modules/llm-agent-interview/embedding-rag-multimodal.html">Embedding 与多模态</a></td></tr>
+						<tr><td>工程坑</td><td>RAG chunk 只按长度切会切断标题和正文。</td><td><a href="../modules/llm-agent-interview/rag-pipeline.html">RAG 数据工程</a></td></tr>
+						<tr><td>代码观察</td><td>Agent Loop 必须把 toolResult 回填给模型。</td><td><a href="../modules/mini-agent/index.html">Mini Agent</a></td></tr>
+						<tr><td>现实案例</td><td>降息不一定利好股市，要同时看折现率、盈利和预期。</td><td><a href="../modules/econ-finance/case-study.html">经济金融案例</a></td></tr>
+						<tr><td>系统类比</td><td>DrawCommand 像渲染系统的最终执行指令。</td><td><a href="../modules/cesium/render-path.html">Cesium 渲染路径</a></td></tr>
+					</tbody>
+				</table>
+
+				<h2>三、本周种子条目</h2>
+				<table class="compare-table">
+					<thead><tr><th>条目</th><th>一句话模型</th><th>关联</th></tr></thead>
+					<tbody>
+						<tr><td>Embedding</td><td>把文本、图片、代码等对象变成可比较的向量。</td><td><a href="../modules/llm-agent-interview/embedding-rag-multimodal.html">Embedding 与多模态</a></td></tr>
+						<tr><td>RAG</td><td>先检索外部证据，再让 LLM 基于证据回答。</td><td><a href="../modules/llm-agent-interview/rag-pipeline.html">RAG 数据工程</a></td></tr>
+						<tr><td>多模态模型</td><td>把图像、音频、视频等模态对齐到语言模型可用的表示空间。</td><td><a href="../modules/llm-agent-interview/embedding-rag-multimodal.html">Embedding 与多模态</a></td></tr>
+						<tr><td>系统课程</td><td>一个模块要有总览、路线、概念、案例、练习和验收。</td><td><a href="../modules/econ-finance/course-system.html">经济金融系统课程</a></td></tr>
+					</tbody>
+				</table>
+
+				<h2>四、沉淀规则</h2>
+				<ol>
+					<li>先短后长：先写 100 字，不等完美。</li>
+					<li>先链接后扩写：至少连到一个模块和三个概念。</li>
+					<li>每周整理一次：把成熟条目迁移到正式页面。</li>
+					<li>每月清理一次：把重复条目合并，把过时条目标注边界。</li>
+				</ol>
+				<div class="next-card"><span>下一步</span><a href="concept-index.html">把 TIL 里的术语连成概念网络</a></div>
+			</article>
+		</main>
+		<script src="../theme.js"></script><script src="../enhance.js"></script>
+	</body>
+</html>

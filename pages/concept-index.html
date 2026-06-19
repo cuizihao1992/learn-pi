@@ -2,13 +2,31 @@
 <html lang="zh-CN">
 	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>全站概念索引 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" /></head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>全站概念索引</strong><span>把术语放到一张地图上</span></div></div><nav><a href="../index.html">首页</a><a href="learning-paths.html">学习路线</a><a href="search.html">检索</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>全站概念索引</strong><span>把术语、模块和案例连成一张地图</span></div></div><nav><a href="../index.html">首页</a><a href="learning-paths.html">学习路线</a><a href="til.html">TIL</a><a href="search.html">检索</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="learning-paths.html">学习路线</a><a class="active" href="concept-index.html">概念索引</a><a href="../modules/pi-agent/glossary.html">Pi 术语</a><a href="../modules/cesium/glossary.html">Cesium 术语</a><a href="search.html">全站检索</a></aside>
+			<aside class="doc-sidebar"><a href="learning-paths.html">学习路线</a><a href="til.html">TIL 学习日志</a><a class="active" href="concept-index.html">概念索引</a><a href="../modules/llm-agent-interview/embedding-rag-multimodal.html">Embedding 与多模态</a><a href="../modules/econ-finance/terms-map.html">经济金融术语</a><a href="../modules/pi-agent/glossary.html">Pi 术语</a><a href="../modules/cesium/glossary.html">Cesium 术语</a><a href="search.html">全站检索</a></aside>
 			<article class="doc">
 				<p class="kicker">Concept Index</p>
 				<h1>全站概念索引</h1>
-				<p class="lead">当你被术语卡住时，不要硬读。先找到它属于哪条链路，再回到对应模块。</p>
+				<p class="lead">当你被术语卡住时，不要硬读。先找到它属于哪条链路、连接哪些概念、应该回到哪个模块。这个页面不是词典，而是全站的概念路由器。</p>
+				<h2>概念如何流动</h2>
+				<pre><code>TIL 学习日志
+  -> 新概念先短记录
+  -> 概念索引建立连接
+  -> 模块页面展开解释
+  -> 案例和 demo 验证理解
+  -> 搜索索引帮助找回</code></pre>
+				<h2>核心概念链路</h2>
+				<table class="compare-table">
+					<thead><tr><th>链路</th><th>从哪里开始</th><th>流向哪里</th><th>最终能力</th></tr></thead>
+					<tbody>
+						<tr><td>Agent 应用链</td><td>toolCall、toolResult、Agent Loop</td><td>Memory、Embedding、RAG、前端事件流</td><td>能设计一个可用 Agent。</td></tr>
+						<tr><td>知识库链</td><td>Embedding、Chunk、Vector DB</td><td>Hybrid Search、Rerank、引用回答</td><td>能解释 RAG 为什么不只是向量库。</td></tr>
+						<tr><td>多模态链</td><td>图文对、Vision Encoder、Projector</td><td>视觉指令微调、原生多模态、模型安全</td><td>能讲清多模态模型和纯 LLM 的差异。</td></tr>
+						<tr><td>渲染链</td><td>Layer / Source、Primitive、DrawCommand</td><td>Shader、WebGL、GPU pixels</td><td>能顺着管线定位“为什么没画出来”。</td></tr>
+						<tr><td>经济金融链</td><td>机会成本、供需、现金流</td><td>利率、折现率、信用、宏观周期</td><td>能用同一套框架拆现实案例。</td></tr>
+					</tbody>
+				</table>
 				<h2>Agent 与大模型</h2>
 				<table class="compare-table">
 					<thead><tr><th>概念</th><th>一句话</th><th>入口</th></tr></thead>
@@ -16,7 +34,9 @@
 						<tr><td>toolCall</td><td>模型提出“我要调用哪个工具和参数”。</td><td><a href="../modules/pi-agent/tools.html">工具调用</a></td></tr>
 						<tr><td>toolResult</td><td>运行时执行工具后，把真实结果回填给模型。</td><td><a href="../modules/mini-agent/index.html">Mini Agent</a></td></tr>
 						<tr><td>OpenAI-compatible</td><td>让不同模型伪装成同一种 API 协议。</td><td><a href="../modules/mini-agent/model-api.html">模型接口</a></td></tr>
+						<tr><td>Embedding</td><td>把文本、图片、代码等对象变成可比较的语义向量。</td><td><a href="../modules/llm-agent-interview/embedding-rag-multimodal.html">Embedding 与多模态</a></td></tr>
 						<tr><td>RAG</td><td>先检索证据，再让模型回答。</td><td><a href="../modules/llm-agent-interview/rag-pipeline.html">RAG 工程</a></td></tr>
+						<tr><td>多模态模型</td><td>把图像、音频、视频等模态接入语言模型的理解和生成能力。</td><td><a href="../modules/llm-agent-interview/embedding-rag-multimodal.html">Embedding 与多模态</a></td></tr>
 						<tr><td>KV Cache</td><td>推理时保存历史 token 的 Key/Value，避免重复计算。</td><td><a href="../modules/llm-agent-interview/transformer-long-context.html">长文本优化</a></td></tr>
 					</tbody>
 				</table>

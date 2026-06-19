@@ -6,6 +6,7 @@
     "learningPaths": "pages/learning-paths.html",
     "progress": "pages/progress.html",
     "conceptIndex": "pages/concept-index.html",
+    "til": "pages/til.html",
     "search": "pages/search.html",
     "rule": "The site is organized as twelve first-class modules: pi-agent, mini-agent, cesium, openlayers, mapbox, digital-twin-city, llm-agent-interview, gaussian-splatting, econ-finance, stock-kline, quant-trading, and nuclear-battery. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
     "modules": "modules/index.html"
@@ -224,6 +225,7 @@
     "pages/interview-bank.html",
     "pages/rendering-cheatsheet.html",
     "pages/finance-cheatsheet.html",
+    "pages/til.html",
     "pages/concept-index.html",
     "pages/content-template.html",
     "modules/index.html",
