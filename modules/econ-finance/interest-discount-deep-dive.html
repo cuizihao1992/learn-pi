@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>利率折现深挖 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>利率折现深挖</strong><span>利率如何通过折现影响资产价格</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">经济金融</a><a href="finance.html">金融学</a><a href="macro-cycle.html">宏观周期</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="course-system.html">系统课程总纲</a><a href="social-system.html">社会运行总图</a><a href="money-flow.html">金钱流动与分配</a><a href="fiscal-money.html">财政与货币</a><a href="urban-economics.html">城市经济</a><a href="globalization.html">全球化规则</a><a href="economics.html">经济学基础</a><a href="finance.html">金融学基础</a><a href="macro-cycle.html">宏观周期</a><a href="case-study.html">案例分析</a><a href="terms-map.html">术语地图</a><a class="active" href="interest-discount-deep-dive.html">利率折现深挖</a><a href="roadmap.html">学习路线</a><a href="../stock-kline/index.html">股票 K 线</a><a href="../quant-trading/index.html">量化交易</a></aside>
+			<article class="doc">
+				<p class="kicker">Deep Dive</p>
+				<h1>利率如何通过折现影响资产价格</h1>
+				<p class="lead">这是经济金融模块先打穿的关键点：资产价格不是只由“好公司、坏公司”决定，而是由未来现金流和折现率共同决定。利率上升时，未来的钱折回今天会变少，所以高久期资产通常更受压制。</p>
+
+				<h2>一句话模型</h2>
+				<pre><code>资产价格
+  = 未来现金流折回今天的总和
+
+利率上升
+  -> 折现率上升
+  -> 同样一笔未来现金流的现值下降
+  -> 久期越长、现金流越靠后的资产越敏感</code></pre>
+
+				<h2>需要补的前置知识</h2>
+				<table class="compare-table">
+					<thead><tr><th>概念</th><th>一句话</th><th>为什么重要</th></tr></thead>
+					<tbody>
+						<tr><td>现金流</td><td>资产未来能带来的钱。</td><td>估值的分子。</td></tr>
+						<tr><td>折现率</td><td>把未来现金流折回今天使用的收益率要求。</td><td>估值的分母。</td></tr>
+						<tr><td>无风险利率</td><td>接近没有违约风险的基础收益率。</td><td>很多资产定价以它为锚。</td></tr>
+						<tr><td>风险溢价</td><td>承担不确定性要求的额外补偿。</td><td>公司风险、行业风险、流动性风险都会抬高它。</td></tr>
+						<tr><td>久期</td><td>价格对利率变化的敏感度。</td><td>现金流越远，久期通常越长。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>底层链路</h2>
+				<pre><code>央行加息 / 市场利率上行
+  -> 无风险利率上升
+  -> 投资者要求的最低回报上升
+  -> 折现率 = 无风险利率 + 风险溢价
+  -> 未来现金流现值下降
+  -> 估值倍数下降
+  -> 股票、债券、房产、成长型资产重新定价</code></pre>
+
+				<h2>一个最小例子</h2>
+				<p>假设某资产一年后确定收到 110 元。今天愿意出多少钱，取决于你要求的年收益率。</p>
+				<table class="compare-table">
+					<thead><tr><th>要求收益率</th><th>计算</th><th>今天价值</th></tr></thead>
+					<tbody>
+						<tr><td>5%</td><td>110 / 1.05</td><td>104.76</td></tr>
+						<tr><td>10%</td><td>110 / 1.10</td><td>100.00</td></tr>
+						<tr><td>20%</td><td>110 / 1.20</td><td>91.67</td></tr>
+					</tbody>
+				</table>
+				<p>未来现金流没变，只是折现率变了，今天的价格就变了。这就是“加息压估值”的最小数学直觉。</p>
+
+				<h2>为什么成长股更敏感</h2>
+				<p>成熟公司可能现在就有利润和现金流；成长公司很多价值来自更遥远的未来。越远的现金流，被折现率影响越大。</p>
+				<pre><code>资产 A：今年、明年、后年都有稳定现金流
+资产 B：前几年现金流少，主要现金流在 8 到 10 年后
+
+当折现率上升：
+  -> 远期现金流被打折更多
+  -> 资产 B 的估值下降更明显
+  -> 这就是高久期资产对利率更敏感</code></pre>
+
+				<h2>和债券、股票、房产的关系</h2>
+				<table class="compare-table">
+					<thead><tr><th>资产</th><th>利率上升时的典型影响</th><th>背后机制</th></tr></thead>
+					<tbody>
+						<tr><td>债券</td><td>旧债价格下跌。</td><td>新债收益率更高，旧债票息吸引力下降。</td></tr>
+						<tr><td>成长股</td><td>估值倍数容易被压缩。</td><td>价值集中在远期现金流，久期较长。</td></tr>
+						<tr><td>银行</td><td>不一定单向受益或受损。</td><td>息差可能改善，但信用风险和坏账也可能上升。</td></tr>
+						<tr><td>房产</td><td>购买力和估值承压。</td><td>按揭成本上升，租金现值下降，杠杆需求下降。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>常见误解</h2>
+				<ul>
+					<li><strong>误解一：加息一定让所有股票跌。</strong>不一定。若盈利预期同步大幅改善，现金流上调可能抵消折现率上升。</li>
+					<li><strong>误解二：利率只影响债券。</strong>不对。只要资产价格来自未来现金流，折现率就会影响它。</li>
+					<li><strong>误解三：估值就是市盈率。</strong>市盈率只是结果指标，背后仍是增长、利润率、折现率和风险溢价。</li>
+					<li><strong>误解四：利率越低资产越安全。</strong>低利率会推高估值，也可能鼓励杠杆和泡沫。</li>
+				</ul>
+
+				<h2>失败模式：为什么现实里不是公式这么简单</h2>
+				<table class="compare-table">
+					<thead><tr><th>复杂因素</th><th>会怎样扰动结论</th></tr></thead>
+					<tbody>
+						<tr><td>现金流预期变化</td><td>加息可能压需求，也可能发生在经济强劲阶段。</td></tr>
+						<tr><td>风险溢价变化</td><td>恐慌时风险溢价上升，资产价格可能比利率变化暗示的跌得更多。</td></tr>
+						<tr><td>流动性冲击</td><td>投资者被迫卖出时，好资产也可能被折价抛售。</td></tr>
+						<tr><td>政策预期</td><td>市场交易的是未来利率路径，不只是今天的利率。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>自测问题</h2>
+				<ol>
+					<li>为什么同样是加息，短久期债券通常比长期债券更抗跌？</li>
+					<li>为什么“盈利增长很好”的公司也可能在利率上行阶段估值下跌？</li>
+					<li>如果一家公司未来现金流主要发生在十年后，它和一年后收钱的资产谁更怕加息？</li>
+					<li>为什么只看市盈率，容易忽略利率和风险溢价的变化？</li>
+					<li>如果央行降息但经济衰退严重，资产价格一定会上涨吗？为什么？</li>
+				</ol>
+
+				<h2>回到模块复盘</h2>
+				<p>理解利率折现后，经济金融模块里的很多概念会连起来：通胀影响利率，利率影响折现率，折现率影响资产价格，资产价格又通过财富效应、融资条件和风险偏好影响实体经济。</p>
+				<div class="next-card"><span>继续学习</span><a href="finance.html">回到金融学基础框架</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>
