@@ -7,8 +7,20 @@
 			<aside class="doc-sidebar"><a class="active" href="index.html">模块总览</a><a href="memory.html">AI 记忆机制</a><a href="embedding-rag-multimodal.html">Embedding 与多模态</a><a href="embedding-rag-deep-dive.html">Embedding -> RAG 深挖</a><a href="rag-pipeline.html">RAG 数据工程</a><a href="long-context.html">长上下文 vs RAG</a><a href="transformer-long-context.html">Transformer 长文本优化</a><a href="interview-playbook.html">面试答题模板</a><a href="../pi-agent/index.html">Pi Agent</a><a href="../mini-agent/index.html">Mini Agent</a></aside>
 			<article class="doc">
 				<p class="kicker">LLM Agent Interview</p>
-				<h1>字节大模型 / Agent 算法面试高频考点</h1>
-				<p class="lead">这个模块围绕五类高频问题展开：长期陪伴型 AI 的记忆机制、Embedding 和多模态基础、RAG 向量数据工程、长上下文模型和 RAG 的关系、Transformer 处理超长文本的瓶颈与优化。目标不是背概念，而是能在面试里讲出系统设计、工程取舍、成本延迟和失败模式。</p>
+				<h1>LLM / Agent 系统课程入口</h1>
+				<p class="lead">这个模块不只是面试题清单，而是一条从“模型如何理解输入”走到“Agent 如何调用工具、记住用户、检索知识、组织回答”的系统课程。学习目标是：能用一个具体问题讲清 embedding、RAG、记忆、长上下文和工具调用之间的关系，并能说出真实工程里的取舍与失败模式。</p>
+
+				<h2>这个模块解决什么问题</h2>
+				<table class="compare-table">
+					<thead><tr><th>问题</th><th>本模块给你的能力</th></tr></thead>
+					<tbody>
+						<tr><td>模型为什么能“理解”一句话？</td><td>用 embedding、token、语义空间解释文本如何变成可计算的向量。</td></tr>
+						<tr><td>Agent 为什么需要 RAG？</td><td>解释模型参数记忆、上下文窗口和外部知识库的边界。</td></tr>
+						<tr><td>长期记忆和 RAG 是一回事吗？</td><td>区分用户画像、情景记忆、知识检索、工具状态和会话上下文。</td></tr>
+						<tr><td>长上下文会不会取代检索？</td><td>从成本、注意力退化、证据更新和权限控制解释二者互补。</td></tr>
+						<tr><td>面试时怎么讲得像做过系统？</td><td>按输入、存储、检索、排序、拼 prompt、生成、评估的链路回答。</td></tr>
+					</tbody>
+				</table>
 
 				<h2>先记住总框架</h2>
 				<pre><code>用户问题
@@ -19,7 +31,25 @@
   -> Agent 选择工具或生成回答
   -> 后台异步更新记忆、索引和评估日志</code></pre>
 
-				<h2>五大面试题</h2>
+				<h2>学习前需要先懂什么</h2>
+				<ul>
+					<li><strong>向量：</strong>一组数字，可以表示词、句子、图片、用户偏好或文档片段。</li>
+					<li><strong>相似度：</strong>两个向量方向越接近，通常代表语义越相关。</li>
+					<li><strong>上下文窗口：</strong>模型一次能看到的 token 范围，不等于永久记忆。</li>
+					<li><strong>工具调用：</strong>模型决定要不要把任务交给外部函数、数据库、搜索、代码或业务系统。</li>
+					<li><strong>评估：</strong>不要只看回答是否流畅，还要看证据是否正确、延迟是否可接受、失败能否复现。</li>
+				</ul>
+
+				<h2>推荐学习顺序</h2>
+				<ol>
+					<li>先看 <a href="embedding-rag-deep-dive.html">Embedding -> RAG 深挖</a>，用一个具体例子理解“语义召回”这件事。</li>
+					<li>再看 <a href="rag-pipeline.html">RAG 数据工程</a>，把文档、切片、向量库、混合检索、rerank 和评估串起来。</li>
+					<li>再看 <a href="memory.html">AI 记忆机制</a>，区分短期上下文、长期记忆、用户画像和异步更新。</li>
+					<li>再看 <a href="long-context.html">长上下文 vs RAG</a>，理解为什么真实系统常常两者都要。</li>
+					<li>最后看 <a href="transformer-long-context.html">Transformer 长文本优化</a>，把成本和显存问题讲到底层。</li>
+				</ol>
+
+				<h2>课程单元</h2>
 				<div class="lesson-grid">
 					<section><h3>长期记忆机制</h3><p>回答长期陪伴型 AI 如何记住用户：短期对话、实体画像、长期情景记忆、异步抽取、冲突处理、遗忘机制。</p><a class="primary-link" href="memory.html">进入记忆机制</a></section>
 					<section><h3>Embedding 与多模态</h3><p>回答 embedding 是什么、它和 LLM/RAG 的关系、多模态模型如何训练，以及 ChatGPT/Gemini/Claude 级模型背后的工程组织。</p><a class="primary-link" href="embedding-rag-multimodal.html">进入底层地图</a></section>
@@ -29,6 +59,20 @@
 					<section><h3>Transformer 长文本优化</h3><p>回答 O(n²) 计算、KV Cache 显存墙、位置编码外推，及 FlashAttention、GQA、PagedAttention、RoPE Scaling、ALiBi。</p><a class="primary-link" href="transformer-long-context.html">进入长文本优化</a></section>
 				</div>
 
+				<h2>本模块先打穿的点</h2>
+				<div class="next-card"><span>第一篇深挖专题</span><a href="embedding-rag-deep-dive.html">Embedding 到 RAG 召回：一句话如何找到正确证据</a></div>
+				<p>这篇深挖页用“加息如何影响股票估值”的例子，把 query、chunk、向量空间、topK、rerank 和 prompt 拼接讲成一条链路。学完后再看 RAG 工程页，会更容易理解为什么生产系统经常不是模型不聪明，而是数据、切片、召回和评估出了问题。</p>
+
+				<h2>配套实验</h2>
+				<table class="compare-table">
+					<thead><tr><th>实验</th><th>观察什么</th><th>对应概念</th></tr></thead>
+					<tbody>
+						<tr><td><a href="../../examples/embedding-search/index.html">Embedding Search Demo</a></td><td>修改查询句，看最相近的文档片段如何变化。</td><td>向量相似度、召回、topK。</td></tr>
+						<tr><td><a href="../mini-agent/practical-path.html">Mini Agent 实战路线</a></td><td>把检索、工具调用和前端事件流接成最小产品。</td><td>Agent loop、tool result、工程闭环。</td></tr>
+						<tr><td><a href="../pi-agent/lifecycle.html">Pi Agent 生命周期</a></td><td>对照真实工程里的 prompt、toolCall、toolResult 和 final answer。</td><td>生产 Agent 的运行时边界。</td></tr>
+					</tbody>
+				</table>
+
 				<h2>面试官真正想听什么</h2>
 				<ul>
 					<li><strong>不是只背名词：</strong>要能说出为什么需要分层、为什么 RAG 不能只靠向量检索、为什么长上下文仍有成本和注意力问题。</li>
@@ -37,14 +81,21 @@
 					<li><strong>要能讲失败模式：</strong>记忆冲突、脏数据、切片断语义、embedding 域不匹配、lost in the middle、KV Cache 爆显存。</li>
 				</ul>
 
-				<h2>推荐学习顺序</h2>
+				<h2>自测问题</h2>
 				<ol>
-					<li>先看记忆机制，因为 Agent 产品最容易问“如何长期陪伴”。</li>
-					<li>再看 Embedding 与多模态，补上向量表示、检索和前沿模型训练工程的底层地图。</li>
-					<li>再看 RAG 数据工程，因为 RAG 是企业知识库和 Agent 工具的基础。</li>
-					<li>再看长上下文 vs RAG，形成系统级取舍。</li>
-					<li>最后看 Transformer 长文本优化，把工程现象讲到底层算子和显存。</li>
+					<li>如果用户问“我上次说的项目叫什么”，应该走 RAG、长期记忆，还是会话上下文？为什么？</li>
+					<li>为什么只用向量检索可能召回语义相关但事实不对的片段？</li>
+					<li>为什么把所有文档塞进长上下文仍然可能答错？</li>
+					<li>如何判断一个 RAG 系统失败是切片问题、召回问题、排序问题，还是生成问题？</li>
+					<li>如果要把这个能力接进 Mini Agent，最小的数据结构和接口应该是什么？</li>
 				</ol>
+
+				<h2>和其他模块的关系</h2>
+				<ul>
+					<li><a href="../mini-agent/index.html">Mini Agent</a> 负责把这里的概念做成能跑的最小系统。</li>
+					<li><a href="../pi-agent/index.html">Pi Agent</a> 负责对照真实产品级 Agent 的生命周期和源码结构。</li>
+					<li><a href="../../pages/deep-dive-roadmap.html">模块深挖路线</a> 负责把这个模板复制到地图、量化、经济金融、核电池等模块。</li>
+				</ul>
 
 				<h2>主要参考</h2>
 				<ul>

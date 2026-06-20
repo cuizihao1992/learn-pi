@@ -129,7 +129,7 @@
       "name": "LLM Agent Interview",
       "root": "modules/llm-agent-interview/",
       "entry": "modules/llm-agent-interview/index.html",
-      "purpose": "Prepare for LLM and Agent algorithm interviews covering memory, RAG data engineering, long context versus RAG, and Transformer long-context optimization.",
+      "purpose": "Use a course-style path to understand how LLM and Agent systems connect embedding, RAG, memory, long context, tool calling, evaluation, and interview explanation.",
       "pages": [
         "index.html",
         "memory.html",
