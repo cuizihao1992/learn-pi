@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Embedding 到 RAG 召回深挖 | 大模型 Agent 面试</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Embedding 到 RAG 召回深挖</strong><span>从语义坐标到证据召回</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/deep-dive-roadmap.html">深挖路线</a><a href="../../examples/embedding-search/index.html">实验</a><a href="rag-pipeline.html">RAG</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="memory.html">AI 记忆机制</a><a href="embedding-rag-multimodal.html">Embedding 与多模态</a><a class="active" href="embedding-rag-deep-dive.html">Embedding -> RAG 深挖</a><a href="rag-pipeline.html">RAG 数据工程</a><a href="long-context.html">长上下文 vs RAG</a><a href="transformer-long-context.html">Transformer 长文本优化</a><a href="interview-playbook.html">答题模板</a></aside>
+			<article class="doc">
+				<p class="kicker">Deep Dive</p>
+				<h1>为什么 RAG 的第一步是 embedding 召回</h1>
+				<p class="lead">这一页只打穿一个点：RAG 不是“把资料塞给模型”，而是先把问题和文档片段放进同一个语义空间，用相似度找出最可能回答问题的证据，再交给 LLM 生成答案。</p>
+
+				<h2>一句话模型</h2>
+				<pre><code>Embedding 把 query 和 chunk 变成语义坐标；
+相似度搜索找出离 query 最近的证据；
+RAG 把这些证据放进 prompt，让 LLM 基于证据回答。</code></pre>
+
+				<h2>需要补的前置知识</h2>
+				<table class="compare-table">
+					<thead><tr><th>知识点</th><th>够用理解</th><th>为什么需要</th></tr></thead>
+					<tbody>
+						<tr><td>向量</td><td>一串数字，表示对象在多个语义维度上的位置。</td><td>embedding 的输出就是向量。</td></tr>
+						<tr><td>余弦相似度</td><td>比较两个向量方向是否接近。</td><td>常用于判断 query 和 chunk 是否语义相关。</td></tr>
+						<tr><td>chunk</td><td>文档切出来的知识片段。</td><td>检索单位太大不精确，太小会丢上下文。</td></tr>
+						<tr><td>topK</td><td>取相似度最高的 K 个候选。</td><td>控制召回广度、成本和噪音。</td></tr>
+						<tr><td>rerank</td><td>对初步召回结果做更精细排序。</td><td>embedding 近不代表一定能回答问题。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>底层链路</h2>
+				<pre><code>离线入库：
+文档 -> 清洗 -> 按语义切 chunk -> 每个 chunk 做 embedding -> 存向量库
+
+在线提问：
+用户问题 -> query embedding -> 向量相似度搜索 -> topK chunk
+  -> 可选 rerank / 压缩
+  -> 证据 + 问题拼成 prompt
+  -> LLM 生成答案并引用来源</code></pre>
+
+				<h2>具体例子：为什么加息会影响股票估值</h2>
+				<table class="compare-table">
+					<thead><tr><th>候选片段</th><th>内容</th><th>为什么相关或不相关</th></tr></thead>
+					<tbody>
+						<tr><td>A</td><td>利率上升会提高折现率，未来现金流折回今天的现值下降。</td><td>和 query 的“加息、估值、股票”语义高度相关。</td></tr>
+						<tr><td>B</td><td>RAG 通过向量检索找到相关资料，再交给模型回答。</td><td>和 RAG 机制相关，但不能回答股票估值问题。</td></tr>
+						<tr><td>C</td><td>Cesium 的 DrawCommand 会进入渲染命令列表。</td><td>属于渲染管线，和金融问题无关。</td></tr>
+					</tbody>
+				</table>
+				<p>如果 query 是“为什么加息会影响股票估值？”，正确召回应该优先取 A。LLM 再基于 A 解释：加息提高无风险利率和折现率，未来现金流现值下降，高久期资产更敏感。</p>
+
+				<h2>最小实验</h2>
+				<p>打开教学 demo，分别输入金融、RAG、渲染、多模态相关问题，观察 query 向量和召回排序如何变化。</p>
+				<div class="next-card"><span>动手实验</span><a href="../../examples/embedding-search/index.html">打开 Embedding Search Demo</a></div>
+
+				<h2>常见误解</h2>
+				<table class="compare-table">
+					<thead><tr><th>误解</th><th>更准确的说法</th></tr></thead>
+					<tbody>
+						<tr><td>RAG 就是向量库。</td><td>向量库只是检索组件；RAG 还包括数据清洗、切片、metadata、混合检索、rerank、prompt、引用和评估。</td></tr>
+						<tr><td>相似度最高的一定是最好证据。</td><td>不一定。embedding 相似可能只是主题接近，未必能回答问题，所以生产系统常加 rerank。</td></tr>
+						<tr><td>chunk 越大越好。</td><td>太大噪音多、检索不精准；太小语义断裂。要按数据形态和评估结果调。</td></tr>
+						<tr><td>有长上下文就不需要 RAG。</td><td>长上下文解决“能放进去”，RAG 解决“从大知识库里找什么放进去”。两者互补。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>失败模式</h2>
+				<ul>
+					<li><strong>切片失败：</strong>标题和正文被切开，query 找到正文却丢了限定条件。</li>
+					<li><strong>领域不匹配：</strong>通用 embedding 不懂内部术语、接口名或金融缩写。</li>
+					<li><strong>只用向量：</strong>错误码、股票代码、函数名等精确词可能召回差。</li>
+					<li><strong>topK 太小：</strong>正确证据没进上下文。</li>
+					<li><strong>topK 太大：</strong>噪音进入 prompt，模型被干扰。</li>
+				</ul>
+
+				<h2>自测问题</h2>
+				<ol>
+					<li>为什么 query 和 chunk 要用同一个 embedding 模型？</li>
+					<li>为什么“语义相似”不等于“能回答问题”？</li>
+					<li>为什么 RAG 常常要混合 BM25 关键词检索？</li>
+					<li>如果用户问“ERR_4219 怎么处理”，纯向量检索可能有什么问题？</li>
+					<li>如何判断 chunk 是太大还是太小？</li>
+				</ol>
+
+				<h2>面试回答骨架</h2>
+				<pre><code>RAG 的第一步是把 query 和文档 chunk 映射到同一语义向量空间。
+离线阶段我会清洗文档、按语义切片、记录 metadata 并生成 chunk embedding。
+在线阶段把用户问题做 query embedding，先做 metadata 过滤，再做向量召回和 BM25 混合召回。
+召回后用 rerank 精排，把最相关证据拼进 prompt，并要求模型基于证据回答和引用来源。
+真正生产时还要评估 Recall@K、答案忠实度、延迟、成本和权限安全。</code></pre>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

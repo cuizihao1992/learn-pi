@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>模块深挖路线 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>模块深挖路线</strong><span>每个模块打穿一个底层关键点</span></div></div><nav><a href="../index.html">首页</a><a href="lab-index.html">实验室</a><a href="concept-index.html">概念索引</a><a href="learning-paths.html">学习路线</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="dashboard.html">学习仪表盘</a><a href="learning-paths.html">学习路线</a><a href="til.html">TIL 学习日志</a><a class="active" href="deep-dive-roadmap.html">深挖路线</a><a href="lab-index.html">实验室</a><a href="concept-index.html">概念索引</a><a href="search.html">全站检索</a></aside>
+			<article class="doc">
+				<p class="kicker">Deep Dive Roadmap</p>
+				<h1>每个模块只先打穿一个关键点</h1>
+				<p class="lead">这个计划不是把模块做大而全，而是为每个模块选一个最能代表底层原理的点，用一句话模型、底层链路、具体例子、最小实验、常见误解和自测题讲透。</p>
+
+				<h2>深挖模板</h2>
+				<pre><code>一个关键点
+  -> 一句话模型
+  -> 需要补的前置知识
+  -> 底层链路图
+  -> 具体例子
+  -> 最小实验 / 可观察 demo
+  -> 常见误解
+  -> 自测问题
+  -> 回到模块复盘</code></pre>
+
+				<h2>十二个模块的第一批深挖点</h2>
+				<table class="compare-table">
+					<thead><tr><th>模块</th><th>先打穿的点</th><th>需要补的知识</th><th>例子 / 实验</th><th>状态</th></tr></thead>
+					<tbody>
+						<tr><td>Pi Agent</td><td>toolCall 到 toolResult 闭环</td><td>JSON schema、事件流、状态机、运行时边界。</td><td>用户要求读文件，模型发 toolCall，运行时执行并回填 toolResult。</td><td>待补</td></tr>
+						<tr><td>Mini Agent</td><td>最小 Agent Loop</td><td>HTTP API、模型消息格式、工具注册、循环终止条件。</td><td>Node demo：模型决定调用 calculator，再根据 toolResult 回答。</td><td>待补</td></tr>
+						<tr><td>LLM / Agent 面试</td><td>Embedding 到 RAG 召回</td><td>向量、余弦相似度、chunk、topK、rerank、prompt。</td><td><a href="../modules/llm-agent-interview/embedding-rag-deep-dive.html">Embedding -> RAG 深挖</a> + <a href="../examples/embedding-search/index.html">Embedding Search Demo</a>。</td><td>进行中</td></tr>
+						<tr><td>Cesium</td><td>Primitive -> DrawCommand -> GPU</td><td>WebGL、ShaderProgram、VertexArray、RenderState、渲染队列。</td><td>一个 box primitive 如何变成 DrawCommand。</td><td>待补</td></tr>
+						<tr><td>OpenLayers</td><td>Layer / Source / View 分工</td><td>坐标系、瓦片、视口、矢量要素、Canvas/WebGL。</td><td>同一份数据换不同 layer style。</td><td>待补</td></tr>
+						<tr><td>Mapbox</td><td>Style JSON 驱动渲染</td><td>source、layer、paint、layout、vector tile。</td><td>一个 source 加两个 layer，展示不同符号样式。</td><td>待补</td></tr>
+						<tr><td>Digital Twin City</td><td>实时数据如何进入地图场景</td><td>WebSocket、事件驱动、实体状态、告警流、GIS 数据模型。</td><td>传感器告警 -> 地图实体变色 -> Agent 解释。</td><td>待补</td></tr>
+						<tr><td>Gaussian Splatting</td><td>3D Gaussian 如何训练和渲染</td><td>相机模型、投影、梯度下降、高斯分布、可微渲染。</td><td>一个点从球形高斯变成屏幕椭圆 splat。</td><td>待补</td></tr>
+						<tr><td>Economics and Finance</td><td>利率如何通过折现影响资产价格</td><td>现金流、折现率、久期、风险溢价、预期。</td><td>加息 -> 折现率上升 -> 未来现金流现值下降。</td><td>待补</td></tr>
+						<tr><td>Stock K Line</td><td>指标只是价格和成交量的加工</td><td>OHLC、成交量、移动平均、波动率、滞后性。</td><td>价格序列 -> 均线 / MACD / RSI。</td><td>待补</td></tr>
+						<tr><td>Quant Trading</td><td>回测为什么容易骗人</td><td>时间序列、过拟合、手续费、滑点、幸存者偏差。</td><td>同一策略加入手续费和滑点后收益消失。</td><td>待补</td></tr>
+						<tr><td>Nuclear Battery</td><td>衰变热如何变成电能</td><td>放射性衰变、半衰期、热电效应、能量转换效率。</td><td>同位素热源 -> 热电偶 -> 电流。</td><td>待补</td></tr>
+					</tbody>
+				</table>
+
+				<h2>推进顺序</h2>
+				<ol>
+					<li>第一批：Embedding -> RAG、Mini Agent Loop、Pi toolCall 闭环。</li>
+					<li>第二批：利率折现、K 线指标数学、Layer / Source / Style。</li>
+					<li>第三批：DrawCommand、Gaussian Splatting、数字孪生实时状态。</li>
+					<li>第四批：回测陷阱、核电池能量转换。</li>
+				</ol>
+
+				<h2>完成标准</h2>
+				<table class="compare-table">
+					<thead><tr><th>层级</th><th>标准</th></tr></thead>
+					<tbody>
+						<tr><td>讲清</td><td>能用一句话说出这个点解决什么问题。</td></tr>
+						<tr><td>画出</td><td>能画出输入、核心机制、输出和失败点。</td></tr>
+						<tr><td>举例</td><td>能用一个具体例子解释它为什么有用。</td></tr>
+						<tr><td>实验</td><td>能通过一个最小 demo 观察结果变化。</td></tr>
+						<tr><td>自测</td><td>能回答常见误解和边界条件。</td></tr>
+					</tbody>
+				</table>
+				<div class="next-card"><span>第一篇示范</span><a href="../modules/llm-agent-interview/embedding-rag-deep-dive.html">进入 Embedding -> RAG 深挖</a></div>
+			</article>
+		</main>
+		<script src="../theme.js"></script><script src="../enhance.js"></script>
+	</body>
+</html>

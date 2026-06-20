@@ -4,7 +4,7 @@
 	<body>
 		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>RAG 向量数据工程</strong><span>Parsing, Chunking, Embedding, Retrieval, Rerank</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">面试总览</a><a href="memory.html">记忆</a><a href="long-context.html">长上下文</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="memory.html">AI 记忆机制</a><a href="embedding-rag-multimodal.html">Embedding 与多模态</a><a class="active" href="rag-pipeline.html">RAG 数据工程</a><a href="long-context.html">长上下文 vs RAG</a><a href="transformer-long-context.html">Transformer 长文本优化</a><a href="interview-playbook.html">答题模板</a></aside>
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="memory.html">AI 记忆机制</a><a href="embedding-rag-multimodal.html">Embedding 与多模态</a><a href="embedding-rag-deep-dive.html">Embedding -> RAG 深挖</a><a class="active" href="rag-pipeline.html">RAG 数据工程</a><a href="long-context.html">长上下文 vs RAG</a><a href="transformer-long-context.html">Transformer 长文本优化</a><a href="interview-playbook.html">答题模板</a></aside>
 			<article class="doc">
 				<p class="kicker">RAG Pipeline</p>
 				<h1>RAG 向量数据全流程工程化方案</h1>
@@ -49,6 +49,7 @@
 				<h2>四、向量化和向量库</h2>
 				<p>Embedding 的作用是把文本映射到语义空间。通用知识库可以先用成熟通用 embedding 模型；医疗、法律、金融、内部术语密集的场景，可能需要领域模型、对比学习微调或查询改写来弥补语义偏差。入库时要记录 embedding 模型版本，因为模型一换，旧向量通常需要重建。</p>
 				<div class="next-card"><span>动手实验</span><a href="../../examples/embedding-search/index.html">用教学版向量检索观察召回排序</a></div>
+				<div class="next-card"><span>深入理解</span><a href="embedding-rag-deep-dive.html">只打穿 Embedding 到 RAG 召回这一点</a></div>
 				<ul>
 					<li><strong>HNSW 索引：</strong>千万级向量常用近似最近邻索引，在召回速度和精度之间取平衡。</li>
 					<li><strong>批处理入库：</strong>解析、切片、embedding、写库都要批量化，否则吞吐会被 API 调用和数据库写入拖垮。</li>
