@@ -48,6 +48,7 @@
 
 				<h2>四、向量化和向量库</h2>
 				<p>Embedding 的作用是把文本映射到语义空间。通用知识库可以先用成熟通用 embedding 模型；医疗、法律、金融、内部术语密集的场景，可能需要领域模型、对比学习微调或查询改写来弥补语义偏差。入库时要记录 embedding 模型版本，因为模型一换，旧向量通常需要重建。</p>
+				<div class="next-card"><span>动手实验</span><a href="../../examples/embedding-search/index.html">用教学版向量检索观察召回排序</a></div>
 				<ul>
 					<li><strong>HNSW 索引：</strong>千万级向量常用近似最近邻索引，在召回速度和精度之间取平衡。</li>
 					<li><strong>批处理入库：</strong>解析、切片、embedding、写库都要批量化，否则吞吐会被 API 调用和数据库写入拖垮。</li>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>实验室 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习实验室</strong><span>把概念变成可观察的实验</span></div></div><nav><a href="../index.html">首页</a><a href="dashboard.html">仪表盘</a><a href="learning-paths.html">学习路线</a><a href="concept-index.html">概念索引</a><a href="search.html">检索</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="dashboard.html">学习仪表盘</a><a href="learning-paths.html">学习路线</a><a href="til.html">TIL 学习日志</a><a class="active" href="lab-index.html">实验室</a><a href="concept-index.html">概念索引</a><a href="progress.html">学习进度</a><a href="search.html">全站检索</a></aside>
+			<article class="doc">
+				<p class="kicker">Labs</p>
+				<h1>从看懂到做懂</h1>
+				<p class="lead">实验室不是另一个内容目录，而是验证理解的地方。每个实验都把一个抽象概念变成可输入、可观察、可调参的小系统。</p>
+				<h2>实验路线</h2>
+				<pre><code>读概念
+  -> 看链路
+  -> 做实验
+  -> 观察失败模式
+  -> 回到模块复盘
+  -> 沉淀成项目能力</code></pre>
+				<h2>当前实验</h2>
+				<div class="lesson-grid">
+					<section><h3>Embedding Search Demo</h3><p>输入一个问题，观察它如何被映射成教学向量，再按相似度召回最相关知识片段。适合理解 embedding、语义搜索和 RAG 的第一步。</p><a class="primary-link" href="../examples/embedding-search/index.html">打开实验</a></section>
+					<section><h3>Mini Agent Node</h3><p>用最小 Node 脚本理解 Agent Loop、toolCall、toolResult 和最终回答的闭环。</p><a class="primary-link" href="../examples/mini-agent-node/mini-agent.mjs">查看示例代码</a></section>
+				</div>
+				<h2>后续实验队列</h2>
+				<table class="compare-table">
+					<thead><tr><th>实验</th><th>验证什么</th><th>关联模块</th></tr></thead>
+					<tbody>
+						<tr><td>Mini RAG Demo</td><td>从文档切片、检索、拼 prompt 到回答引用。</td><td><a href="../modules/llm-agent-interview/rag-pipeline.html">RAG 数据工程</a></td></tr>
+						<tr><td>K 线指标 Demo</td><td>均线、MACD、RSI 本质上如何加工价格和成交量。</td><td><a href="../modules/stock-kline/indicators.html">指标底层逻辑</a></td></tr>
+						<tr><td>地图图层 Demo</td><td>Layer、Source、Style 如何决定地图展示。</td><td><a href="../modules/mapbox/architecture.html">Mapbox 架构</a></td></tr>
+						<tr><td>宏观周期拆解器</td><td>增长、通胀、利率、信用和资产价格如何传导。</td><td><a href="../modules/econ-finance/macro-cycle.html">宏观周期</a></td></tr>
+					</tbody>
+				</table>
+				<h2>实验标准</h2>
+				<ol>
+					<li>每个实验只验证一个核心概念。</li>
+					<li>必须能输入不同案例，观察结果变化。</li>
+					<li>必须写清楚它是教学模型，不等于生产系统。</li>
+					<li>必须反向链接到对应课程页面。</li>
+				</ol>
+				<div class="next-card"><span>先做这个</span><a href="../examples/embedding-search/index.html">进入 Embedding Search Demo</a></div>
+			</article>
+		</main>
+		<script src="../theme.js"></script><script src="../enhance.js"></script>
+	</body>
+</html>

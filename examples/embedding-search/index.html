@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Embedding Search Demo | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<style>
+			.lab-panel { display: grid; gap: 16px; }
+			.lab-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end; }
+			.lab-controls label { display: grid; gap: 8px; color: var(--muted); font-weight: 900; }
+			.lab-controls input { width: 100%; min-height: 52px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); padding: 12px 14px; font: inherit; font-size: 16px; }
+			.lab-controls button, .example-query { min-height: 44px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--teal); font: inherit; font-weight: 900; cursor: pointer; padding: 10px 12px; }
+			.example-query:hover, .lab-controls button:hover { background: var(--teal-soft); }
+			.example-query-row { display: flex; flex-wrap: wrap; gap: 8px; }
+			.vector-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+			.vector-cell { border: 1px solid var(--line); border-radius: 8px; background: var(--section-bg); padding: 10px; }
+			.vector-cell strong, .vector-cell span { display: block; }
+			.vector-cell span { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+			.vector-bar { height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
+			.vector-bar i { display: block; height: 100%; width: 0; background: var(--teal); }
+			.result-list { display: grid; gap: 12px; }
+			.result-card { border: 1px solid var(--line); border-radius: 8px; background: var(--section-bg); padding: 16px; display: grid; gap: 8px; }
+			.result-card.best { border-color: var(--teal); box-shadow: inset 5px 0 0 var(--teal); }
+			.result-meta { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 13px; font-weight: 900; }
+			.result-score { color: var(--teal); }
+			@media (max-width: 760px) { .lab-controls, .vector-grid { grid-template-columns: 1fr; } }
+		</style>
+	</head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Embedding Search Demo</strong><span>教学版语义检索，不调用外部 API</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/lab-index.html">实验室</a><a href="../../modules/llm-agent-interview/embedding-rag-multimodal.html">Embedding</a><a href="../../modules/llm-agent-interview/rag-pipeline.html">RAG</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="../../pages/lab-index.html">实验室入口</a><a class="active" href="index.html">Embedding Search</a><a href="../../modules/llm-agent-interview/embedding-rag-multimodal.html">Embedding 与多模态</a><a href="../../modules/llm-agent-interview/rag-pipeline.html">RAG 数据工程</a><a href="../../pages/concept-index.html">概念索引</a></aside>
+			<article class="doc">
+				<p class="kicker">Interactive Lab</p>
+				<h1>看见一次语义检索怎么发生</h1>
+				<p class="lead">这个实验用一个很小的“教学向量模型”模拟 embedding。它不会调用真实模型，但会展示 RAG 第一步的核心动作：把 query 和文档片段映射到同一组语义维度，再用余弦相似度排序。</p>
+				<section class="lab-panel">
+					<div class="lab-controls">
+						<label>输入问题或提示词
+							<input id="queryInput" value="为什么加息会影响股票估值？" />
+						</label>
+						<button id="runButton" type="button">重新检索</button>
+					</div>
+					<div class="example-query-row" aria-label="示例问题">
+						<button class="example-query" type="button" data-query="为什么加息会影响股票估值？">加息与估值</button>
+						<button class="example-query" type="button" data-query="RAG 如何通过向量检索找到资料？">RAG 检索</button>
+						<button class="example-query" type="button" data-query="Cesium 的 DrawCommand 为什么重要？">渲染命令</button>
+						<button class="example-query" type="button" data-query="多模态模型如何理解图片和文字？">多模态</button>
+					</div>
+				</section>
+				<h2>Query 向量</h2>
+				<div id="queryVector" class="vector-grid" aria-live="polite"></div>
+				<h2>召回结果</h2>
+				<div id="results" class="result-list" aria-live="polite"></div>
+				<h2>这个 demo 在模拟什么</h2>
+				<pre><code>真实 RAG：
+query -> embedding model -> query vector
+documents -> chunk -> embedding model -> chunk vectors
+query vector vs chunk vectors -> topK evidence
+topK evidence + user question -> LLM answer
+
+这个教学 demo：
+query -> 关键词映射到 5 个语义维度
+candidate texts -> 同样映射到 5 个语义维度
+余弦相似度 -> 排序展示</code></pre>
+				<h2>注意边界</h2>
+				<ul>
+					<li>真实 embedding 是高维向量，不是这里的 5 个手写维度。</li>
+					<li>真实语义相似度来自模型训练，不是关键词规则。</li>
+					<li>真实 RAG 还需要 chunk、metadata、BM25、rerank、权限、引用和评估。</li>
+					<li>这个 demo 的价值是帮助你先看见“检索增强生成”的第一步。</li>
+				</ul>
+				<div class="next-card"><span>回到课程</span><a href="../../modules/llm-agent-interview/rag-pipeline.html">继续学 RAG 数据工程</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			const dimensions = [
+				{ key: "finance", label: "金融" },
+				{ key: "rag", label: "检索" },
+				{ key: "render", label: "渲染" },
+				{ key: "agent", label: "Agent" },
+				{ key: "multimodal", label: "多模态" },
+			];
+			const lexicon = {
+				finance: ["利率", "加息", "估值", "股票", "现金流", "折现", "债券", "宏观", "风险", "通胀"],
+				rag: ["rag", "检索", "向量", "embedding", "chunk", "文档", "资料", "召回", "rerank", "证据"],
+				render: ["cesium", "drawcommand", "渲染", "gpu", "shader", "primitive", "地图", "瓦片", "webgl"],
+				agent: ["agent", "工具", "toolcall", "toolresult", "记忆", "会话", "任务", "调用"],
+				multimodal: ["多模态", "图片", "图像", "音频", "视频", "视觉", "clip", "llava", "gemini"],
+			};
+			const documents = [
+				{ id: "A", title: "利率与股票估值", text: "利率上升会提高折现率，未来现金流折回今天的现值下降，因此高久期股票估值更容易承压。" },
+				{ id: "B", title: "RAG 检索链路", text: "RAG 会把用户问题做 embedding，再从向量库召回相关文档片段，最后把证据放入 prompt 让大模型回答。" },
+				{ id: "C", title: "Cesium DrawCommand", text: "Cesium 的 Primitive 更新后会产生 DrawCommand，DrawCommand 携带 ShaderProgram、RenderState 和 VertexArray 等渲染信息。" },
+				{ id: "D", title: "Agent 工具调用", text: "Agent Loop 中模型返回 toolCall，运行时执行工具并把 toolResult 回填给模型，形成可观察的任务闭环。" },
+				{ id: "E", title: "多模态模型", text: "多模态模型通过视觉编码器、投影层和语言模型对齐图片、视频、音频与文本，使模型能看图问答和理解图表。" },
+			];
+			function embed(text) {
+				const normalized = text.toLowerCase();
+				const vector = dimensions.map((dimension) => lexicon[dimension.key].reduce((sum, word) => sum + (normalized.includes(word.toLowerCase()) ? 1 : 0), 0));
+				const total = vector.reduce((sum, value) => sum + value, 0);
+				if (total === 0) return dimensions.map(() => 0.2);
+				return vector.map((value) => Number((value / total).toFixed(3)));
+			}
+			function cosine(a, b) {
+				const dot = a.reduce((sum, value, index) => sum + value * b[index], 0);
+				const magA = Math.sqrt(a.reduce((sum, value) => sum + value * value, 0));
+				const magB = Math.sqrt(b.reduce((sum, value) => sum + value * value, 0));
+				if (!magA || !magB) return 0;
+				return dot / (magA * magB);
+			}
+			function renderVector(vector) {
+				document.querySelector("#queryVector").innerHTML = dimensions.map((dimension, index) => {
+					const value = vector[index];
+					return `<div class="vector-cell"><span>${dimension.label}</span><strong>${value.toFixed(3)}</strong><div class="vector-bar"><i style="width:${Math.round(value * 100)}%"></i></div></div>`;
+				}).join("");
+			}
+			function renderResults(queryVector) {
+				const ranked = documents.map((document) => {
+					const vector = embed(`${document.title} ${document.text}`);
+					return { ...document, vector, score: cosine(queryVector, vector) };
+				}).sort((a, b) => b.score - a.score);
+				document.querySelector("#results").innerHTML = ranked.map((document, index) => {
+					const vectorText = dimensions.map((dimension, vectorIndex) => `${dimension.label}:${document.vector[vectorIndex].toFixed(2)}`).join(" / ");
+					return `<section class="result-card ${index === 0 ? "best" : ""}"><div class="result-meta"><span>${index === 0 ? "Top evidence" : "Candidate"} ${document.id}</span><span class="result-score">相似度 ${document.score.toFixed(3)}</span></div><h3>${document.title}</h3><p>${document.text}</p><small>${vectorText}</small></section>`;
+				}).join("");
+			}
+			function runSearch() {
+				const queryVector = embed(document.querySelector("#queryInput").value.trim());
+				renderVector(queryVector);
+				renderResults(queryVector);
+			}
+			document.querySelector("#runButton").addEventListener("click", runSearch);
+			document.querySelectorAll(".example-query").forEach((button) => {
+				button.addEventListener("click", () => {
+					document.querySelector("#queryInput").value = button.dataset.query;
+					runSearch();
+				});
+			});
+			document.querySelector("#queryInput").addEventListener("keydown", (event) => {
+				if (event.key === "Enter") runSearch();
+			});
+			runSearch();
+		</script>
+	</body>
+</html>

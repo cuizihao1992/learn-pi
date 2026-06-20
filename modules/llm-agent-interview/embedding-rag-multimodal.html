@@ -85,6 +85,7 @@ result = client.embeddings.create(
 vector = result.data[0].embedding
 print(len(vector))
 print(vector[:5])</code></pre>
+				<div class="next-card"><span>动手实验</span><a href="../../examples/embedding-search/index.html">打开 Embedding Search Demo</a></div>
 
 				<h2>六、多模态模型如何训练</h2>
 				<p>多模态模型要解决的是跨模态对齐：像素、语音波形、视频帧和文字 token 都不是同一种数据，但模型需要知道图片里的“狗”和文本里的“dog / 狗 / puppy”指向同一类概念。</p>
