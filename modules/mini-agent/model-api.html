@@ -91,6 +91,68 @@ Authorization: Bearer YOUR_KEY
   "content": "README 的文件内容..."
 }</code></pre>
 
+				<h2>兼容 OpenAI 接口到底要做哪些工作</h2>
+				<table class="compare-table">
+					<thead><tr><th>工作</th><th>你要实现什么</th><th>为什么必要</th></tr></thead>
+					<tbody>
+						<tr><td>路由兼容</td><td>提供 `POST /v1/chat/completions`，可选 `GET /v1/models`。</td><td>大多数 Agent SDK 会按 OpenAI 路径请求。</td></tr>
+						<tr><td>鉴权兼容</td><td>接受 `Authorization: Bearer xxx`，内部可映射成自己的 key。</td><td>让现有客户端不用改认证逻辑。</td></tr>
+						<tr><td>请求解析</td><td>读取 `model`、`messages`、`tools`、`tool_choice`、`stream`、`temperature`、`max_tokens`。</td><td>这些字段决定模型、上下文、工具和生成参数。</td></tr>
+						<tr><td>消息模板</td><td>把 OpenAI messages 渲染成模型需要的 chat template。</td><td>自研模型通常不直接吃 OpenAI JSON。</td></tr>
+						<tr><td>工具模板</td><td>把 tools JSON schema 渲染进 prompt，或传给推理引擎的 tool calling 模块。</td><td>模型需要知道有哪些工具、参数是什么。</td></tr>
+						<tr><td>输出解析</td><td>把模型输出的文本、XML、JSON 或特殊 token 解析成 `message.content` 或 `message.tool_calls`。</td><td>Agent 只认识协议结果，不认识你模型的私有格式。</td></tr>
+						<tr><td>错误格式</td><td>按 OpenAI 风格返回 `{ "error": { "message", "type", "code" } }`。</td><td>客户端才能用统一方式显示和重试。</td></tr>
+						<tr><td>流式输出</td><td>当 `stream: true` 时返回 SSE：`data: {...}\n\n`，最后 `data: [DONE]`。</td><td>前端和 Agent UI 需要边生成边展示。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>最小字段兼容清单</h2>
+				<p>第一版不用追求完整实现，先保证下面这些字段稳定。</p>
+				<pre><code>请求至少支持:
+{
+  "model": "my-model",
+  "messages": [
+    { "role": "system", "content": "..." },
+    { "role": "user", "content": "..." },
+    { "role": "assistant", "content": "...", "tool_calls": [...] },
+    { "role": "tool", "tool_call_id": "call_1", "content": "..." }
+  ],
+  "tools": [...],
+  "tool_choice": "auto",
+  "stream": false
+}
+
+非流式文本响应至少返回:
+{
+  "id": "chatcmpl_xxx",
+  "object": "chat.completion",
+  "model": "my-model",
+  "choices": [{
+    "index": 0,
+    "message": { "role": "assistant", "content": "..." },
+    "finish_reason": "stop"
+  }]
+}
+
+非流式工具调用响应至少返回:
+{
+  "choices": [{
+    "message": {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [{
+        "id": "call_1",
+        "type": "function",
+        "function": {
+          "name": "readFile",
+          "arguments": "{\"path\":\"README.md\"}"
+        }
+      }]
+    },
+    "finish_reason": "tool_calls"
+  }]
+}</code></pre>
+
 				<h2>Anthropic Messages 接口差别在哪里</h2>
 				<p>Anthropic 也是 JSON API，但消息结构和工具块表达不同。它用 content block 表示文本、tool_use、tool_result。</p>
 				<pre><code>Anthropic tool_use 形状:
@@ -195,6 +257,252 @@ app.post("/v1/chat/completions", async (req, res) => {
     }]
   });
 });</code></pre>
+
+				<h2>更完整的 adapter 示例</h2>
+				<p>下面这个例子把核心函数拆开：请求校验、messages 渲染、工具渲染、工具调用解析、OpenAI 响应包装。真实项目可以直接按这个结构扩展。</p>
+				<pre><code>function renderTools(tools = []) {
+  if (tools.length === 0) return "";
+
+  const lines = tools.map((tool) => {
+    const fn = tool.function;
+    return [
+      `工具名: ${fn.name}`,
+      `说明: ${fn.description || ""}`,
+      `参数 JSON Schema: ${JSON.stringify(fn.parameters || {})}`
+    ].join("\n");
+  });
+
+  return [
+    "你可以调用以下工具。",
+    "如果需要调用工具，只输出一段严格 JSON：",
+    "{\"tool_call\":{\"name\":\"工具名\",\"arguments\":{...}}}",
+    "",
+    lines.join("\n\n")
+  ].join("\n");
+}
+
+function renderMessages(messages, tools) {
+  const parts = [];
+
+  for (const message of messages) {
+    if (message.role === "system") {
+      parts.push(`&lt;system&gt;\n${message.content}\n&lt;/system&gt;`);
+    }
+
+    if (message.role === "user") {
+      parts.push(`&lt;user&gt;\n${message.content}\n&lt;/user&gt;`);
+    }
+
+    if (message.role === "assistant") {
+      const toolCalls = message.tool_calls
+        ? `\n工具调用: ${JSON.stringify(message.tool_calls)}`
+        : "";
+      parts.push(`&lt;assistant&gt;\n${message.content || ""}${toolCalls}\n&lt;/assistant&gt;`);
+    }
+
+    if (message.role === "tool") {
+      parts.push([
+        "&lt;tool_result&gt;",
+        `tool_call_id: ${message.tool_call_id}`,
+        String(message.content),
+        "&lt;/tool_result&gt;"
+      ].join("\n"));
+    }
+  }
+
+  const toolText = renderTools(tools);
+  if (toolText) parts.push(`&lt;tools&gt;\n${toolText}\n&lt;/tools&gt;`);
+
+  parts.push("&lt;assistant&gt;\n");
+  return parts.join("\n\n");
+}
+
+function parseModelOutput(text) {
+  const match = text.match(/\{[\s\S]*\"tool_call\"[\s\S]*\}/);
+  if (!match) {
+    return { type: "text", content: text };
+  }
+
+  try {
+    const json = JSON.parse(match[0]);
+    if (json.tool_call?.name) {
+      return {
+        type: "tool_call",
+        name: json.tool_call.name,
+        arguments: json.tool_call.arguments || {}
+      };
+    }
+  } catch {
+    return { type: "text", content: text };
+  }
+
+  return { type: "text", content: text };
+}
+
+function openAITextResponse({ id, model, content }) {
+  return {
+    id,
+    object: "chat.completion",
+    created: Math.floor(Date.now() / 1000),
+    model,
+    choices: [{
+      index: 0,
+      message: { role: "assistant", content },
+      finish_reason: "stop"
+    }]
+  };
+}
+
+function openAIToolResponse({ id, model, name, args }) {
+  return {
+    id,
+    object: "chat.completion",
+    created: Math.floor(Date.now() / 1000),
+    model,
+    choices: [{
+      index: 0,
+      message: {
+        role: "assistant",
+        content: null,
+        tool_calls: [{
+          id: "call_" + crypto.randomUUID().replaceAll("-", "").slice(0, 12),
+          type: "function",
+          function: {
+            name,
+            arguments: JSON.stringify(args)
+          }
+        }]
+      },
+      finish_reason: "tool_calls"
+    }]
+  };
+}</code></pre>
+
+				<h2>一个完整请求会怎么流转</h2>
+				<pre><code>1. Mini Agent 请求你的兼容服务
+POST /v1/chat/completions
+{
+  "model": "my-agent-model",
+  "messages": [
+    { "role": "user", "content": "读取 README.md 并总结" }
+  ],
+  "tools": [{ "type": "function", "function": { "name": "readFile", ... } }]
+}
+
+2. adapter 转成模型 prompt
+&lt;user&gt;
+读取 README.md 并总结
+&lt;/user&gt;
+
+&lt;tools&gt;
+工具名: readFile
+说明: Read a local file
+参数 JSON Schema: {"type":"object","properties":{"path":{"type":"string"}}}
+&lt;/tools&gt;
+
+3. 自研模型输出私有格式
+{"tool_call":{"name":"readFile","arguments":{"path":"README.md"}}}
+
+4. adapter 包装成 OpenAI tool_calls
+{
+  "choices": [{
+    "message": {
+      "role": "assistant",
+      "tool_calls": [{
+        "id": "call_abc",
+        "type": "function",
+        "function": {
+          "name": "readFile",
+          "arguments": "{\"path\":\"README.md\"}"
+        }
+      }]
+    },
+    "finish_reason": "tool_calls"
+  }]
+}
+
+5. Mini Agent 执行 readFile，再把结果发回来
+{
+  "messages": [
+    { "role": "user", "content": "读取 README.md 并总结" },
+    { "role": "assistant", "tool_calls": [...] },
+    { "role": "tool", "tool_call_id": "call_abc", "content": "README 内容..." }
+  ]
+}
+
+6. adapter 再次渲染 prompt，模型生成最终总结
+{
+  "choices": [{
+    "message": {
+      "role": "assistant",
+      "content": "这个 README 主要说明..."
+    },
+    "finish_reason": "stop"
+  }]
+}</code></pre>
+
+				<h2>流式输出怎么兼容</h2>
+				<p>OpenAI-compatible 的流式响应通常是 Server-Sent Events。第一版可以先不支持工具调用流式，只支持文本 delta。</p>
+				<pre><code>HTTP/1.1 200 OK
+Content-Type: text/event-stream
+
+data: {"choices":[{"delta":{"role":"assistant"},"index":0}]}
+
+data: {"choices":[{"delta":{"content":"这个"},"index":0}]}
+
+data: {"choices":[{"delta":{"content":" README"},"index":0}]}
+
+data: {"choices":[{"delta":{},"finish_reason":"stop","index":0}]}
+
+data: [DONE]</code></pre>
+				<p>如果要支持流式工具调用，就要按增量发送 `tool_calls` 的 name 和 arguments。很多客户端对这块兼容性要求更高，所以建议第二阶段再做。</p>
+
+				<h2>用 curl 验证兼容层</h2>
+				<pre><code>curl http://localhost:8000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer test-key" \
+  -d '{
+    "model": "my-agent-model",
+    "messages": [
+      { "role": "user", "content": "用一句话解释 RAG" }
+    ],
+    "stream": false
+  }'</code></pre>
+				<p>再验证工具调用：</p>
+				<pre><code>curl http://localhost:8000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer test-key" \
+  -d '{
+    "model": "my-agent-model",
+    "messages": [
+      { "role": "user", "content": "读取 README.md" }
+    ],
+    "tools": [{
+      "type": "function",
+      "function": {
+        "name": "readFile",
+        "description": "Read a local file",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": { "type": "string" }
+          },
+          "required": ["path"]
+        }
+      }
+    }],
+    "tool_choice": "auto"
+  }'</code></pre>
+
+				<h2>兼容层最容易踩的坑</h2>
+				<ul>
+					<li><strong>arguments 类型错：</strong>OpenAI Chat Completions 里 `function.arguments` 通常是 JSON 字符串，不是对象。</li>
+					<li><strong>tool_call_id 丢失：</strong>工具结果必须能对应前一次工具调用，否则 Agent 不知道结果属于谁。</li>
+					<li><strong>role 混乱：</strong>工具结果在 OpenAI 风格里是 `role: "tool"`，不要塞回普通 user 文本里。</li>
+					<li><strong>模型名透传失败：</strong>客户端传 `model` 后，adapter 要么映射到内部模型，要么返回清楚的错误。</li>
+					<li><strong>错误码不标准：</strong>认证失败用 401，参数错误用 400，模型服务超时用 502/504，比直接 500 更好排查。</li>
+					<li><strong>流式格式不完整：</strong>SSE 每条都要以 `data:` 开头并用空行分隔，最后发送 `[DONE]`。</li>
+				</ul>
 
 				<h2>最难的点：让模型稳定输出工具调用</h2>
 				<p>中间层能转换格式，但不能凭空让模型具备稳定 tool use 能力。你有三种路线：</p>
