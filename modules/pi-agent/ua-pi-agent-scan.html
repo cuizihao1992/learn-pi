@@ -82,7 +82,7 @@
 					<li><strong>交互入口：</strong>读 `interactive-mode.ts`，确认用户输入如何变成 `AgentSession.prompt()`。</li>
 					<li><strong>会话核心：</strong>读 `agent-session.ts`，标出 prompt、run、event、compaction、tool registry 的边界。</li>
 					<li><strong>模型适配：</strong>读 `packages/ai/src/providers/openai-completions.ts` 和 `anthropic.ts`，对照 Mini Agent 的 OpenAI-compatible 页面。</li>
-					<li><strong>工具闭环：</strong>从 `read.ts` 开始，再扩展到 `bash.ts` 和 `edit.ts`，整理 toolCall 到 toolResult 的深挖页。</li>
+					<li><strong>工具闭环：</strong>从 `read.ts` 开始，再扩展到 `bash.ts` 和 `edit.ts`，进入 <a href="tool-call-deep-dive.html">toolCall 到 toolResult 深挖</a>。</li>
 				</ol>
 
 				<h2>本次生成的本地文件</h2>
@@ -91,7 +91,7 @@ C:\Users\Administrator\Documents\Codex\2026-06-16\pi-agent-pi-agent\work\pi\.und
 C:\Users\Administrator\Documents\Codex\2026-06-16\pi-agent-pi-agent\work\pi\.understand-anything\intermediate\import-map.json
 C:\Users\Administrator\Documents\Codex\2026-06-16\pi-agent-pi-agent\work\pi\.understand-anything\intermediate\structure-core.json</code></pre>
 
-				<div class="next-card"><span>继续深挖</span><a href="callgraph.html">回到源码调用图</a></div>
+				<div class="next-card"><span>继续深挖</span><a href="tool-call-deep-dive.html">进入 toolCall 源码闭环</a></div>
 			</article>
 		</main>
 		<script src="../../theme.js"></script><script src="../../enhance.js"></script>

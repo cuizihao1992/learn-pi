@@ -42,6 +42,7 @@
         "lifecycle.html",
         "prompt-processing.html",
         "tools.html",
+        "tool-call-deep-dive.html",
         "sessions.html",
         "models.html",
         "frontend.html",

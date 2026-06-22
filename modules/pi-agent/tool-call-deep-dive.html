@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>toolCall 到 toolResult 深挖 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Pi Agent 学习路径</strong><span>toolCall -> toolResult 源码闭环</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">Pi Agent</a><a href="tools.html">工具调用</a><a href="callgraph.html">调用图</a><a href="../mini-agent/index.html">Mini Agent</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">Pi 总览</a><a href="architecture.html">架构设计</a><a href="lifecycle.html">完整流程</a><a href="prompt-processing.html">提示词处理</a><a href="tools.html">工具调用</a><a class="active" href="tool-call-deep-dive.html">toolCall 深挖</a><a href="sessions.html">会话与压缩</a><a href="models.html">模型接口</a><a href="frontend.html">前端事件</a><a href="callgraph.html">源码调用图</a><a href="understand-anything.html">Understand Anything</a><a href="ua-pi-agent-scan.html">UA 扫描结果</a><a href="../mini-agent/index.html">Mini Agent</a></aside>
+			<article class="doc">
+				<p class="kicker">Deep Dive</p>
+				<h1>Pi Agent：toolCall 如何变成 toolResult</h1>
+				<p class="lead">这是 Pi Agent 最核心的闭环：模型不能直接读文件、改文件、跑命令。模型只能在 assistant message 里产出 `toolCall`；Pi 的运行时找到对应工具，校验参数，执行工具，把结果封装成 `toolResult`，再放回上下文，让模型继续下一轮推理。</p>
+
+				<h2>一句话模型</h2>
+				<pre><code>assistant message 里出现 toolCall
+  -> runLoop 发现 toolCall
+  -> executeToolCalls 选择顺序或并行执行
+  -> prepareToolCall 找工具、准备参数、校验 schema、跑 before hook
+  -> executePreparedToolCall 调用 tool.execute()
+  -> finalizeExecutedToolCall 跑 after hook、处理 terminate / error
+  -> createToolResultMessage 变成 role: "toolResult"
+  -> push 回 currentContext.messages
+  -> 下一轮模型调用看到工具结果</code></pre>
+
+				<h2>源码入口</h2>
+				<table class="compare-table">
+					<thead><tr><th>文件</th><th>关键函数 / 类型</th><th>作用</th></tr></thead>
+					<tbody>
+						<tr><td><code>packages/agent/src/agent-loop.ts</code></td><td><code>runLoop</code></td><td>核心循环：调模型、发现工具调用、执行工具、回填结果、决定是否继续。</td></tr>
+						<tr><td><code>packages/agent/src/agent-loop.ts</code></td><td><code>executeToolCalls</code></td><td>从 assistant message 中取出所有 toolCall，决定顺序执行还是并行执行。</td></tr>
+						<tr><td><code>packages/agent/src/agent-loop.ts</code></td><td><code>prepareToolCall</code></td><td>查找工具、参数预处理、schema 校验、beforeToolCall hook。</td></tr>
+						<tr><td><code>packages/agent/src/agent-loop.ts</code></td><td><code>executePreparedToolCall</code></td><td>真正调用工具的 <code>execute()</code>，并把 partial update 转成事件。</td></tr>
+						<tr><td><code>packages/agent/src/agent-loop.ts</code></td><td><code>createToolResultMessage</code></td><td>把工具执行结果包装成模型可继续读取的 toolResult message。</td></tr>
+						<tr><td><code>packages/agent/src/types.ts</code></td><td><code>AgentTool</code> / <code>AgentToolResult</code></td><td>定义工具执行函数和工具结果结构。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>具体例子：读取 README.md</h2>
+				<p>用户输入：</p>
+				<pre><code>读取 README.md，然后总结这个项目怎么启动。</code></pre>
+				<p>模型第一轮不会直接读文件，而是返回结构化工具调用：</p>
+				<pre><code>{
+  "role": "assistant",
+  "content": [
+    {
+      "type": "toolCall",
+      "id": "call_read_1",
+      "name": "read",
+      "arguments": {
+        "path": "README.md"
+      }
+    }
+  ]
+}</code></pre>
+				<p>Pi 执行后生成工具结果：</p>
+				<pre><code>{
+  "role": "toolResult",
+  "toolCallId": "call_read_1",
+  "toolName": "read",
+  "content": [
+    {
+      "type": "text",
+      "text": "README.md 的文件内容..."
+    }
+  ],
+  "details": {},
+  "isError": false
+}</code></pre>
+				<p>下一轮模型调用时，上下文里已经有 `toolResult`。模型这时才基于真实 README 内容生成总结，或者继续请求 `bash` / `edit` / `grep` 等工具。</p>
+
+				<h2>runLoop 的关键逻辑</h2>
+				<p>`runLoop` 的核心不是“调用一次模型就结束”，而是一个多轮循环。它每轮都做三件事：拿 assistant message、检查 toolCall、把 toolResult 放回上下文。</p>
+				<pre><code>const message = await streamAssistantResponse(currentContext, config, signal, emit);
+
+const toolCalls = message.content.filter((c) =&gt; c.type === "toolCall");
+
+if (toolCalls.length &gt; 0) {
+  const executedToolBatch = await executeToolCalls(
+    currentContext,
+    message,
+    config,
+    signal,
+    emit
+  );
+
+  for (const result of executedToolBatch.messages) {
+    currentContext.messages.push(result);
+    newMessages.push(result);
+  }
+}</code></pre>
+				<p>这就是 Agent Loop 和普通聊天机器人的区别：普通聊天只等文本；Agent 会把模型输出当成下一步操作计划。</p>
+
+				<h2>为什么有顺序执行和并行执行</h2>
+				<p>`executeToolCalls()` 会检查工具是否要求顺序执行。如果有工具声明 `executionMode === "sequential"`，或者全局配置要求顺序执行，就走顺序路径；否则可以并行。</p>
+				<table class="compare-table">
+					<thead><tr><th>执行方式</th><th>适合场景</th><th>风险</th></tr></thead>
+					<tbody>
+						<tr><td>顺序执行</td><td>写文件、编辑文件、可能互相依赖的工具调用。</td><td>慢，但状态更可控。</td></tr>
+						<tr><td>并行执行</td><td>多个只读搜索、读取不同文件、互不依赖的查询。</td><td>快，但要避免共享状态冲突。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>prepareToolCall 做了什么</h2>
+				<pre><code>prepareToolCall
+  -> currentContext.tools.find(name)
+  -> prepareToolCallArguments
+  -> validateToolArguments
+  -> config.beforeToolCall
+  -> 返回 prepared 或 immediate error</code></pre>
+				<table class="compare-table">
+					<thead><tr><th>步骤</th><th>目的</th><th>失败时</th></tr></thead>
+					<tbody>
+						<tr><td>查找工具</td><td>确认模型请求的工具确实存在。</td><td>返回 `Tool read_x not found` 之类错误结果。</td></tr>
+						<tr><td>参数预处理</td><td>兼容模型输出的旧字段或 provider 差异。</td><td>预处理异常会变成 error toolResult。</td></tr>
+						<tr><td>schema 校验</td><td>防止模型给错参数形状。</td><td>返回校验错误，工具不执行。</td></tr>
+						<tr><td>before hook</td><td>权限确认、拦截危险操作、注入上下文。</td><td>可以 block，返回“Tool execution was blocked”。</td></tr>
+						<tr><td>abort 检查</td><td>用户中断时停止继续执行。</td><td>返回 `Operation aborted`。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>工具真正在哪里执行</h2>
+				<p>准备完成后，Pi 调用工具定义里的 `execute()`：</p>
+				<pre><code>const result = await prepared.tool.execute(
+  prepared.toolCall.id,
+  prepared.args,
+  signal,
+  (partialResult) =&gt; emit({
+    type: "tool_execution_update",
+    toolCallId: prepared.toolCall.id,
+    toolName: prepared.toolCall.name,
+    args: prepared.toolCall.arguments,
+    partialResult
+  })
+);</code></pre>
+				<p>这解释了为什么前端可以显示“工具正在执行”：工具可以通过 `onUpdate` 持续发 partial result，运行时把它转成 `tool_execution_update` 事件。</p>
+
+				<h2>AgentToolResult 的结构</h2>
+				<p>工具执行函数不是返回任意字符串，而是返回统一结构：</p>
+				<pre><code>interface AgentToolResult&lt;T&gt; {
+  content: (TextContent | ImageContent)[];
+  details: T;
+  terminate?: boolean;
+}</code></pre>
+				<table class="compare-table">
+					<thead><tr><th>字段</th><th>给谁用</th><th>说明</th></tr></thead>
+					<tbody>
+						<tr><td><code>content</code></td><td>模型</td><td>会进入 toolResult message，让模型读取。</td></tr>
+						<tr><td><code>details</code></td><td>日志 / UI / 调试</td><td>结构化细节，不一定直接给模型当文本读。</td></tr>
+						<tr><td><code>terminate</code></td><td>runLoop</td><td>提示当前工具批次后可以停止继续循环。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>createToolResultMessage 为什么关键</h2>
+				<p>模型请求工具时用的是 `toolCall.id`。工具结果必须带回同一个 ID，否则模型和运行时都无法可靠对应“哪个结果属于哪个调用”。</p>
+				<pre><code>function createToolResultMessage(finalized) {
+  return {
+    role: "toolResult",
+    toolCallId: finalized.toolCall.id,
+    toolName: finalized.toolCall.name,
+    content: finalized.result.content,
+    details: finalized.result.details,
+    isError: finalized.isError,
+    timestamp: Date.now()
+  };
+}</code></pre>
+
+				<h2>事件流和 UI 的关系</h2>
+				<p>toolCall 闭环不仅是给模型看的，也会发给 UI：</p>
+				<pre><code>tool_execution_start
+  -> tool_execution_update
+  -> tool_execution_end
+  -> message_start(toolResult)
+  -> message_end(toolResult)
+  -> turn_end</code></pre>
+				<p>这就是为什么终端前端能实时显示工具名称、参数、执行中状态和最终结果。模型生成、工具执行、UI 渲染不是一锅粥，而是通过事件流分层连接。</p>
+
+				<h2>和 Mini Agent 的对应关系</h2>
+				<table class="compare-table">
+					<thead><tr><th>Mini Agent</th><th>Pi Agent</th><th>差异</th></tr></thead>
+					<tbody>
+						<tr><td><code>while (true)</code></td><td><code>runLoop()</code></td><td>Pi 多了 steering、follow-up、prepareNextTurn、事件和终止策略。</td></tr>
+						<tr><td><code>assistant.tool_calls</code></td><td><code>message.content.filter(type === "toolCall")</code></td><td>Pi 使用统一 message content block。</td></tr>
+						<tr><td><code>runTool(toolCall)</code></td><td><code>executeToolCalls()</code></td><td>Pi 支持并行/顺序、hook、校验、abort、partial update。</td></tr>
+						<tr><td><code>role: "tool"</code></td><td><code>role: "toolResult"</code></td><td>Pi 内部消息格式不同，但语义相同：把工具结果交回模型。</td></tr>
+						<tr><td>简单字符串结果</td><td><code>AgentToolResult</code></td><td>Pi 区分模型可读 content 和 UI/日志 details。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>常见误解</h2>
+				<ul>
+					<li><strong>误解一：模型直接操作电脑。</strong>不对。模型只输出 toolCall，真正操作由工具系统执行。</li>
+					<li><strong>误解二：toolCall 一定立刻执行成功。</strong>不对。工具可能不存在、参数校验失败、before hook 阻止、用户中断、工具内部抛错。</li>
+					<li><strong>误解三：toolResult 只是 UI 文本。</strong>不对。toolResult 会进入上下文，是下一轮模型推理的输入。</li>
+					<li><strong>误解四：并行工具调用总是更好。</strong>不对。写文件、编辑文件、依赖前一步结果的工具必须控制顺序。</li>
+				</ul>
+
+				<h2>自测问题</h2>
+				<ol>
+					<li>为什么 Pi 要用 `toolCallId` 把 toolCall 和 toolResult 绑定起来？</li>
+					<li>如果模型请求一个不存在的工具，Pi 会在哪一步返回错误？</li>
+					<li>`beforeToolCall` 适合做什么？为什么不应该让模型自己决定权限？</li>
+					<li>为什么 `AgentToolResult.content` 和 `details` 要分开？</li>
+					<li>为什么 toolResult 必须放回 `currentContext.messages`？</li>
+				</ol>
+
+				<div class="next-card"><span>继续对照</span><a href="../mini-agent/index.html">用 Mini Agent 看最小实现</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

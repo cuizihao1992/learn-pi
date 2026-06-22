@@ -4,7 +4,7 @@
 	<body>
 		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Pi Agent 学习路径</strong><span>工具调用系统</span></div></div><nav><a href="../../index.html">首页</a><a href="lifecycle.html">运行流程</a><a href="sessions.html">会话</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="architecture.html">1. 架构设计</a><a href="lifecycle.html">2. 完整运行流程</a><a href="prompt-processing.html">3. 提示词处理</a><a class="active" href="tools.html">4. 工具调用</a><a href="sessions.html">5. 会话与压缩</a><a href="models.html">6. 模型接口</a><a href="frontend.html">7. 前端事件</a><a href="design-tradeoffs.html">8. 为什么这样设计</a><a href="labs.html">9. 动手练习</a><a href="../mini-agent/index.html">Mini Agent</a><a href="../mini-agent/model-api.html">模型兼容</a><a href="glossary.html">术语表</a><a href="callgraph.html">源码调用图</a><a href="faq.html">FAQ</a><a href="../cesium/index.html">Cesium 学习路径</a></aside>
+			<aside class="doc-sidebar"><a href="architecture.html">1. 架构设计</a><a href="lifecycle.html">2. 完整运行流程</a><a href="prompt-processing.html">3. 提示词处理</a><a class="active" href="tools.html">4. 工具调用</a><a href="tool-call-deep-dive.html">toolCall 深挖</a><a href="sessions.html">5. 会话与压缩</a><a href="models.html">6. 模型接口</a><a href="frontend.html">7. 前端事件</a><a href="design-tradeoffs.html">8. 为什么这样设计</a><a href="labs.html">9. 动手练习</a><a href="../mini-agent/index.html">Mini Agent</a><a href="../mini-agent/model-api.html">模型兼容</a><a href="glossary.html">术语表</a><a href="callgraph.html">源码调用图</a><a href="faq.html">FAQ</a><a href="../cesium/index.html">Cesium 学习路径</a></aside>
 			<article class="doc">
 				<p class="kicker">Part 4</p>
 				<h1>工具调用系统：模型怎么“操作电脑”</h1>
@@ -47,7 +47,7 @@
 				<h2>为什么工具结果还要发回模型</h2>
 				<p>因为 Pi Agent 不是预先写死流程。模型读完 README 后才知道要怎么编辑；编辑后看到 diff 才决定是否测试；测试后看到错误才决定是否修复。每个 toolResult 都是下一轮推理的输入。</p>
 
-				<div class="next-card"><span>下一步</span><a href="sessions.html">理解长对话如何保存和压缩</a></div>
+				<div class="next-card"><span>深挖源码闭环</span><a href="tool-call-deep-dive.html">从 toolCall 追到 toolResult</a></div>
 			</article>
 		</main>
 		<script src="../../theme.js"></script>

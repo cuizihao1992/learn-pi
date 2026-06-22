@@ -4,7 +4,7 @@
 	<body>
 		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Pi Agent 学习路径</strong><span>从提示词到工具执行</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/dashboard.html">仪表盘</a><a href="charter.html">模块宪章</a><a href="../cesium/index.html">Cesium</a><a href="../openlayers/index.html">OpenLayers</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a class="active" href="index.html">Pi 总览</a><a href="architecture.html">架构设计</a><a href="lifecycle.html">完整流程</a><a href="prompt-processing.html">提示词处理</a><a href="tools.html">工具调用</a><a href="understand-anything.html">Understand Anything</a><a href="ua-pi-agent-scan.html">UA 扫描结果</a><a href="../mini-agent/index.html">Mini Agent</a><a href="../mini-agent/model-api.html">模型兼容</a><a href="pi-debugging.html">调试手册</a></aside>
+			<aside class="doc-sidebar"><a class="active" href="index.html">Pi 总览</a><a href="architecture.html">架构设计</a><a href="lifecycle.html">完整流程</a><a href="prompt-processing.html">提示词处理</a><a href="tools.html">工具调用</a><a href="tool-call-deep-dive.html">toolCall 深挖</a><a href="understand-anything.html">Understand Anything</a><a href="ua-pi-agent-scan.html">UA 扫描结果</a><a href="../mini-agent/index.html">Mini Agent</a><a href="../mini-agent/model-api.html">模型兼容</a><a href="pi-debugging.html">调试手册</a></aside>
 			<article class="doc">
 				<p class="kicker">Pi Agent Module</p>
 				<h1>Pi Agent：读懂开源 Agent 的运行架构</h1>
@@ -32,6 +32,7 @@
 				<div class="track-grid">
 					<section><h3>主线课程</h3><p>从架构开始读，适合第一次系统学习。</p><a class="primary-link" href="architecture.html">开始学习</a></section>
 					<section><h3>完整例子</h3><p>直接看一次完整任务如何跑完。</p><a class="primary-link" href="lifecycle.html">看运行流程</a></section>
+					<section><h3>工具闭环深挖</h3><p>从 `runLoop`、`executeToolCalls`、`prepareToolCall` 追到 `toolResult` 回填。</p><a class="primary-link" href="tool-call-deep-dive.html">打穿 toolCall</a></section>
 					<section><h3>仓库理解工具</h3><p>用 Understand Anything 扫描 Pi Agent，先得到文件分布、导入热点和研究入口。</p><a class="primary-link" href="understand-anything.html">看 UA 方法</a></section>
 					<section><h3>生成结果</h3><p>查看本次对本地 Pi Agent 仓库生成的扫描摘要和下一步深挖顺序。</p><a class="primary-link" href="ua-pi-agent-scan.html">看扫描结果</a></section>
 					<section><h3>动手实现</h3><p>从零写一个 Node Mini Agent。</p><a class="primary-link" href="../mini-agent/index.html">写 Mini Agent</a></section>
