@@ -49,6 +49,7 @@
 				<h2>四、向量化和向量库</h2>
 				<p>Embedding 的作用是把文本映射到语义空间。通用知识库可以先用成熟通用 embedding 模型；医疗、法律、金融、内部术语密集的场景，可能需要领域模型、对比学习微调或查询改写来弥补语义偏差。入库时要记录 embedding 模型版本，因为模型一换，旧向量通常需要重建。</p>
 				<div class="next-card"><span>动手实验</span><a href="../../examples/mini-rag/index.html">用 Mini RAG Demo 观察完整闭环</a></div>
+				<div class="next-card"><span>评估实验</span><a href="../../examples/rag-evaluation/index.html">用 RAG Evaluation Demo 定位失败原因</a></div>
 				<div class="next-card"><span>前置实验</span><a href="../../examples/embedding-search/index.html">只观察教学版向量检索排序</a></div>
 				<div class="next-card"><span>深入理解</span><a href="embedding-rag-deep-dive.html">只打穿 Embedding 到 RAG 召回这一点</a></div>
 				<ul>
@@ -77,6 +78,7 @@
 				</ul>
 
 				<h2>六、怎么评估 RAG</h2>
+				<p>评估要拆成两层：检索层先看正确证据有没有被召回、排得是否靠前；生成层再看答案是否忠于证据、有没有遗漏关键点。可以先用 <a href="../../examples/rag-evaluation/index.html">RAG Evaluation Demo</a> 观察好样例、召回错误和答案编造三种情况。</p>
 				<table class="compare-table">
 					<thead><tr><th>层级</th><th>指标</th><th>要看什么</th></tr></thead>
 					<tbody>

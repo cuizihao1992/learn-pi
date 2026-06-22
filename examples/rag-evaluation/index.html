@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>RAG Evaluation Demo | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<style>
+			.eval-lab { display: grid; gap: 18px; }
+			.eval-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end; }
+			.eval-controls label { display: grid; gap: 8px; color: var(--muted); font-weight: 900; }
+			.eval-controls select { width: 100%; min-height: 52px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); padding: 12px 14px; font: inherit; font-size: 16px; }
+			.eval-controls button { min-height: 44px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--teal); font: inherit; font-weight: 900; cursor: pointer; padding: 10px 12px; }
+			.eval-controls button:hover { background: var(--teal-soft); }
+			.metric-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+			.metric-card { border: 1px solid var(--line); border-radius: 8px; background: var(--section-bg); padding: 14px; min-height: 112px; }
+			.metric-card strong, .metric-card span { display: block; }
+			.metric-card strong { font-size: 24px; margin-top: 6px; color: var(--teal); }
+			.metric-card span { color: var(--muted); font-size: 13px; }
+			.case-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+			.panel { border: 1px solid var(--line); border-radius: 8px; background: var(--section-bg); padding: 16px; display: grid; gap: 10px; }
+			.evidence-list { display: grid; gap: 10px; }
+			.evidence-card { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); padding: 12px; display: grid; gap: 6px; }
+			.evidence-card.hit { border-color: var(--teal); box-shadow: inset 5px 0 0 var(--teal); }
+			.evidence-card.miss { opacity: 0.78; }
+			.meta-row { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 13px; font-weight: 900; }
+			.badge { display: inline-block; border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; color: var(--teal); font-size: 12px; font-weight: 900; }
+			.badge.warn { color: #b45309; }
+			.badge.bad { color: #b91c1c; }
+			.answer-line { margin: 0; }
+			.answer-line mark { background: var(--teal-soft); color: var(--ink); border-radius: 4px; padding: 1px 4px; }
+			@media (max-width: 900px) { .metric-grid, .case-grid { grid-template-columns: 1fr; } }
+			@media (max-width: 700px) { .eval-controls { grid-template-columns: 1fr; } }
+		</style>
+	</head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>RAG Evaluation Demo</strong><span>评估召回与答案忠实度</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/lab-index.html">实验室</a><a href="../mini-rag/index.html">Mini RAG</a><a href="../../modules/llm-agent-interview/rag-pipeline.html">RAG 工程</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="../../pages/lab-index.html">实验室入口</a><a href="../embedding-search/index.html">Embedding Search</a><a href="../mini-rag/index.html">Mini RAG Demo</a><a class="active" href="index.html">RAG 评估样例</a><a href="../../modules/llm-agent-interview/rag-pipeline.html">RAG 数据工程</a><a href="../../modules/llm-agent-interview/interview-playbook.html">面试答题模板</a></aside>
+			<article class="doc">
+				<p class="kicker">Evaluation Lab</p>
+				<h1>怎么判断一个 RAG 系统是不是真的好</h1>
+				<p class="lead">RAG 不能只看“答案像不像”。这个实验把评估拆成两层：检索层看正确证据有没有进 topK，生成层看答案是否只使用证据、有没有遗漏、有没有编造。</p>
+
+				<section class="eval-lab">
+					<div class="eval-controls">
+						<label>选择评估样例
+							<select id="caseSelect" aria-label="选择评估样例"></select>
+						</label>
+						<button id="runButton" type="button">运行评估</button>
+					</div>
+				</section>
+
+				<h2>一、核心指标</h2>
+				<div id="metricGrid" class="metric-grid" aria-live="polite"></div>
+
+				<h2>二、样例详情</h2>
+				<div class="case-grid">
+					<section class="panel">
+						<h3>标准问题与期望</h3>
+						<div id="caseSpec"></div>
+					</section>
+					<section class="panel">
+						<h3>生成答案检查</h3>
+						<div id="answerCheck"></div>
+					</section>
+				</div>
+
+				<h2>三、TopK 召回结果</h2>
+				<div id="evidenceList" class="evidence-list" aria-live="polite"></div>
+
+				<h2>四、评估逻辑</h2>
+				<pre><code>Retrieval evaluation:
+expectedEvidence = 标注的正确证据 ID
+retrievedTopK = 系统召回的证据 ID
+Recall@K = expectedEvidence 有多少出现在 retrievedTopK 中
+MRR = 第一个正确证据排在第几名，越靠前越好
+
+Generation evaluation:
+supportedClaims = 答案中能被证据支持的关键断言
+unsupportedClaims = 答案中证据没有支持的断言
+missingClaims = 标准答案要求但生成答案遗漏的断言
+faithfulness = supported / (supported + unsupported)
+completeness = coveredExpectedClaims / expectedClaims</code></pre>
+
+				<h2>五、学习重点</h2>
+				<ul>
+					<li>检索没召回正确证据时，生成模型再强也容易答错。</li>
+					<li>检索召回了正确证据，答案仍可能不忠实，比如混入常识、过度推断或漏掉关键条件。</li>
+					<li>RAG 评估集要保存问题、期望证据、标准要点、坏答案案例和人工判定原因。</li>
+					<li>线上优化时要能定位问题来自 parsing、chunk、embedding、topK、rerank、prompt 还是模型。</li>
+				</ul>
+				<div class="next-card"><span>先观察闭环</span><a href="../mini-rag/index.html">回到 Mini RAG Demo</a></div>
+				<div class="next-card"><span>回到课程</span><a href="../../modules/llm-agent-interview/rag-pipeline.html">继续学 RAG 数据工程</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			const cases = [
+				{
+					id: "rate-stock",
+					title: "好样例：正确证据被召回，答案忠实",
+					question: "为什么加息会影响股票估值？",
+					expectedEvidence: ["F1"],
+					expectedClaims: ["加息提高折现率", "未来现金流现值下降", "高久期股票更承压"],
+					retrieved: [
+						{ id: "F1", source: "经济金融课 / 利率折现", text: "利率上升会提高折现率，未来现金流折回今天的现值下降，因此高久期股票和成长股估值更容易承压。" },
+						{ id: "R1", source: "RAG 数据工程 / 检索闭环", text: "RAG 的核心不是向量库本身，而是数据清洗、语义切片、混合检索、rerank、引用回答和评估反馈组成的闭环。" },
+						{ id: "M1", source: "LLM 面试 / 记忆机制", text: "长期记忆更像可检索的用户画像和历史事实，RAG 更像外部知识库检索。" },
+					],
+					answer: "加息会提高折现率，未来现金流折回今天的现值会下降，所以高久期股票和成长股估值更容易承压。[F1]",
+					supportedClaims: ["加息提高折现率", "未来现金流现值下降", "高久期股票更承压"],
+					unsupportedClaims: [],
+					missingClaims: [],
+				},
+				{
+					id: "wrong-retrieval",
+					title: "坏样例：召回错了，答案只能胡乱推断",
+					question: "Cesium 的 DrawCommand 做什么？",
+					expectedEvidence: ["C1"],
+					expectedClaims: ["DrawCommand 是绘制指令抽象", "包含 shader、vertex array、uniform、render state"],
+					retrieved: [
+						{ id: "A1", source: "Mini Agent / 工具调用", text: "Agent Loop 中模型返回 toolCall，运行时执行工具，并把 toolResult 作为新消息回填给模型。" },
+						{ id: "R2", source: "RAG 数据工程 / 失败模式", text: "RAG 效果差可能来自 chunk 切断语义、embedding 域不匹配、topK 太小、rerank 缺失或证据噪音过多。" },
+						{ id: "F1", source: "经济金融课 / 利率折现", text: "利率上升会提高折现率，未来现金流折回今天的现值下降。" },
+					],
+					answer: "DrawCommand 大概是 Agent 调用工具后返回给模型的结果，用来记录任务执行状态。[A1]",
+					supportedClaims: [],
+					unsupportedClaims: ["DrawCommand 是工具调用结果", "DrawCommand 用来记录任务执行状态"],
+					missingClaims: ["DrawCommand 是绘制指令抽象", "包含 shader、vertex array、uniform、render state"],
+				},
+				{
+					id: "faithfulness-risk",
+					title: "中间样例：召回对了，但答案编造了一部分",
+					question: "RAG 为什么不能只靠向量库？",
+					expectedEvidence: ["R1", "R2"],
+					expectedClaims: ["RAG 包括数据清洗、切片、检索、重排、引用和评估", "失败可能来自 chunk、embedding、topK、rerank、prompt"],
+					retrieved: [
+						{ id: "R1", source: "RAG 数据工程 / 检索闭环", text: "RAG 的核心不是向量库本身，而是数据清洗、语义切片、混合检索、rerank、引用回答和评估反馈组成的闭环。" },
+						{ id: "R2", source: "RAG 数据工程 / 失败模式", text: "RAG 效果差可能来自 chunk 切断语义、embedding 域不匹配、topK 太小、rerank 缺失、证据噪音过多或 prompt 没有限制引用。" },
+						{ id: "A1", source: "Mini Agent / 工具调用", text: "Agent Loop 中模型返回 toolCall，运行时执行工具，并把 toolResult 回填给模型。" },
+					],
+					answer: "RAG 不能只靠向量库，因为还需要数据清洗、切片、混合检索、重排、引用和评估。[R1][R2] 另外所有 RAG 系统都必须微调 embedding 模型，否则一定无法上线。",
+					supportedClaims: ["RAG 包括数据清洗、切片、检索、重排、引用和评估", "失败可能来自 chunk、embedding、topK、rerank、prompt"],
+					unsupportedClaims: ["所有 RAG 系统都必须微调 embedding 模型"],
+					missingClaims: [],
+				},
+			];
+			function percent(value) {
+				return `${Math.round(value * 100)}%`;
+			}
+			function escapeHtml(value) {
+				return value.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+			}
+			function evaluate(testCase) {
+				const retrievedIds = testCase.retrieved.map((item) => item.id);
+				const hits = testCase.expectedEvidence.filter((id) => retrievedIds.includes(id));
+				const firstHitIndex = retrievedIds.findIndex((id) => testCase.expectedEvidence.includes(id));
+				const recall = hits.length / testCase.expectedEvidence.length;
+				const mrr = firstHitIndex >= 0 ? 1 / (firstHitIndex + 1) : 0;
+				const supported = testCase.supportedClaims.length;
+				const unsupported = testCase.unsupportedClaims.length;
+				const faithfulness = supported + unsupported === 0 ? 0 : supported / (supported + unsupported);
+				const completeness = testCase.expectedClaims.length === 0 ? 0 : (testCase.expectedClaims.length - testCase.missingClaims.length) / testCase.expectedClaims.length;
+				return { recall, mrr, faithfulness, completeness, hits };
+			}
+			function renderMetrics(metrics) {
+				const items = [
+					["Recall@3", percent(metrics.recall), "正确证据进入 top3 的比例。"],
+					["MRR", metrics.mrr.toFixed(2), "第一个正确证据越靠前越高。"],
+					["Faithfulness", percent(metrics.faithfulness), "答案断言被证据支持的比例。"],
+					["Completeness", percent(metrics.completeness), "标准要点被覆盖的比例。"],
+				];
+				document.querySelector("#metricGrid").innerHTML = items.map(([name, value, desc]) => `<section class="metric-card"><span>${name}</span><strong>${value}</strong><span>${desc}</span></section>`).join("");
+			}
+			function renderCaseSpec(testCase, metrics) {
+				document.querySelector("#caseSpec").innerHTML = `
+					<p><strong>问题：</strong>${escapeHtml(testCase.question)}</p>
+					<p><strong>期望证据：</strong>${testCase.expectedEvidence.map((id) => `<span class="badge">${id}</span>`).join(" ")}</p>
+					<p><strong>召回命中：</strong>${metrics.hits.length ? metrics.hits.map((id) => `<span class="badge">${id}</span>`).join(" ") : '<span class="badge bad">无命中</span>'}</p>
+					<p><strong>标准要点：</strong></p>
+					<ul>${testCase.expectedClaims.map((claim) => `<li>${escapeHtml(claim)}</li>`).join("")}</ul>
+				`;
+			}
+			function renderAnswerCheck(testCase) {
+				const unsupported = testCase.unsupportedClaims.length ? testCase.unsupportedClaims.map((claim) => `<li><span class="badge bad">unsupported</span> ${escapeHtml(claim)}</li>`).join("") : '<li><span class="badge">none</span> 没有发现无证据断言。</li>';
+				const missing = testCase.missingClaims.length ? testCase.missingClaims.map((claim) => `<li><span class="badge warn">missing</span> ${escapeHtml(claim)}</li>`).join("") : '<li><span class="badge">none</span> 没有遗漏标准要点。</li>';
+				document.querySelector("#answerCheck").innerHTML = `
+					<p class="answer-line"><strong>生成答案：</strong>${escapeHtml(testCase.answer)}</p>
+					<p><strong>证据支持的断言：</strong>${testCase.supportedClaims.length ? testCase.supportedClaims.map((claim) => `<mark>${escapeHtml(claim)}</mark>`).join(" ") : "无"}</p>
+					<p><strong>无证据断言：</strong></p><ul>${unsupported}</ul>
+					<p><strong>遗漏要点：</strong></p><ul>${missing}</ul>
+				`;
+			}
+			function renderEvidence(testCase) {
+				document.querySelector("#evidenceList").innerHTML = testCase.retrieved.map((item, index) => {
+					const hit = testCase.expectedEvidence.includes(item.id);
+					return `<section class="evidence-card ${hit ? "hit" : "miss"}"><div class="meta-row"><span>${index + 1}. ${item.id} · ${item.source}</span><span>${hit ? '<span class="badge">expected</span>' : '<span class="badge warn">distractor</span>'}</span></div><p>${escapeHtml(item.text)}</p></section>`;
+				}).join("");
+			}
+			function runEvaluation() {
+				const selected = document.querySelector("#caseSelect").value;
+				const testCase = cases.find((item) => item.id === selected) || cases[0];
+				const metrics = evaluate(testCase);
+				renderMetrics(metrics);
+				renderCaseSpec(testCase, metrics);
+				renderAnswerCheck(testCase);
+				renderEvidence(testCase);
+			}
+			document.querySelector("#caseSelect").innerHTML = cases.map((item) => `<option value="${item.id}">${item.title}</option>`).join("");
+			document.querySelector("#runButton").addEventListener("click", runEvaluation);
+			document.querySelector("#caseSelect").addEventListener("change", runEvaluation);
+			runEvaluation();
+		</script>
+	</body>
+</html>
