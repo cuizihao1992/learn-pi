@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Pi Agent UA 扫描结果 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Pi Agent 学习路径</strong><span>Understand Anything 扫描摘要</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">Pi Agent</a><a href="understand-anything.html">Understand Anything</a><a href="callgraph.html">调用图</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">Pi 总览</a><a href="architecture.html">架构设计</a><a href="lifecycle.html">完整流程</a><a href="tools.html">工具调用</a><a href="models.html">模型接口</a><a href="frontend.html">前端事件</a><a href="callgraph.html">源码调用图</a><a href="understand-anything.html">Understand Anything</a><a class="active" href="ua-pi-agent-scan.html">UA 扫描结果</a><a href="../mini-agent/index.html">Mini Agent</a></aside>
+			<article class="doc">
+				<p class="kicker">Generated Analysis</p>
+				<h1>Pi Agent 的 Understand Anything 扫描摘要</h1>
+				<p class="lead">这页记录本次对本地 Pi Agent 仓库运行 Understand Anything 确定性脚本得到的结果。它不是完整 `/understand` 多代理知识图谱，但已经足够指导下一步源码深挖：先看入口热点，再沿着 toolCall、provider、session、TUI 事件链路推进。</p>
+
+				<h2>扫描范围</h2>
+				<table class="compare-table">
+					<thead><tr><th>指标</th><th>结果</th></tr></thead>
+					<tbody>
+						<tr><td>本地仓库</td><td><code>C:\Users\Administrator\Documents\Codex\2026-06-16\pi-agent-pi-agent\work\pi</code></td></tr>
+						<tr><td>扫描文件数</td><td>827</td></tr>
+						<tr><td>估算复杂度</td><td>very-large</td></tr>
+						<tr><td>核心包结构提取</td><td>770 个 `packages/*` 文件，跳过 0 个</td></tr>
+						<tr><td>内部导入关系</td><td>582 个文件存在内部 import，共 1980 条导入边</td></tr>
+					</tbody>
+				</table>
+
+				<h2>文件类型分布</h2>
+				<table class="compare-table">
+					<thead><tr><th>类别</th><th>数量</th><th>含义</th></tr></thead>
+					<tbody>
+						<tr><td>code</td><td>700</td><td>主要源码文件，绝大多数是 TypeScript。</td></tr>
+						<tr><td>docs</td><td>82</td><td>README、AGENTS、包内文档和说明。</td></tr>
+						<tr><td>config</td><td>28</td><td>package、tsconfig、GitHub workflow、工具配置。</td></tr>
+						<tr><td>script</td><td>8</td><td>构建、发布、统计和测试辅助脚本。</td></tr>
+						<tr><td>infra</td><td>7</td><td>CI、自动化或部署相关文件。</td></tr>
+						<tr><td>markup</td><td>2</td><td>HTML / markup 文件。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>语言分布</h2>
+				<table class="compare-table">
+					<thead><tr><th>语言</th><th>数量</th><th>判断</th></tr></thead>
+					<tbody>
+						<tr><td>TypeScript</td><td>668</td><td>主语言，源码深挖应优先围绕 TS 文件。</td></tr>
+						<tr><td>Markdown</td><td>82</td><td>文档对理解模块边界有价值，应先读 README / AGENTS。</td></tr>
+						<tr><td>JSON</td><td>25</td><td>包配置、schema、测试数据。</td></tr>
+						<tr><td>JavaScript</td><td>16</td><td>发布、构建、统计脚本。</td></tr>
+						<tr><td>YAML</td><td>10</td><td>GitHub workflow 和 issue template。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>包分布</h2>
+				<table class="compare-table">
+					<thead><tr><th>包</th><th>文件数</th><th>研究意义</th></tr></thead>
+					<tbody>
+						<tr><td><code>packages/coding-agent</code></td><td>496</td><td>最大核心包，包含 AgentSession、工具、模式、扩展、资源加载和交互入口。</td></tr>
+						<tr><td><code>packages/ai</code></td><td>147</td><td>模型 provider 适配层，研究 OpenAI / Anthropic / Codex Responses 等接口时优先看这里。</td></tr>
+						<tr><td><code>packages/tui</code></td><td>72</td><td>终端 UI 层，研究 AgentEvent 如何展示时看这里。</td></tr>
+						<tr><td><code>packages/agent</code></td><td>55</td><td>更抽象的 agent 协议、状态和运行循环相关层。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>导入热点文件</h2>
+				<p>导入数量高不等于最重要，但通常说明文件承担协调职责，适合作为阅读入口。</p>
+				<table class="compare-table">
+					<thead><tr><th>文件</th><th>内部导入数</th><th>优先研究点</th></tr></thead>
+					<tbody>
+						<tr><td><code>packages/coding-agent/src/modes/interactive/interactive-mode.ts</code></td><td>61</td><td>交互模式入口，连接用户输入、事件监听和 TUI 展示。</td></tr>
+						<tr><td><code>packages/coding-agent/src/main.ts</code></td><td>32</td><td>CLI 主入口，适合追踪启动、模式选择和服务创建。</td></tr>
+						<tr><td><code>packages/coding-agent/src/core/agent-session.ts</code></td><td>26</td><td>会话核心，连接 prompt、工具、模型、压缩、事件。</td></tr>
+						<tr><td><code>packages/coding-agent/src/core/sdk.ts</code></td><td>18</td><td>SDK 层入口，适合研究外部如何嵌入 Agent 能力。</td></tr>
+						<tr><td><code>packages/ai/src/providers/register-builtins.ts</code></td><td>12</td><td>内置模型 provider 注册入口。</td></tr>
+						<tr><td><code>packages/ai/src/providers/openai-completions.ts</code></td><td>12</td><td>OpenAI Chat Completions 兼容实现。</td></tr>
+						<tr><td><code>packages/ai/src/providers/anthropic.ts</code></td><td>11</td><td>Anthropic Messages 兼容实现。</td></tr>
+						<tr><td><code>packages/coding-agent/src/core/tools/bash.ts</code></td><td>12</td><td>命令执行工具，适合研究权限、参数和结果回填。</td></tr>
+						<tr><td><code>packages/coding-agent/src/core/tools/read.ts</code></td><td>14</td><td>读文件工具，适合作为第一个工具执行样例。</td></tr>
+						<tr><td><code>packages/coding-agent/src/core/tools/edit.ts</code></td><td>10</td><td>编辑工具，适合研究复杂工具的校验和失败模式。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>下一步深挖顺序</h2>
+				<ol>
+					<li><strong>启动入口：</strong>从 `packages/coding-agent/src/main.ts` 看如何创建 runtime、services 和 session。</li>
+					<li><strong>交互入口：</strong>读 `interactive-mode.ts`，确认用户输入如何变成 `AgentSession.prompt()`。</li>
+					<li><strong>会话核心：</strong>读 `agent-session.ts`，标出 prompt、run、event、compaction、tool registry 的边界。</li>
+					<li><strong>模型适配：</strong>读 `packages/ai/src/providers/openai-completions.ts` 和 `anthropic.ts`，对照 Mini Agent 的 OpenAI-compatible 页面。</li>
+					<li><strong>工具闭环：</strong>从 `read.ts` 开始，再扩展到 `bash.ts` 和 `edit.ts`，整理 toolCall 到 toolResult 的深挖页。</li>
+				</ol>
+
+				<h2>本次生成的本地文件</h2>
+				<pre><code>C:\Users\Administrator\Documents\Codex\2026-06-16\pi-agent-pi-agent\work\pi\.understand-anything\.understandignore
+C:\Users\Administrator\Documents\Codex\2026-06-16\pi-agent-pi-agent\work\pi\.understand-anything\intermediate\scan-raw.json
+C:\Users\Administrator\Documents\Codex\2026-06-16\pi-agent-pi-agent\work\pi\.understand-anything\intermediate\import-map.json
+C:\Users\Administrator\Documents\Codex\2026-06-16\pi-agent-pi-agent\work\pi\.understand-anything\intermediate\structure-core.json</code></pre>
+
+				<div class="next-card"><span>继续深挖</span><a href="callgraph.html">回到源码调用图</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

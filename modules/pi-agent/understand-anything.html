@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>用 Understand Anything 研究 Pi Agent | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Pi Agent 学习路径</strong><span>Understand Anything 仓库理解方法</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">Pi Agent</a><a href="callgraph.html">调用图</a><a href="../mini-agent/index.html">Mini Agent</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">Pi 总览</a><a href="architecture.html">架构设计</a><a href="lifecycle.html">完整流程</a><a href="prompt-processing.html">提示词处理</a><a href="tools.html">工具调用</a><a href="sessions.html">会话与压缩</a><a href="models.html">模型接口</a><a href="frontend.html">前端事件</a><a href="callgraph.html">源码调用图</a><a class="active" href="understand-anything.html">Understand Anything</a><a href="ua-pi-agent-scan.html">UA 扫描结果</a><a href="../mini-agent/index.html">Mini Agent</a></aside>
+			<article class="doc">
+				<p class="kicker">Repository Understanding</p>
+				<h1>用 Understand Anything 研究 Pi Agent</h1>
+				<p class="lead">Understand Anything 是一个代码库理解工具。它会扫描仓库文件、导入关系和代码结构，并生成 `.understand-anything/knowledge-graph.json` 供交互式图谱使用。对 Pi Agent 这类多包 TypeScript 项目，它适合先建立仓库地图，再围绕 toolCall、模型 provider、session、前端事件流做深挖。</p>
+
+				<h2>它解决什么问题</h2>
+				<table class="compare-table">
+					<thead><tr><th>问题</th><th>Understand Anything 的作用</th><th>人工仍要判断什么</th></tr></thead>
+					<tbody>
+						<tr><td>不知道从哪里读源码</td><td>列出文件、包、语言、导入热点和架构层级。</td><td>哪些链路对学习目标最重要。</td></tr>
+						<tr><td>调用关系分散</td><td>提取 import map、结构节点、函数类信息。</td><td>导入关系不等于真实运行链路，需要结合入口和事件。</td></tr>
+						<tr><td>仓库太大</td><td>把 800+ 文件压成可检索图谱。</td><td>是否先限定到 `packages/coding-agent`、`packages/ai` 等子域。</td></tr>
+						<tr><td>想问“这个功能在哪里”</td><td>通过 dashboard / chat / explain 辅助定位。</td><td>答案要回到源码验证，不能只信摘要。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>安装与运行</h2>
+				<p>Windows 安装到 Pi 平台：</p>
+				<pre><code>iwr -useb https://raw.githubusercontent.com/Egonex-AI/Understand-Anything/main/install.ps1 | iex</code></pre>
+				<p>非交互安装可以显式指定平台：</p>
+				<pre><code>$script = Join-Path $env:TEMP 'understand-anything-install.ps1'
+Invoke-WebRequest -UseBasicParsing `
+  -Uri 'https://raw.githubusercontent.com/Egonex-AI/Understand-Anything/main/install.ps1' `
+  -OutFile $script
+powershell -ExecutionPolicy Bypass -File $script -Platform pi</code></pre>
+				<p>进入 Pi Agent 仓库后，完整技能流程是：</p>
+				<pre><code>/understand --language zh
+/understand-dashboard
+/understand-chat Pi Agent 的 toolCall 到 toolResult 是怎么流转的？
+/understand-explain packages/coding-agent/src/core/agent-session.ts</code></pre>
+
+				<h2>本次实际运行情况</h2>
+				<p>当前 Codex 会话中，Understand Anything 已安装到本机，但新技能不能在当前会话热加载，所以没有直接执行完整 `/understand` 多代理流程。已直接运行插件内的确定性脚本，生成了 Pi Agent 的扫描、导入关系和结构提取文件。</p>
+				<table class="compare-table">
+					<thead><tr><th>产物</th><th>路径</th><th>作用</th></tr></thead>
+					<tbody>
+						<tr><td>扫描结果</td><td><code>C:\Users\Administrator\Documents\Codex\2026-06-16\pi-agent-pi-agent\work\pi\.understand-anything\intermediate\scan-raw.json</code></td><td>文件清单、语言、类型、行数、复杂度。</td></tr>
+						<tr><td>导入关系</td><td><code>C:\Users\Administrator\Documents\Codex\2026-06-16\pi-agent-pi-agent\work\pi\.understand-anything\intermediate\import-map.json</code></td><td>827 个文件的内部 import map。</td></tr>
+						<tr><td>核心结构</td><td><code>C:\Users\Administrator\Documents\Codex\2026-06-16\pi-agent-pi-agent\work\pi\.understand-anything\intermediate\structure-core.json</code></td><td>`packages/*` 核心源码结构提取。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>用它研究 Pi Agent 的正确流程</h2>
+				<ol>
+					<li>先运行仓库级扫描，确认项目规模、语言、包分布。</li>
+					<li>再看导入热点，找到入口和协调器文件。</li>
+					<li>围绕一个问题深挖，不要试图一次读完整仓库。</li>
+					<li>把 Understand Anything 的图谱结果和手工调用图互相校验。</li>
+					<li>最终沉淀成 learn-pi 的专题页，而不是只保留工具输出。</li>
+				</ol>
+
+				<h2>最适合 Pi Agent 的五个研究问题</h2>
+				<div class="lesson-grid">
+					<section><h3>toolCall 到 toolResult</h3><p>模型请求工具后，运行时如何校验、执行、回填结果。</p><a class="primary-link" href="tools.html">看工具调用</a></section>
+					<section><h3>模型 provider 适配</h3><p>OpenAI、Anthropic、自研模型如何进入统一消息流。</p><a class="primary-link" href="models.html">看模型接口</a></section>
+					<section><h3>AgentSession</h3><p>会话如何保存消息、工具、压缩、事件和运行时服务。</p><a class="primary-link" href="sessions.html">看会话与压缩</a></section>
+					<section><h3>前端事件流</h3><p>AgentEvent 如何变成终端 UI 可展示的状态。</p><a class="primary-link" href="frontend.html">看前端事件</a></section>
+					<section><h3>Mini Agent 对照</h3><p>用最小 Agent Loop 反推 Pi 的工程化复杂度。</p><a class="primary-link" href="../mini-agent/index.html">看 Mini Agent</a></section>
+				</div>
+
+				<div class="next-card"><span>本次生成结果</span><a href="ua-pi-agent-scan.html">查看 Pi Agent 扫描摘要</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>
