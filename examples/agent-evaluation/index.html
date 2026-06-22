@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Agent Evaluation Demo | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<style>
+			.agent-eval { display: grid; gap: 18px; }
+			.eval-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end; }
+			.eval-controls label { display: grid; gap: 8px; color: var(--muted); font-weight: 900; }
+			.eval-controls select { width: 100%; min-height: 52px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); padding: 12px 14px; font: inherit; font-size: 16px; }
+			.eval-controls button { min-height: 44px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--teal); font: inherit; font-weight: 900; cursor: pointer; padding: 10px 12px; }
+			.eval-controls button:hover { background: var(--teal-soft); }
+			.metric-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+			.metric-card { border: 1px solid var(--line); border-radius: 8px; background: var(--section-bg); padding: 14px; min-height: 118px; }
+			.metric-card span, .metric-card strong { display: block; }
+			.metric-card span { color: var(--muted); font-size: 13px; }
+			.metric-card strong { color: var(--teal); font-size: 22px; margin: 8px 0 4px; }
+			.case-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+			.panel { border: 1px solid var(--line); border-radius: 8px; background: var(--section-bg); padding: 16px; display: grid; gap: 10px; }
+			.trace-list { display: grid; gap: 10px; }
+			.trace-card { border: 1px solid var(--line); border-radius: 8px; background: var(--section-bg); padding: 14px; display: grid; gap: 8px; }
+			.trace-card.good { border-color: var(--teal); box-shadow: inset 5px 0 0 var(--teal); }
+			.trace-card.bad { box-shadow: inset 5px 0 0 #b91c1c; }
+			.meta-row { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 13px; font-weight: 900; }
+			.badge { display: inline-block; border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; color: var(--teal); font-size: 12px; font-weight: 900; }
+			.badge.warn { color: #b45309; }
+			.badge.bad { color: #b91c1c; }
+			.arg-table { width: 100%; border-collapse: collapse; }
+			.arg-table th, .arg-table td { border: 1px solid var(--line); padding: 8px; text-align: left; vertical-align: top; }
+			.arg-table th { color: var(--muted); }
+			@media (max-width: 1000px) { .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .case-grid { grid-template-columns: 1fr; } }
+			@media (max-width: 700px) { .eval-controls, .metric-grid { grid-template-columns: 1fr; } }
+		</style>
+	</head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Agent Evaluation Demo</strong><span>判断 Agent 是否真的会用工具</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/lab-index.html">实验室</a><a href="../../modules/mini-agent/agent-loop-deep-dive.html">Agent Loop</a><a href="../../modules/pi-agent/tool-call-deep-dive.html">Pi toolCall</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="../../pages/lab-index.html">实验室入口</a><a href="../mini-agent-node/mini-agent.mjs">Mini Agent Node</a><a class="active" href="index.html">Agent Evaluation Demo</a><a href="../../modules/mini-agent/agent-loop-deep-dive.html">Agent Loop 深挖</a><a href="../../modules/pi-agent/tool-call-deep-dive.html">Pi toolCall 深挖</a><a href="../../modules/mini-agent/practical-path.html">实战路线</a></aside>
+			<article class="doc">
+				<p class="kicker">Evaluation Lab</p>
+				<h1>怎么判断 Agent 是否真的会用工具</h1>
+				<p class="lead">Agent 评估不能只看最终回答是否流畅。一个可用 Agent 至少要选对工具、填对参数、执行后把 toolResult 用进最终回答，并且避免多余调用。这个实验把一次 Agent 运行拆成可打分的 trace。</p>
+
+				<section class="agent-eval">
+					<div class="eval-controls">
+						<label>选择评估样例
+							<select id="caseSelect" aria-label="选择评估样例"></select>
+						</label>
+						<button id="runButton" type="button">运行评估</button>
+					</div>
+				</section>
+
+				<h2>一、核心指标</h2>
+				<div id="metricGrid" class="metric-grid" aria-live="polite"></div>
+
+				<h2>二、任务与期望</h2>
+				<div class="case-grid">
+					<section class="panel">
+						<h3>标准任务</h3>
+						<div id="caseSpec"></div>
+					</section>
+					<section class="panel">
+						<h3>最终回答检查</h3>
+						<div id="answerCheck"></div>
+					</section>
+				</div>
+
+				<h2>三、Agent Trace</h2>
+				<div id="traceList" class="trace-list" aria-live="polite"></div>
+
+				<h2>四、评估逻辑</h2>
+				<pre><code>Tool Selection Accuracy:
+expectedTools 与 actual tool_calls 的工具名是否匹配。
+
+Argument Accuracy:
+工具参数是否满足任务，例如 path 是否是 README.md，command 是否是测试命令。
+
+Tool Result Grounding:
+最终回答是否引用或使用了 toolResult 中的关键信息。
+
+Step Efficiency:
+是否用尽量少的必要步骤完成任务，是否出现多余工具调用。
+
+Final Answer Correctness:
+最终回答是否完成用户任务，并说明观察、修改或验证结果。</code></pre>
+
+				<h2>五、学习重点</h2>
+				<ul>
+					<li>Agent 的错误常常不是“模型不会说”，而是工具选择、参数、执行、回填、总结中的某一环断了。</li>
+					<li>只看 final answer 会掩盖问题，必须保存 toolCall、toolResult、错误和最终回答组成的 trace。</li>
+					<li>真实项目里要把这些 trace 做成评测集，覆盖读文件、改文件、运行测试、拒绝危险操作等场景。</li>
+					<li>Pi Agent 的源码调试也可以按这个表定位：先看模型有没有 toolCall，再看工具有没有执行，再看 toolResult 有没有回填。</li>
+				</ul>
+				<div class="next-card"><span>理解运行闭环</span><a href="../../modules/mini-agent/agent-loop-deep-dive.html">回到 Agent Loop 深挖</a></div>
+				<div class="next-card"><span>对照真实源码</span><a href="../../modules/pi-agent/tool-call-deep-dive.html">看 Pi toolCall 到 toolResult</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			const cases = [
+				{
+					id: "good-readme",
+					title: "好样例：读取 README 并基于结果总结",
+					task: "读取 README.md 并总结项目做什么。",
+					expectedTools: ["readFile"],
+					expectedArgs: { readFile: { path: "README.md" } },
+					expectedClaims: ["说明项目用途", "提到 README 中的关键信息", "说明已读取文件"],
+					trace: [
+						{ role: "assistant", type: "toolCall", tool: "readFile", args: { path: "README.md" }, status: "ok" },
+						{ role: "tool", type: "toolResult", tool: "readFile", result: "README.md: Mini Agent MVP。这个示例演示 toolCall 解析、工具执行、toolResult 回填和最终回答。", status: "ok" },
+						{ role: "assistant", type: "final", answer: "我已读取 README.md。这个项目是 Mini Agent MVP，用来演示 toolCall 解析、工具执行、toolResult 回填和最终回答。", status: "ok" },
+					],
+					groundedClaims: ["Mini Agent MVP", "toolCall 解析", "toolResult 回填"],
+					unsupportedClaims: [],
+					missingClaims: [],
+					extraCalls: 0,
+				},
+				{
+					id: "wrong-tool",
+					title: "坏样例：概念问题却乱调用文件工具",
+					task: "解释 toolResult 为什么要回填给模型。",
+					expectedTools: [],
+					expectedArgs: {},
+					expectedClaims: ["toolResult 是下一轮模型推理的输入", "没有工具结果模型无法知道真实执行结果"],
+					trace: [
+						{ role: "assistant", type: "toolCall", tool: "readFile", args: { path: "package.json" }, status: "bad" },
+						{ role: "tool", type: "toolResult", tool: "readFile", result: "package.json 内容与问题无关。", status: "bad" },
+						{ role: "assistant", type: "final", answer: "toolResult 需要回填，因为 package.json 里有脚本。", status: "bad" },
+					],
+					groundedClaims: [],
+					unsupportedClaims: ["package.json 里有脚本所以要回填"],
+					missingClaims: ["toolResult 是下一轮模型推理的输入", "没有工具结果模型无法知道真实执行结果"],
+					extraCalls: 1,
+				},
+				{
+					id: "bad-args",
+					title: "坏样例：工具选对了，但参数错了",
+					task: "读取 README.md 并总结项目做什么。",
+					expectedTools: ["readFile"],
+					expectedArgs: { readFile: { path: "README.md" } },
+					expectedClaims: ["说明项目用途", "说明已读取文件"],
+					trace: [
+						{ role: "assistant", type: "toolCall", tool: "readFile", args: { path: "README" }, status: "bad" },
+						{ role: "tool", type: "toolResult", tool: "readFile", result: "Tool error: file not found: README", status: "bad" },
+						{ role: "assistant", type: "final", answer: "项目应该是一个 Agent 示例，但我没有读取到 README.md。", status: "bad" },
+					],
+					groundedClaims: ["没有读取到 README.md"],
+					unsupportedClaims: ["项目应该是一个 Agent 示例"],
+					missingClaims: ["说明项目用途"],
+					extraCalls: 0,
+				},
+				{
+					id: "ungrounded-final",
+					title: "中间样例：工具结果正确，但最终回答没用好",
+					task: "运行 npm test 并总结验证结果。",
+					expectedTools: ["runCommand"],
+					expectedArgs: { runCommand: { command: "npm test" } },
+					expectedClaims: ["说明测试是否通过", "引用命令输出"],
+					trace: [
+						{ role: "assistant", type: "toolCall", tool: "runCommand", args: { command: "npm test" }, status: "ok" },
+						{ role: "tool", type: "toolResult", tool: "runCommand", result: "Tests: 12 passed, 0 failed. Duration: 1.4s.", status: "ok" },
+						{ role: "assistant", type: "final", answer: "验证已经完成，项目看起来没问题。", status: "bad" },
+					],
+					groundedClaims: [],
+					unsupportedClaims: ["项目看起来没问题"],
+					missingClaims: ["12 passed", "0 failed", "Duration: 1.4s"],
+					extraCalls: 0,
+				},
+			];
+			function escapeHtml(value) {
+				return String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+			}
+			function yesNo(value) {
+				return value ? "通过" : "失败";
+			}
+			function scoreLabel(score) {
+				return `${Math.round(score * 100)}%`;
+			}
+			function equalArgs(actual, expected) {
+				return JSON.stringify(actual || {}) === JSON.stringify(expected || {});
+			}
+			function evaluate(testCase) {
+				const actualCalls = testCase.trace.filter((item) => item.type === "toolCall");
+				const actualTools = actualCalls.map((item) => item.tool);
+				const selection = testCase.expectedTools.length === actualTools.length && testCase.expectedTools.every((tool, index) => tool === actualTools[index]);
+				const argsExpected = testCase.expectedTools.length ? testCase.expectedTools.every((tool) => {
+					const call = actualCalls.find((item) => item.tool === tool);
+					return call && equalArgs(call.args, testCase.expectedArgs[tool]);
+				}) : actualCalls.length === 0;
+				const supported = testCase.groundedClaims.length;
+				const unsupported = testCase.unsupportedClaims.length;
+				const grounding = supported + unsupported === 0 ? 0 : supported / (supported + unsupported);
+				const maxNecessarySteps = testCase.expectedTools.length;
+				const efficiency = actualCalls.length === 0 && maxNecessarySteps === 0 ? 1 : Math.max(0, 1 - testCase.extraCalls / Math.max(1, actualCalls.length));
+				const correctness = testCase.expectedClaims.length === 0 ? 0 : (testCase.expectedClaims.length - testCase.missingClaims.length) / testCase.expectedClaims.length;
+				return { selection, argsExpected, grounding, efficiency, correctness, actualCalls };
+			}
+			function renderMetrics(metrics) {
+				const items = [
+					["Tool Selection", yesNo(metrics.selection), "是否选对工具，或在不需要工具时没有乱调。"],
+					["Argument Accuracy", yesNo(metrics.argsExpected), "工具参数是否符合任务。"],
+					["Result Grounding", scoreLabel(metrics.grounding), "最终回答有多少断言来自 toolResult。"],
+					["Step Efficiency", scoreLabel(metrics.efficiency), "是否避免多余工具调用。"],
+					["Final Correctness", scoreLabel(metrics.correctness), "最终回答是否覆盖任务要点。"],
+				];
+				document.querySelector("#metricGrid").innerHTML = items.map(([name, value, desc]) => `<section class="metric-card"><span>${name}</span><strong>${value}</strong><span>${desc}</span></section>`).join("");
+			}
+			function renderCaseSpec(testCase, metrics) {
+				const tools = testCase.expectedTools.length ? testCase.expectedTools.map((tool) => `<span class="badge">${tool}</span>`).join(" ") : '<span class="badge">不需要工具</span>';
+				const argRows = testCase.expectedTools.length ? testCase.expectedTools.map((tool) => `<tr><td>${tool}</td><td><code>${escapeHtml(JSON.stringify(testCase.expectedArgs[tool]))}</code></td></tr>`).join("") : '<tr><td>无</td><td>直接回答概念即可</td></tr>';
+				document.querySelector("#caseSpec").innerHTML = `
+					<p><strong>任务：</strong>${escapeHtml(testCase.task)}</p>
+					<p><strong>期望工具：</strong>${tools}</p>
+					<table class="arg-table"><thead><tr><th>工具</th><th>期望参数</th></tr></thead><tbody>${argRows}</tbody></table>
+					<p><strong>期望要点：</strong></p>
+					<ul>${testCase.expectedClaims.map((claim) => `<li>${escapeHtml(claim)}</li>`).join("")}</ul>
+				`;
+			}
+			function renderAnswerCheck(testCase) {
+				const final = testCase.trace.find((item) => item.type === "final");
+				const unsupported = testCase.unsupportedClaims.length ? testCase.unsupportedClaims.map((claim) => `<li><span class="badge bad">unsupported</span> ${escapeHtml(claim)}</li>`).join("") : '<li><span class="badge">none</span> 没有无证据断言。</li>';
+				const missing = testCase.missingClaims.length ? testCase.missingClaims.map((claim) => `<li><span class="badge warn">missing</span> ${escapeHtml(claim)}</li>`).join("") : '<li><span class="badge">none</span> 没有遗漏要点。</li>';
+				document.querySelector("#answerCheck").innerHTML = `
+					<p><strong>最终回答：</strong>${escapeHtml(final?.answer || "")}</p>
+					<p><strong>基于 toolResult 的断言：</strong>${testCase.groundedClaims.length ? testCase.groundedClaims.map((claim) => `<span class="badge">${escapeHtml(claim)}</span>`).join(" ") : "无"}</p>
+					<p><strong>无依据断言：</strong></p><ul>${unsupported}</ul>
+					<p><strong>遗漏要点：</strong></p><ul>${missing}</ul>
+				`;
+			}
+			function renderTrace(testCase) {
+				document.querySelector("#traceList").innerHTML = testCase.trace.map((item, index) => {
+					const status = item.status === "ok" ? '<span class="badge">ok</span>' : '<span class="badge bad">problem</span>';
+					const body = item.type === "toolCall"
+						? `<p><strong>tool:</strong> ${escapeHtml(item.tool)} <strong>args:</strong> <code>${escapeHtml(JSON.stringify(item.args))}</code></p>`
+						: item.type === "toolResult"
+							? `<p><strong>result:</strong> ${escapeHtml(item.result)}</p>`
+							: `<p><strong>answer:</strong> ${escapeHtml(item.answer)}</p>`;
+					return `<section class="trace-card ${item.status === "ok" ? "good" : "bad"}"><div class="meta-row"><span>${index + 1}. ${item.role} · ${item.type}</span><span>${status}</span></div>${body}</section>`;
+				}).join("");
+			}
+			function runEvaluation() {
+				const selected = document.querySelector("#caseSelect").value;
+				const testCase = cases.find((item) => item.id === selected) || cases[0];
+				const metrics = evaluate(testCase);
+				renderMetrics(metrics);
+				renderCaseSpec(testCase, metrics);
+				renderAnswerCheck(testCase);
+				renderTrace(testCase);
+			}
+			document.querySelector("#caseSelect").innerHTML = cases.map((item) => `<option value="${item.id}">${item.title}</option>`).join("");
+			document.querySelector("#caseSelect").addEventListener("change", runEvaluation);
+			document.querySelector("#runButton").addEventListener("click", runEvaluation);
+			runEvaluation();
+		</script>
+	</body>
+</html>
