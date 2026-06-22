@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Mini RAG Demo | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<style>
+			.rag-lab { display: grid; gap: 18px; }
+			.rag-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end; }
+			.rag-controls label { display: grid; gap: 8px; color: var(--muted); font-weight: 900; }
+			.rag-controls input { width: 100%; min-height: 52px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); padding: 12px 14px; font: inherit; font-size: 16px; }
+			.rag-controls button, .example-query { min-height: 44px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--teal); font: inherit; font-weight: 900; cursor: pointer; padding: 10px 12px; }
+			.rag-controls button:hover, .example-query:hover { background: var(--teal-soft); }
+			.example-query-row { display: flex; flex-wrap: wrap; gap: 8px; }
+			.pipeline-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+			.pipeline-step { border: 1px solid var(--line); border-radius: 8px; background: var(--section-bg); padding: 12px; min-height: 96px; }
+			.pipeline-step strong, .pipeline-step span { display: block; }
+			.pipeline-step span { color: var(--muted); font-size: 13px; margin-top: 6px; }
+			.vector-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+			.vector-cell { border: 1px solid var(--line); border-radius: 8px; background: var(--section-bg); padding: 10px; }
+			.vector-cell span, .vector-cell strong { display: block; }
+			.vector-cell span { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+			.vector-bar { height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
+			.vector-bar i { display: block; height: 100%; width: 0; background: var(--teal); }
+			.chunk-list, .evidence-list { display: grid; gap: 10px; }
+			.chunk-card, .evidence-card { border: 1px solid var(--line); border-radius: 8px; background: var(--section-bg); padding: 14px; display: grid; gap: 6px; }
+			.evidence-card.best { border-color: var(--teal); box-shadow: inset 5px 0 0 var(--teal); }
+			.meta-row { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 13px; font-weight: 900; }
+			.score { color: var(--teal); }
+			.answer-box { border: 1px solid var(--line); border-radius: 8px; background: var(--section-bg); padding: 16px; display: grid; gap: 10px; }
+			.citation { display: inline-block; border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; color: var(--teal); font-size: 12px; font-weight: 900; }
+			@media (max-width: 900px) { .pipeline-strip, .vector-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+			@media (max-width: 700px) { .rag-controls, .pipeline-strip, .vector-grid { grid-template-columns: 1fr; } }
+		</style>
+	</head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Mini RAG Demo</strong><span>从文档切片到引用回答</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/lab-index.html">实验室</a><a href="../../modules/llm-agent-interview/rag-pipeline.html">RAG 工程</a><a href="../embedding-search/index.html">Embedding Demo</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="../../pages/lab-index.html">实验室入口</a><a href="../embedding-search/index.html">Embedding Search</a><a class="active" href="index.html">Mini RAG Demo</a><a href="../../modules/llm-agent-interview/embedding-rag-deep-dive.html">Embedding -> RAG 深挖</a><a href="../../modules/llm-agent-interview/rag-pipeline.html">RAG 数据工程</a><a href="../../pages/concept-index.html">概念索引</a></aside>
+			<article class="doc">
+				<p class="kicker">Interactive Lab</p>
+				<h1>看见一次 RAG 闭环怎么跑完</h1>
+				<p class="lead">这个实验用一个小型教学语料和手写 embedding 规则模拟 RAG。它不会调用真实模型，但会把 RAG 的关键中间状态全部摊开：文档如何切片，query 如何向量化，topK 如何召回，证据如何拼进 prompt，回答如何附引用。</p>
+
+				<section class="rag-lab">
+					<div class="rag-controls">
+						<label>输入问题
+							<input id="queryInput" value="为什么加息会影响股票估值？" />
+						</label>
+						<button id="runButton" type="button">运行 RAG</button>
+					</div>
+					<div class="example-query-row" aria-label="示例问题">
+						<button class="example-query" type="button" data-query="为什么加息会影响股票估值？">加息与估值</button>
+						<button class="example-query" type="button" data-query="RAG 为什么不能只靠向量库？">RAG 失败模式</button>
+						<button class="example-query" type="button" data-query="Agent 工具调用结果如何回填给模型？">Agent 工具结果</button>
+						<button class="example-query" type="button" data-query="Cesium 的 DrawCommand 做什么？">渲染命令</button>
+					</div>
+				</section>
+
+				<h2>一、RAG 流水线</h2>
+				<div class="pipeline-strip">
+					<section class="pipeline-step"><strong>1. Chunk</strong><span>把长文档切成能独立回答问题的知识片段。</span></section>
+					<section class="pipeline-step"><strong>2. Embed</strong><span>把问题和 chunk 映射到同一组语义维度。</span></section>
+					<section class="pipeline-step"><strong>3. Retrieve</strong><span>用余弦相似度选出 topK 证据。</span></section>
+					<section class="pipeline-step"><strong>4. Compose</strong><span>把问题、证据和引用规则拼成 prompt。</span></section>
+					<section class="pipeline-step"><strong>5. Answer</strong><span>只根据证据生成答案，并标出来源。</span></section>
+				</div>
+
+				<h2>二、知识库切片</h2>
+				<div id="chunkList" class="chunk-list" aria-live="polite"></div>
+
+				<h2>三、Query 向量</h2>
+				<div id="queryVector" class="vector-grid" aria-live="polite"></div>
+
+				<h2>四、TopK 证据</h2>
+				<div id="evidenceList" class="evidence-list" aria-live="polite"></div>
+
+				<h2>五、拼给模型的 Prompt</h2>
+				<pre><code id="promptPreview"></code></pre>
+
+				<h2>六、模拟回答</h2>
+				<div id="answerBox" class="answer-box" aria-live="polite"></div>
+
+				<h2>这个 demo 在模拟什么</h2>
+				<pre><code>真实生产 RAG：
+files -> parser -> semantic chunks -> embedding model -> vector index
+user query -> query rewrite -> embedding -> vector/BM25/hybrid retrieval
+topK chunks -> rerank -> context compression -> prompt with citations
+LLM -> answer grounded in evidence
+
+这个教学 demo：
+固定小语料 -> 手写 chunk -> 6 维教学向量
+query vs chunk -> 余弦相似度排序
+top2 evidence -> 拼 prompt -> 模拟一个带引用的答案</code></pre>
+
+				<h2>常见误区</h2>
+				<ul>
+					<li>只展示最终答案，看不见中间证据，就无法判断错在召回、排序还是生成。</li>
+					<li>chunk 过小会丢上下文，chunk 过大会把无关内容塞进 prompt。</li>
+					<li>只用向量检索会漏掉接口名、错误码、股票代码这类精确词。</li>
+					<li>没有引用规则时，模型很容易把证据外的信息混进答案。</li>
+				</ul>
+				<div class="next-card"><span>回到课程</span><a href="../../modules/llm-agent-interview/rag-pipeline.html">继续学 RAG 数据工程</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			const dimensions = [
+				{ key: "finance", label: "金融" },
+				{ key: "rag", label: "RAG" },
+				{ key: "agent", label: "Agent" },
+				{ key: "render", label: "渲染" },
+				{ key: "memory", label: "记忆" },
+				{ key: "risk", label: "风险" },
+			];
+			const lexicon = {
+				finance: ["利率", "加息", "估值", "股票", "现金流", "折现", "债券", "宏观", "通胀"],
+				rag: ["rag", "检索", "向量", "embedding", "chunk", "文档", "资料", "召回", "rerank", "证据", "引用", "向量库"],
+				agent: ["agent", "工具", "toolcall", "toolresult", "回填", "模型", "任务", "调用"],
+				render: ["cesium", "drawcommand", "渲染", "gpu", "shader", "primitive", "webgl", "命令"],
+				memory: ["记忆", "长期", "短期", "用户画像", "会话", "偏好"],
+				risk: ["失败", "幻觉", "权限", "评估", "成本", "延迟", "错误", "风险"],
+			};
+			const chunks = [
+				{ id: "F1", source: "经济金融课 / 利率折现", text: "利率上升会提高折现率，未来现金流折回今天的现值下降，因此高久期股票和成长股估值更容易承压。" },
+				{ id: "R1", source: "RAG 数据工程 / 检索闭环", text: "RAG 的核心不是向量库本身，而是数据清洗、语义切片、混合检索、rerank、引用回答和评估反馈组成的闭环。" },
+				{ id: "R2", source: "RAG 数据工程 / 失败模式", text: "RAG 效果差可能来自 chunk 切断语义、embedding 域不匹配、topK 太小、rerank 缺失、证据噪音过多或 prompt 没有限制引用。" },
+				{ id: "A1", source: "Mini Agent / 工具调用", text: "Agent Loop 中模型返回 toolCall，运行时执行工具，并把 toolResult 作为新消息回填给模型，模型再决定继续调用工具还是输出最终回答。" },
+				{ id: "C1", source: "Cesium / 渲染路径", text: "Cesium 的 DrawCommand 携带渲染所需的 shader、vertex array、uniform、render state 等信息，是 CPU 提交给 GPU 的绘制指令抽象。" },
+				{ id: "M1", source: "LLM 面试 / 记忆机制", text: "长期记忆更像可检索的用户画像和历史事实，RAG 更像外部知识库检索；二者都把信息放到模型上下文中，但数据来源和更新方式不同。" },
+			];
+			function embed(text) {
+				const normalized = text.toLowerCase();
+				const raw = dimensions.map((dimension) => lexicon[dimension.key].reduce((sum, word) => sum + (normalized.includes(word.toLowerCase()) ? 1 : 0), 0));
+				const total = raw.reduce((sum, value) => sum + value, 0);
+				if (total === 0) return dimensions.map(() => 0.05);
+				return raw.map((value) => Number((value / total).toFixed(3)));
+			}
+			function cosine(a, b) {
+				const dot = a.reduce((sum, value, index) => sum + value * b[index], 0);
+				const magA = Math.sqrt(a.reduce((sum, value) => sum + value * value, 0));
+				const magB = Math.sqrt(b.reduce((sum, value) => sum + value * value, 0));
+				return magA && magB ? dot / (magA * magB) : 0;
+			}
+			function escapeHtml(value) {
+				return value.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+			}
+			function renderChunks() {
+				document.querySelector("#chunkList").innerHTML = chunks.map((chunk) => `<section class="chunk-card"><div class="meta-row"><span>${chunk.id}</span><span>${chunk.source}</span></div><p>${chunk.text}</p></section>`).join("");
+			}
+			function renderVector(vector) {
+				document.querySelector("#queryVector").innerHTML = dimensions.map((dimension, index) => {
+					const value = vector[index];
+					return `<div class="vector-cell"><span>${dimension.label}</span><strong>${value.toFixed(3)}</strong><div class="vector-bar"><i style="width:${Math.round(value * 100)}%"></i></div></div>`;
+				}).join("");
+			}
+			function rankChunks(queryVector) {
+				return chunks.map((chunk) => {
+					const vector = embed(`${chunk.source} ${chunk.text}`);
+					return { ...chunk, vector, score: cosine(queryVector, vector) };
+				}).sort((a, b) => b.score - a.score);
+			}
+			function renderEvidence(ranked) {
+				document.querySelector("#evidenceList").innerHTML = ranked.map((chunk, index) => {
+					const vectorText = dimensions.map((dimension, vectorIndex) => `${dimension.label}:${chunk.vector[vectorIndex].toFixed(2)}`).join(" / ");
+					return `<section class="evidence-card ${index === 0 ? "best" : ""}"><div class="meta-row"><span>${index + 1}. ${chunk.id} · ${chunk.source}</span><span class="score">相似度 ${chunk.score.toFixed(3)}</span></div><p>${chunk.text}</p><small>${vectorText}</small></section>`;
+				}).join("");
+			}
+			function buildPrompt(question, evidence) {
+				const evidenceText = evidence.map((chunk) => `[${chunk.id}] ${chunk.text}\n来源：${chunk.source}`).join("\n\n");
+				return `你是一个严谨的课程助教。只根据给定证据回答问题。\n如果证据不足，明确说不知道。\n回答时必须使用 [证据ID] 标注来源。\n\n用户问题：${question}\n\n证据：\n${evidenceText}`;
+			}
+			function simulateAnswer(question, evidence) {
+				if (!evidence.length || evidence[0].score < 0.2) {
+					return "证据不足：当前知识库没有召回足够相关的片段，所以不应该编造答案。";
+				}
+				const citations = evidence.map((chunk) => `<span class="citation">[${chunk.id}]</span>`).join(" ");
+				const first = evidence[0];
+				if (first.id === "F1") return `加息会提高折现率，未来现金流折回今天的现值会下降，所以股票估值，尤其是高久期成长股估值，更容易承压。${citations}`;
+				if (first.id === "R1" || first.id === "R2") return `RAG 不是“接一个向量库”就结束。它要处理数据清洗、chunk、召回、重排、引用和评估；失败也可能发生在切片、embedding、topK、rerank 或 prompt 约束。${citations}`;
+				if (first.id === "A1") return `Agent 工具调用的关键是闭环：模型提出 toolCall，运行时执行工具，然后把 toolResult 作为新消息回填给模型，模型再决定下一步。${citations}`;
+				if (first.id === "C1") return `DrawCommand 可以理解为 Cesium 提交给 GPU 的绘制指令抽象，里面包含 shader、vertex array、uniform 和 render state 等信息。${citations}`;
+				return `召回证据显示：${escapeHtml(first.text)} ${citations}`;
+			}
+			function runRag() {
+				const question = document.querySelector("#queryInput").value.trim() || "RAG 是什么？";
+				const queryVector = embed(question);
+				const topEvidence = rankChunks(queryVector).slice(0, 2);
+				renderVector(queryVector);
+				renderEvidence(topEvidence);
+				document.querySelector("#promptPreview").textContent = buildPrompt(question, topEvidence);
+				document.querySelector("#answerBox").innerHTML = `<strong>基于 top2 证据的回答</strong><p>${simulateAnswer(question, topEvidence)}</p>`;
+			}
+			document.querySelector("#runButton").addEventListener("click", runRag);
+			document.querySelectorAll(".example-query").forEach((button) => {
+				button.addEventListener("click", () => {
+					document.querySelector("#queryInput").value = button.dataset.query;
+					runRag();
+				});
+			});
+			document.querySelector("#queryInput").addEventListener("keydown", (event) => {
+				if (event.key === "Enter") runRag();
+			});
+			renderChunks();
+			runRag();
+		</script>
+	</body>
+</html>
