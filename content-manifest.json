@@ -66,6 +66,7 @@
       "pages": [
         "index.html",
         "while-loop-machine.html",
+        "agent-loop-deep-dive.html",
         "model-api.html",
         "practical-path.html",
         "roadmap.html"

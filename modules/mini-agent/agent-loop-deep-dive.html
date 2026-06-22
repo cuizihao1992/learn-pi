@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>最小 Agent Loop 深挖 | Learn Pi</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Mini Agent 学习路径</strong><span>最小 Agent Loop</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">MVP</a><a href="while-loop-machine.html">while 底层</a><a href="model-api.html">模型接口</a><a href="../pi-agent/tool-call-deep-dive.html">Pi 深挖</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="charter.html">Mini Agent 宪章</a><a href="index.html">从零开发 Mini Agent</a><a href="while-loop-machine.html">while 底层实现</a><a class="active" href="agent-loop-deep-dive.html">Agent Loop 深挖</a><a href="model-api.html">自研模型接入</a><a href="practical-path.html">实战路线</a><a href="roadmap.html">产品化路线</a><a href="../../examples/mini-agent-node/mini-agent.mjs">示例代码</a><a href="../pi-agent/tool-call-deep-dive.html">对照 Pi toolCall</a></aside>
+			<article class="doc">
+				<p class="kicker">Deep Dive</p>
+				<h1>最小 Agent Loop：模型决策、工具执行、结果回填</h1>
+				<p class="lead">Agent 的核心不是“一个更长的 prompt”，而是一个循环系统：模型负责决定下一步，程序负责执行工具，工具结果再回到上下文。Mini Agent 用几十行代码保留这个最小闭环，便于你回头理解 Pi Agent 的 `runLoop` 和 `executeToolCalls`。</p>
+
+				<h2>一句话模型</h2>
+				<pre><code>Agent Loop
+  = callModel(messages, tools)
+  + 如果没有 tool_call，就返回最终答案
+  + 如果有 tool_call，就 runTool(toolCall)
+  + 把 tool result 加回 messages
+  + 回到下一轮 callModel</code></pre>
+
+				<h2>最小代码骨架</h2>
+				<pre><code>async function runAgent(task) {
+  const messages = [
+    { role: "system", content: "你是一个会使用工具的 coding agent。" },
+    { role: "user", content: task }
+  ];
+
+  for (let step = 0; step &lt; 12; step += 1) {
+    const assistant = await callModel(messages);
+    messages.push(assistant);
+
+    const toolCalls = assistant.tool_calls || [];
+    if (toolCalls.length === 0) {
+      return assistant.content || "";
+    }
+
+    for (const toolCall of toolCalls) {
+      const result = await runTool(toolCall);
+      messages.push({
+        role: "tool",
+        tool_call_id: toolCall.id,
+        content: String(result)
+      });
+    }
+  }
+
+  return "Stopped after 12 steps.";
+}</code></pre>
+
+				<h2>为什么不是一次模型调用</h2>
+				<p>如果用户说“读取 README 并总结”，模型第一次并不知道 README 的内容。它必须先请求工具：</p>
+				<pre><code>第一轮模型输入:
+  system: 你可以使用 readFile 工具
+  user: 读取 README.md 并总结
+
+第一轮模型输出:
+  tool_call: readFile({ "path": "README.md" })
+
+程序执行工具:
+  readFile("README.md") -> 文件内容
+
+第二轮模型输入:
+  user: 读取 README.md 并总结
+  assistant: tool_call readFile(...)
+  tool: README.md 文件内容
+
+第二轮模型输出:
+  README 总结文本</code></pre>
+				<p>所以 Agent Loop 的关键是：模型每轮只决定“下一步”，不是一开始就知道完整答案。</p>
+
+				<h2>messages 是 Agent 的工作记忆</h2>
+				<table class="compare-table">
+					<thead><tr><th>消息</th><th>谁产生</th><th>作用</th></tr></thead>
+					<tbody>
+						<tr><td><code>system</code></td><td>程序</td><td>告诉模型角色、工具规则、安全边界。</td></tr>
+						<tr><td><code>user</code></td><td>用户</td><td>任务目标。</td></tr>
+						<tr><td><code>assistant.tool_calls</code></td><td>模型</td><td>模型提出要调用哪个工具、参数是什么。</td></tr>
+						<tr><td><code>tool</code></td><td>程序</td><td>工具执行结果，回填给模型。</td></tr>
+						<tr><td><code>assistant.content</code></td><td>模型</td><td>最终回答或中间解释。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>tools 是模型可用动作表</h2>
+				<p>工具不是一段自然语言建议，而是一组 JSON schema。模型必须按这个 schema 产出参数。</p>
+				<pre><code>const tools = [{
+  type: "function",
+  function: {
+    name: "readFile",
+    description: "Read a UTF-8 text file from the current project.",
+    parameters: {
+      type: "object",
+      properties: {
+        path: { type: "string" }
+      },
+      required: ["path"],
+      additionalProperties: false
+    }
+  }
+}];</code></pre>
+				<p>这一步和 Pi Agent 的 `AgentTool` 对应。Mini Agent 直接把 OpenAI-compatible 工具 schema 发给模型；Pi Agent 会多一层工具定义、UI 展示、hook、校验和执行模式控制。</p>
+
+				<h2>runTool 是权限边界</h2>
+				<p>模型没有直接读文件权限。真正读文件的是程序。</p>
+				<pre><code>async function runTool(toolCall) {
+  const name = toolCall.function.name;
+  const args = JSON.parse(toolCall.function.arguments || "{}");
+
+  if (name === "readFile") {
+    const fullPath = resolveInsideProject(args.path);
+    return await fs.readFile(fullPath, "utf8");
+  }
+
+  throw new Error(`Unknown tool: ${name}`);
+}</code></pre>
+				<p>这里最重要的不是 `fs.readFile`，而是 `resolveInsideProject()`。它说明 Agent 的工具执行必须有边界：不能让模型随便读系统任意路径。</p>
+
+				<h2>终止条件</h2>
+				<table class="compare-table">
+					<thead><tr><th>终止条件</th><th>代码位置</th><th>意义</th></tr></thead>
+					<tbody>
+						<tr><td>模型没有返回工具调用</td><td><code>toolCalls.length === 0</code></td><td>模型认为已经可以回答。</td></tr>
+						<tr><td>达到最大步数</td><td><code>step &lt; 12</code></td><td>防止模型一直调用工具导致死循环。</td></tr>
+						<tr><td>工具抛错后模型不再继续</td><td>错误作为 tool result 回填</td><td>让模型决定解释错误、换工具还是结束。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>完整链路图</h2>
+				<pre><code>用户任务
+  -> messages.push(user)
+  -> callModel(messages, tools)
+  -> assistant.tool_calls?
+      -> 否：return assistant.content
+      -> 是：for each toolCall
+          -> parse arguments
+          -> runTool
+          -> messages.push(role: "tool")
+          -> 下一轮 callModel</code></pre>
+
+				<h2>和 Pi Agent 的对应关系</h2>
+				<table class="compare-table">
+					<thead><tr><th>Mini Agent</th><th>Pi Agent</th><th>Pi 多了什么</th></tr></thead>
+					<tbody>
+						<tr><td><code>for step...</code></td><td><code>runLoop()</code></td><td>steering、follow-up、prepareNextTurn、事件流。</td></tr>
+						<tr><td><code>callModel()</code></td><td><code>streamAssistantResponse()</code></td><td>流式输出、多 provider、reasoning、abort。</td></tr>
+						<tr><td><code>assistant.tool_calls</code></td><td><code>content.filter(type === "toolCall")</code></td><td>统一消息块，兼容更多 provider。</td></tr>
+						<tr><td><code>runTool()</code></td><td><code>executeToolCalls()</code></td><td>顺序/并行执行、before/after hook、partial update。</td></tr>
+						<tr><td><code>role: "tool"</code></td><td><code>role: "toolResult"</code></td><td>内部消息格式更明确，带 details、isError、timestamp。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>常见误解</h2>
+				<ul>
+					<li><strong>误解一：Agent 等于多写几句 prompt。</strong>不对。Agent 的关键是循环、工具和状态。</li>
+					<li><strong>误解二：模型会自己执行工具。</strong>不对。模型只提出请求，程序才执行。</li>
+					<li><strong>误解三：工具结果只是打印给用户看。</strong>不对。工具结果必须回填到 messages，让模型继续推理。</li>
+					<li><strong>误解四：while(true) 就够了。</strong>不对。真实系统还需要最大步数、abort、权限、错误处理和上下文压缩。</li>
+				</ul>
+
+				<h2>自测问题</h2>
+				<ol>
+					<li>为什么第一次模型调用通常不能直接完成“读取文件并总结”？</li>
+					<li>为什么工具执行必须在程序侧，而不能交给模型自己做？</li>
+					<li>`tool_call_id` 的作用是什么？</li>
+					<li>为什么需要最大步数限制？</li>
+					<li>Mini Agent 的 `role: "tool"` 和 Pi 的 `role: "toolResult"` 语义上有什么对应关系？</li>
+				</ol>
+
+				<div class="next-card"><span>对照真实工程</span><a href="../pi-agent/tool-call-deep-dive.html">看 Pi Agent toolCall 源码闭环</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>
