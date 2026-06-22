@@ -26,7 +26,7 @@
 					<thead><tr><th>模块</th><th>先打穿的点</th><th>需要补的知识</th><th>例子 / 实验</th><th>状态</th></tr></thead>
 					<tbody>
 						<tr><td>Pi Agent</td><td>toolCall 到 toolResult 闭环</td><td>runLoop、executeToolCalls、schema 校验、hook、事件流、toolResult 回填。</td><td><a href="../modules/pi-agent/tool-call-deep-dive.html">toolCall 源码深挖</a> + <a href="../examples/agent-evaluation/index.html">Agent Evaluation Demo</a>。</td><td>样板已完成</td></tr>
-						<tr><td>Mini Agent</td><td>最小 Agent Loop 与 OpenAI-compatible 适配</td><td>while 底层、messages、tools、tool_calls、tool result、终止条件、OpenAI-compatible API。</td><td><a href="../modules/mini-agent/agent-loop-deep-dive.html">Agent Loop 深挖</a> + <a href="../examples/agent-evaluation/index.html">Agent 评估实验</a>。</td><td>样板已完成</td></tr>
+						<tr><td>Mini Agent</td><td>最小 Agent Loop 与 OpenAI-compatible 适配</td><td>while 底层、messages、tools、tool_calls、tool result、终止条件、OpenAI-compatible API、安全边界。</td><td><a href="../modules/mini-agent/agent-loop-deep-dive.html">Agent Loop 深挖</a> + <a href="../examples/agent-safety/index.html">Agent Safety Demo</a>。</td><td>样板已完成</td></tr>
 						<tr><td>LLM / Agent 面试</td><td>Embedding 到 RAG 召回</td><td>向量、余弦相似度、chunk、topK、rerank、prompt、评估。</td><td><a href="../modules/llm-agent-interview/embedding-rag-deep-dive.html">Embedding -> RAG 深挖</a> + <a href="../examples/rag-evaluation/index.html">RAG Evaluation Demo</a>。</td><td>样板已完成</td></tr>
 						<tr><td>Cesium</td><td>Primitive -> DrawCommand -> GPU</td><td>WebGL、ShaderProgram、VertexArray、RenderState、渲染队列。</td><td>一个 box primitive 如何变成 DrawCommand。</td><td>待补</td></tr>
 						<tr><td>OpenLayers</td><td>Layer / Source / View 分工</td><td>坐标系、瓦片、视口、矢量要素、Canvas/WebGL。</td><td>同一份数据换不同 layer style。</td><td>待补</td></tr>
@@ -42,7 +42,7 @@
 
 				<h2>推进顺序</h2>
 				<ol>
-					<li>第一批：Embedding -> RAG、Mini RAG Demo、RAG Evaluation、Mini Agent Loop、Agent Evaluation、Pi toolCall 闭环。</li>
+					<li>第一批：Embedding -> RAG、Mini RAG Demo、RAG Evaluation、Mini Agent Loop、Agent Evaluation、Agent Safety、Pi toolCall 闭环。</li>
 					<li>第二批：利率折现、K 线指标数学、Layer / Source / Style。</li>
 					<li>第三批：DrawCommand、Gaussian Splatting、数字孪生实时状态。</li>
 					<li>第四批：回测陷阱、核电池能量转换。</li>

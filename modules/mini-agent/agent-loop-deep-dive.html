@@ -101,6 +101,7 @@
 
 				<h2>runTool 是权限边界</h2>
 				<p>模型没有直接读文件权限。真正读文件的是程序。</p>
+				<div class="next-card"><span>安全实验</span><a href="../../examples/agent-safety/index.html">观察路径、命令和写文件如何被守卫</a></div>
 				<pre><code>async function runTool(toolCall) {
   const name = toolCall.function.name;
   const args = JSON.parse(toolCall.function.arguments || "{}");

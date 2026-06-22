@@ -24,6 +24,7 @@
 					<section><h3>RAG Evaluation Demo</h3><p>用标准问题、期望证据和答案要点，观察 Recall@K、MRR、忠实度和完整度如何定位问题。</p><a class="primary-link" href="../examples/rag-evaluation/index.html">打开实验</a></section>
 					<section><h3>Mini Agent Loop 深挖</h3><p>先把 messages、tools、tool_calls、tool result 和终止条件拆清楚，再看最小 Node 脚本。</p><a class="primary-link" href="../modules/mini-agent/agent-loop-deep-dive.html">阅读深挖</a></section>
 					<section><h3>Agent Evaluation Demo</h3><p>用 trace 判断 Agent 是否选对工具、参数是否正确、答案是否基于 toolResult。</p><a class="primary-link" href="../examples/agent-evaluation/index.html">打开实验</a></section>
+					<section><h3>Agent Safety Demo</h3><p>观察路径越界、危险命令、写文件确认和密钥外传如何在工具执行前被拦截。</p><a class="primary-link" href="../examples/agent-safety/index.html">打开实验</a></section>
 					<section><h3>Mini Agent Node</h3><p>用最小 Node 脚本理解 Agent Loop、toolCall、toolResult 和最终回答的闭环。</p><a class="primary-link" href="../examples/mini-agent-node/mini-agent.mjs">查看示例代码</a></section>
 				</div>
 				<h2>后续实验队列</h2>
@@ -31,7 +32,7 @@
 					<thead><tr><th>实验</th><th>验证什么</th><th>关联模块</th></tr></thead>
 					<tbody>
 						<tr><td>RAG 对比实验</td><td>对比只用向量检索、混合检索和 rerank 后的召回变化。</td><td><a href="../modules/llm-agent-interview/rag-pipeline.html">RAG 数据工程</a></td></tr>
-						<tr><td>Agent 安全样例</td><td>评估危险命令、越权路径和写文件前确认。</td><td><a href="../modules/mini-agent/practical-path.html">Agent 实战路线</a></td></tr>
+						<tr><td>Agent 权限日志</td><td>记录谁触发了什么工具、参数、结果和确认状态。</td><td><a href="../modules/mini-agent/practical-path.html">Agent 实战路线</a></td></tr>
 						<tr><td>K 线指标 Demo</td><td>均线、MACD、RSI 本质上如何加工价格和成交量。</td><td><a href="../modules/stock-kline/indicators.html">指标底层逻辑</a></td></tr>
 						<tr><td>地图图层 Demo</td><td>Layer、Source、Style 如何决定地图展示。</td><td><a href="../modules/mapbox/architecture.html">Mapbox 架构</a></td></tr>
 						<tr><td>宏观周期拆解器</td><td>增长、通胀、利率、信用和资产价格如何传导。</td><td><a href="../modules/econ-finance/macro-cycle.html">宏观周期</a></td></tr>
@@ -44,7 +45,7 @@
 					<li>必须写清楚它是教学模型，不等于生产系统。</li>
 					<li>必须反向链接到对应课程页面。</li>
 				</ol>
-				<div class="next-card"><span>继续看 Agent 评估</span><a href="../examples/agent-evaluation/index.html">进入 Agent Evaluation Demo</a></div>
+				<div class="next-card"><span>继续看 Agent 安全</span><a href="../examples/agent-safety/index.html">进入 Agent Safety Demo</a></div>
 			</article>
 		</main>
 		<script src="../theme.js"></script><script src="../enhance.js"></script>
