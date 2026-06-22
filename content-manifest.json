@@ -64,6 +64,7 @@
       "purpose": "Build a minimal agent from scratch, learn model API compatibility, and follow a hands-on path from CLI MVP to a usable web agent.",
       "pages": [
         "index.html",
+        "while-loop-machine.html",
         "model-api.html",
         "practical-path.html",
         "roadmap.html"

@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>while 循环的机器底层 | Learn Pi</title><link rel="stylesheet" href="../../styles.css" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Mini Agent 学习路径</strong><span>Agent Loop 的计算机底层</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">MVP</a><a href="model-api.html">模型接口</a><a href="practical-path.html">实战路线</a><a href="../pi-agent/index.html">Pi Agent</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="charter.html">Mini Agent 宪章</a><a href="index.html">从零开发 Mini Agent</a><a class="active" href="while-loop-machine.html">while 底层实现</a><a href="model-api.html">自研模型接入</a><a href="practical-path.html">实战路线</a><a href="roadmap.html">产品化路线</a><a href="../../examples/mini-agent-node/mini-agent.mjs">示例代码</a><a href="../pi-agent/index.html">对照 Pi Agent</a></aside>
+			<article class="doc">
+				<p class="kicker">Computer Fundamentals</p>
+				<h1>while 循环在计算机底层是怎么实现的</h1>
+				<p class="lead">`while` 不是 CPU 里天然存在的结构。它是高级语言给人的写法，编译后会变成比较指令和跳转指令；再往下是机器码；最后由 CPU 的程序计数器、ALU、标志位和分支控制硬件执行。理解这一点，才能真正看懂 Mini Agent 里的 `while (true)` 为什么可以驱动 Agent Loop。</p>
+
+				<h2>一句话模型</h2>
+				<pre><code>while 循环
+  = 条件判断
+  + 条件跳转
+  + 循环体
+  + 跳回循环开头
+
+CPU 不认识 while。
+CPU 只认识：比较、修改标志位、跳转到某个地址。</code></pre>
+
+				<h2>从源代码到硬件</h2>
+				<table class="compare-table">
+					<thead><tr><th>层级</th><th>看到的形式</th><th>作用</th></tr></thead>
+					<tbody>
+						<tr><td>高级语言</td><td><code>while (i &lt; 3) { i++; }</code></td><td>给人看的控制结构。</td></tr>
+						<tr><td>中间表示</td><td>基本块、分支、跳转标签</td><td>编译器优化用。</td></tr>
+						<tr><td>汇编</td><td><code>cmp</code>、<code>jge</code>、<code>add</code>、<code>jmp</code></td><td>接近机器指令的人类可读形式。</td></tr>
+						<tr><td>机器码</td><td><code>83 F8 03 7D ...</code></td><td>CPU 取指执行的字节。</td></tr>
+						<tr><td>硬件</td><td>PC、ALU、FLAGS、分支单元</td><td>真正执行比较和跳转。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>一个最小例子</h2>
+				<p>C 代码：</p>
+				<pre><code>int i = 0;
+while (i &lt; 3) {
+  i++;
+}</code></pre>
+				<p>逻辑上等价于：</p>
+				<pre><code>int i = 0;
+
+loop_start:
+if (!(i &lt; 3)) goto loop_end;
+i++;
+goto loop_start;
+
+loop_end:</code></pre>
+				<p>所以 `while` 的本质可以先记成：</p>
+				<pre><code>while = if + goto</code></pre>
+
+				<h2>对应的汇编长什么样</h2>
+				<p>编译器可能生成类似 x86 汇编：</p>
+				<pre><code>mov eax, 0        ; i = 0
+
+loop_start:
+cmp eax, 3        ; 比较 i 和 3
+jge loop_end      ; 如果 i &gt;= 3，跳出循环
+add eax, 1        ; i++
+jmp loop_start    ; 回到循环开始
+
+loop_end:</code></pre>
+				<table class="compare-table">
+					<thead><tr><th>指令</th><th>作用</th><th>和 while 的关系</th></tr></thead>
+					<tbody>
+						<tr><td><code>mov eax, 0</code></td><td>把 0 放进寄存器。</td><td>初始化循环变量。</td></tr>
+						<tr><td><code>cmp eax, 3</code></td><td>比较寄存器和常量。</td><td>计算循环条件。</td></tr>
+						<tr><td><code>jge loop_end</code></td><td>如果大于等于就跳转。</td><td>条件不满足时退出。</td></tr>
+						<tr><td><code>add eax, 1</code></td><td>加 1。</td><td>执行循环体。</td></tr>
+						<tr><td><code>jmp loop_start</code></td><td>无条件跳转。</td><td>回到下一轮循环。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>机器码层发生什么</h2>
+				<p>汇编不是 CPU 最终执行的东西。汇编器会把它转成机器码字节。不同架构字节不同，下面只是帮助建立直觉：</p>
+				<pre><code>B8 00 00 00 00    ; mov eax, 0
+83 F8 03          ; cmp eax, 3
+7D 03             ; jge loop_end
+83 C0 01          ; add eax, 1
+EB F8             ; jmp loop_start</code></pre>
+				<p>CPU 真正取出来执行的是这些字节。`while` 这个词在机器码里已经不存在了。</p>
+
+				<h2>CPU 硬件怎么执行跳转</h2>
+				<pre><code>1. PC / instruction pointer 指向当前指令地址
+2. CPU 从内存或指令缓存取出机器码
+3. 解码器把机器码解码成内部微操作
+4. ALU 执行比较或加法
+5. FLAGS 记录比较结果，例如 zero flag、sign flag、carry flag
+6. 条件跳转指令读取 FLAGS
+7. 条件成立：PC 改成 loop_end 地址
+8. 条件不成立：PC 继续指向下一条指令
+9. jmp loop_start 会把 PC 改回循环开头</code></pre>
+				<p>所以循环不是硬件里有一个“重复按钮”。真正发生的是：程序计数器一次又一次被改回前面的地址。</p>
+
+				<h2>现代 CPU 还会做什么优化</h2>
+				<ul>
+					<li><strong>分支预测：</strong>CPU 猜 `while` 条件下一次大概率成立还是不成立，提前取指。</li>
+					<li><strong>流水线：</strong>取指、译码、执行、访存、写回可以重叠进行。</li>
+					<li><strong>指令缓存：</strong>循环体经常重复执行，容易留在高速缓存里。</li>
+					<li><strong>乱序执行：</strong>在不改变最终结果的前提下，CPU 可能调整内部执行顺序。</li>
+					<li><strong>循环优化：</strong>编译器可能做循环展开、强度削弱、死代码删除等优化。</li>
+				</ul>
+
+				<h2>和 Mini Agent 的关系</h2>
+				<p>Mini Agent 里的核心循环通常长这样：</p>
+				<pre><code>while (true) {
+  const assistant = await callModel(messages, tools);
+  messages.push(assistant);
+
+  const toolCalls = assistant.tool_calls || [];
+  if (toolCalls.length === 0) {
+    return assistant.content;
+  }
+
+  for (const toolCall of toolCalls) {
+    const result = await runTool(toolCall);
+    messages.push({
+      role: "tool",
+      tool_call_id: toolCall.id,
+      content: result
+    });
+  }
+}</code></pre>
+				<p>从业务上看，它是 Agent Loop。从计算机底层看，它仍然是条件判断和跳转。</p>
+				<pre><code>Agent Loop 语义:
+  模型决定下一步
+  -> 如果没有工具调用就结束
+  -> 如果有工具调用就执行工具
+  -> 把结果放回上下文
+  -> 回到循环开头
+
+机器执行语义:
+  比较条件
+  -> 条件跳转
+  -> 执行循环体
+  -> 跳回循环开头</code></pre>
+
+				<h2>常见误解</h2>
+				<ul>
+					<li><strong>误解一：CPU 直接执行 while。</strong>不对。CPU 执行机器码，`while` 已经被编译成比较和跳转。</li>
+					<li><strong>误解二：汇编就是最底层。</strong>不对。汇编还要变成机器码，机器码再由硬件电路执行。</li>
+					<li><strong>误解三：循环一定慢。</strong>不一定。小循环可能被缓存、预测、展开，关键看数据依赖和分支是否可预测。</li>
+					<li><strong>误解四：while(true) 一定死循环。</strong>不一定。Agent Loop 里通常靠 `return`、`break`、最大步数或错误条件终止。</li>
+				</ul>
+
+				<h2>自测问题</h2>
+				<ol>
+					<li>为什么说 `while = if + goto`？</li>
+					<li>`cmp` 指令本身会不会跳转？真正跳转的是哪类指令？</li>
+					<li>条件跳转为什么需要 FLAGS？</li>
+					<li>程序计数器 PC 在循环里为什么会回到旧地址？</li>
+					<li>Mini Agent 的 `while (true)` 靠什么条件停止？</li>
+				</ol>
+
+				<div class="next-card"><span>回到 Agent Loop</span><a href="index.html">看 Mini Agent 的最小循环</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>
