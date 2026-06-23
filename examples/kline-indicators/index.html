@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>K Line Indicators Demo | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<style>
+			.indicator-lab { display: grid; gap: 18px; }
+			.lab-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end; }
+			.lab-controls label { display: grid; gap: 8px; color: var(--muted); font-weight: 900; }
+			.lab-controls textarea { width: 100%; min-height: 96px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); padding: 12px 14px; font: inherit; font-size: 15px; resize: vertical; }
+			.lab-controls button, .sample-button { min-height: 44px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--teal); font: inherit; font-weight: 900; cursor: pointer; padding: 10px 12px; }
+			.lab-controls button:hover, .sample-button:hover { background: var(--teal-soft); }
+			.sample-row { display: flex; flex-wrap: wrap; gap: 8px; }
+			.chart-panel { border: 1px solid var(--line); border-radius: 8px; background: var(--section-bg); padding: 14px; }
+			.chart-svg { width: 100%; height: 260px; display: block; }
+			.legend { display: flex; flex-wrap: wrap; gap: 10px; color: var(--muted); font-size: 13px; font-weight: 900; }
+			.legend span::before { content: ""; display: inline-block; width: 12px; height: 3px; margin-right: 6px; vertical-align: middle; background: var(--legend-color); }
+			.metric-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+			.metric-card { border: 1px solid var(--line); border-radius: 8px; background: var(--section-bg); padding: 14px; min-height: 108px; }
+			.metric-card span, .metric-card strong { display: block; }
+			.metric-card span { color: var(--muted); font-size: 13px; }
+			.metric-card strong { color: var(--teal); font-size: 22px; margin: 8px 0 4px; }
+			.step-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+			.step-card { border: 1px solid var(--line); border-radius: 8px; background: var(--section-bg); padding: 16px; display: grid; gap: 8px; }
+			.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+			.data-table { width: 100%; border-collapse: collapse; min-width: 760px; background: var(--section-bg); }
+			.data-table th, .data-table td { border-bottom: 1px solid var(--line); padding: 8px; text-align: right; }
+			.data-table th:first-child, .data-table td:first-child { text-align: left; }
+			.data-table th { color: var(--muted); font-size: 13px; }
+			.warn-text { color: #b45309; font-weight: 900; }
+			@media (max-width: 900px) { .metric-grid, .step-grid { grid-template-columns: 1fr; } }
+			@media (max-width: 700px) { .lab-controls { grid-template-columns: 1fr; } .chart-svg { height: 220px; } }
+		</style>
+	</head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>K Line Indicators Demo</strong><span>均线、MACD、RSI 的教学计算器</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/lab-index.html">实验室</a><a href="../../modules/stock-kline/index.html">股票 K 线</a><a href="../../modules/stock-kline/indicators.html">指标逻辑</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="../../pages/lab-index.html">实验室入口</a><a class="active" href="index.html">K 线指标 Demo</a><a href="../../modules/stock-kline/index.html">股票 K 线总览</a><a href="../../modules/stock-kline/indicators.html">指标底层逻辑</a><a href="../../modules/stock-kline/signals.html">买卖信号整理</a><a href="../../modules/stock-kline/risk-journal.html">风控日志</a></aside>
+			<article class="doc">
+				<p class="kicker">Interactive Lab</p>
+				<h1>看见指标如何从价格序列里算出来</h1>
+				<p class="lead">这个实验只用一串收盘价演示 SMA、EMA、MACD、RSI。它不是行情软件，也不是交易建议；它的目标是让你看见指标的底层动作：平均、加权平均、差分、平滑、上涨下跌幅度比较。</p>
+
+				<section class="indicator-lab">
+					<div class="lab-controls">
+						<label>输入收盘价，用逗号或空格分隔
+							<textarea id="priceInput">10, 10.4, 10.8, 10.6, 11.2, 11.8, 12.4, 12.1, 12.8, 13.4, 13.1, 13.8, 14.6, 14.2, 15.1, 15.8, 15.4, 16.2, 16.9, 17.4</textarea>
+						</label>
+						<button id="runButton" type="button">重新计算</button>
+					</div>
+					<div class="sample-row" aria-label="示例价格序列">
+						<button class="sample-button" type="button" data-prices="10, 10.4, 10.8, 10.6, 11.2, 11.8, 12.4, 12.1, 12.8, 13.4, 13.1, 13.8, 14.6, 14.2, 15.1, 15.8, 15.4, 16.2, 16.9, 17.4">上升趋势</button>
+						<button class="sample-button" type="button" data-prices="20, 19.4, 19.8, 19.1, 18.7, 18.9, 18.2, 17.8, 18.1, 17.4, 17.0, 17.3, 16.8, 16.2, 16.5, 15.9, 15.4, 15.7, 15.1, 14.8">下降趋势</button>
+						<button class="sample-button" type="button" data-prices="10, 10.8, 9.9, 10.7, 10.1, 10.9, 10.2, 11.0, 10.3, 10.8, 10.1, 10.7, 9.8, 10.6, 10.0, 10.9, 10.2, 10.7, 10.1, 10.8">震荡行情</button>
+					</div>
+				</section>
+
+				<h2>一、价格与均线</h2>
+				<div class="chart-panel">
+					<svg id="priceChart" class="chart-svg" role="img" aria-label="价格和均线图"></svg>
+					<div class="legend">
+						<span style="--legend-color:#0f766e">收盘价</span>
+						<span style="--legend-color:#2563eb">SMA5</span>
+						<span style="--legend-color:#b45309">EMA5</span>
+					</div>
+				</div>
+
+				<h2>二、当前状态</h2>
+				<div id="metricGrid" class="metric-grid" aria-live="polite"></div>
+
+				<h2>三、指标怎么算</h2>
+				<div class="step-grid">
+					<section class="step-card">
+						<h3>SMA：简单平均</h3>
+						<p>SMA5 就是最近 5 个收盘价的普通平均。它能过滤噪声，但一定滞后。</p>
+						<pre><code>SMA5 = (C1 + C2 + C3 + C4 + C5) / 5</code></pre>
+					</section>
+					<section class="step-card">
+						<h3>EMA：给新价格更高权重</h3>
+						<p>EMA5 比 SMA5 更敏感，因为最新价格权重更高。</p>
+						<pre><code>alpha = 2 / (N + 1)
+EMA = price * alpha + previousEMA * (1 - alpha)</code></pre>
+					</section>
+					<section class="step-card">
+						<h3>MACD：短均线减长均线</h3>
+						<p>这里用教学参数 5 / 10 / 4。DIF 看短期 EMA 是否强于长期 EMA，DEA 是 DIF 的平滑。</p>
+						<pre><code>DIF = EMA5 - EMA10
+DEA = EMA(DIF, 4)
+Histogram = DIF - DEA</code></pre>
+					</section>
+					<section class="step-card">
+						<h3>RSI：上涨幅度和下跌幅度比较</h3>
+						<p>这里用教学参数 6。RSI 高说明最近上涨幅度相对更强，低说明下跌幅度相对更强。</p>
+						<pre><code>RS = avgGain / avgLoss
+RSI = 100 - 100 / (1 + RS)</code></pre>
+					</section>
+				</div>
+
+				<h2>四、逐日计算表</h2>
+				<div class="table-wrap">
+					<table class="data-table">
+						<thead><tr><th>序号</th><th>Close</th><th>SMA5</th><th>EMA5</th><th>EMA10</th><th>DIF</th><th>DEA</th><th>MACD柱</th><th>RSI6</th></tr></thead>
+						<tbody id="dataRows"></tbody>
+					</table>
+				</div>
+
+				<h2>五、怎么看失败模式</h2>
+				<ul>
+					<li><strong>震荡行情：</strong>均线和 MACD 会频繁交叉，很多信号只是噪声。</li>
+					<li><strong>强趋势：</strong>RSI 可以长期高位或低位，不能机械理解成马上反转。</li>
+					<li><strong>样本太短：</strong>长周期指标还没稳定，前几天的值参考意义有限。</li>
+					<li><strong>只看指标：</strong>指标不包含财报、政策、流动性、仓位和风险收益比。</li>
+				</ul>
+				<div class="next-card"><span>回到课程</span><a href="../../modules/stock-kline/indicators.html">继续学指标底层逻辑</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			function parsePrices(text) {
+				return text.split(/[\s,，]+/).map((item) => Number(item.trim())).filter((value) => Number.isFinite(value) && value > 0);
+			}
+			function fmt(value, digits = 2) {
+				return Number.isFinite(value) ? value.toFixed(digits) : "-";
+			}
+			function sma(values, period) {
+				return values.map((_, index) => {
+					if (index + 1 < period) return NaN;
+					const slice = values.slice(index + 1 - period, index + 1);
+					return slice.reduce((sum, value) => sum + value, 0) / period;
+				});
+			}
+			function ema(values, period) {
+				const alpha = 2 / (period + 1);
+				const output = [];
+				values.forEach((value, index) => {
+					output.push(index === 0 ? value : value * alpha + output[index - 1] * (1 - alpha));
+				});
+				return output;
+			}
+			function rsi(values, period) {
+				return values.map((_, index) => {
+					if (index < period) return NaN;
+					let gains = 0;
+					let losses = 0;
+					for (let i = index - period + 1; i <= index; i += 1) {
+						const change = values[i] - values[i - 1];
+						if (change >= 0) gains += change;
+						else losses += Math.abs(change);
+					}
+					const avgGain = gains / period;
+					const avgLoss = losses / period;
+					if (avgLoss === 0) return 100;
+					const rs = avgGain / avgLoss;
+					return 100 - 100 / (1 + rs);
+				});
+			}
+			function compute(values) {
+				const sma5 = sma(values, 5);
+				const ema5 = ema(values, 5);
+				const ema10 = ema(values, 10);
+				const dif = values.map((_, index) => ema5[index] - ema10[index]);
+				const dea = ema(dif, 4);
+				const hist = dif.map((value, index) => value - dea[index]);
+				const rsi6 = rsi(values, 6);
+				return values.map((close, index) => ({ index: index + 1, close, sma5: sma5[index], ema5: ema5[index], ema10: ema10[index], dif: dif[index], dea: dea[index], hist: hist[index], rsi6: rsi6[index] }));
+			}
+			function scalePoints(rows, key, width, height, pad, minValue, maxValue) {
+				const xStep = rows.length > 1 ? (width - pad * 2) / (rows.length - 1) : 0;
+				return rows.map((row, index) => {
+					const value = row[key];
+					if (!Number.isFinite(value)) return null;
+					const x = pad + index * xStep;
+					const y = pad + (maxValue - value) / (maxValue - minValue || 1) * (height - pad * 2);
+					return `${x.toFixed(1)},${y.toFixed(1)}`;
+				}).filter(Boolean).join(" ");
+			}
+			function drawChart(rows) {
+				const svg = document.querySelector("#priceChart");
+				const width = 900;
+				const height = 260;
+				const pad = 24;
+				const values = rows.flatMap((row) => [row.close, row.sma5, row.ema5]).filter(Number.isFinite);
+				const minValue = Math.min(...values);
+				const maxValue = Math.max(...values);
+				const priceLine = scalePoints(rows, "close", width, height, pad, minValue, maxValue);
+				const smaLine = scalePoints(rows, "sma5", width, height, pad, minValue, maxValue);
+				const emaLine = scalePoints(rows, "ema5", width, height, pad, minValue, maxValue);
+				svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+				svg.innerHTML = `
+					<rect x="0" y="0" width="${width}" height="${height}" fill="transparent"></rect>
+					<line x1="${pad}" y1="${height - pad}" x2="${width - pad}" y2="${height - pad}" stroke="currentColor" opacity="0.18"></line>
+					<line x1="${pad}" y1="${pad}" x2="${pad}" y2="${height - pad}" stroke="currentColor" opacity="0.18"></line>
+					<polyline points="${priceLine}" fill="none" stroke="#0f766e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"></polyline>
+					<polyline points="${smaLine}" fill="none" stroke="#2563eb" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"></polyline>
+					<polyline points="${emaLine}" fill="none" stroke="#b45309" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"></polyline>
+					<text x="${pad}" y="18" fill="currentColor" opacity="0.68" font-size="12">max ${fmt(maxValue)}</text>
+					<text x="${pad}" y="${height - 6}" fill="currentColor" opacity="0.68" font-size="12">min ${fmt(minValue)}</text>
+				`;
+			}
+			function renderMetrics(rows) {
+				const last = rows[rows.length - 1];
+				const previous = rows[rows.length - 2] || last;
+				const trend = last.close > last.sma5 ? "价格在 SMA5 上方" : "价格在 SMA5 下方";
+				const macd = last.hist > 0 ? "短期动量偏强" : "短期动量偏弱";
+				const rsiText = last.rsi6 > 70 ? "RSI 偏热" : last.rsi6 < 30 ? "RSI 偏冷" : "RSI 中性";
+				const slope = last.ema5 > previous.ema5 ? "EMA5 上行" : "EMA5 下行";
+				const items = [
+					["趋势位置", trend, "收盘价与短期均线比较。"],
+					["EMA 斜率", slope, "短期加权平均是否抬升。"],
+					["MACD 柱", `${fmt(last.hist, 3)} · ${macd}`, "DIF 与 DEA 的差。"],
+					["RSI6", `${fmt(last.rsi6, 1)} · ${rsiText}`, "最近上涨/下跌幅度比较。"],
+				];
+				document.querySelector("#metricGrid").innerHTML = items.map(([name, value, desc]) => `<section class="metric-card"><span>${name}</span><strong>${value}</strong><span>${desc}</span></section>`).join("");
+			}
+			function renderTable(rows) {
+				document.querySelector("#dataRows").innerHTML = rows.map((row) => `<tr><td>${row.index}</td><td>${fmt(row.close)}</td><td>${fmt(row.sma5)}</td><td>${fmt(row.ema5)}</td><td>${fmt(row.ema10)}</td><td>${fmt(row.dif, 3)}</td><td>${fmt(row.dea, 3)}</td><td>${fmt(row.hist, 3)}</td><td>${fmt(row.rsi6, 1)}</td></tr>`).join("");
+			}
+			function run() {
+				const prices = parsePrices(document.querySelector("#priceInput").value);
+				if (prices.length < 10) {
+					document.querySelector("#metricGrid").innerHTML = '<section class="metric-card"><span>数据不足</span><strong class="warn-text">至少输入 10 个价格</strong><span>MACD 和 RSI 需要足够样本。</span></section>';
+					document.querySelector("#dataRows").innerHTML = "";
+					document.querySelector("#priceChart").innerHTML = "";
+					return;
+				}
+				const rows = compute(prices);
+				drawChart(rows);
+				renderMetrics(rows);
+				renderTable(rows);
+			}
+			document.querySelector("#runButton").addEventListener("click", run);
+			document.querySelectorAll(".sample-button").forEach((button) => {
+				button.addEventListener("click", () => {
+					document.querySelector("#priceInput").value = button.dataset.prices;
+					run();
+				});
+			});
+			run();
+		</script>
+	</body>
+</html>
