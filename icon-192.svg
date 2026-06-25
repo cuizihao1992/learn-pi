@@ -1,25 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
-    </linearGradient>
-    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:0.3" />
-      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0" />
+    <linearGradient id="g" x1="0" y1="0" x2="192" y2="192">
+      <stop offset="0" stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#8b5cf6"/>
     </linearGradient>
   </defs>
-  <!-- Background -->
-  <rect width="192" height="192" rx="36" fill="url(#bg)"/>
-  <!-- Glow accent -->
-  <ellipse cx="60" cy="40" rx="80" ry="60" fill="url(#glow)" transform="rotate(-20, 60, 40)"/>
-  <!-- Code brackets: < > -->
-  <g transform="translate(96, 96)">
-    <!-- Left bracket < -->
-    <path d="M 16,-52 L -16,-28 L -16,28 L 16,52" fill="none" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-    <!-- Right bracket > -->
-    <path d="M -16,-52 L 16,-28 L 16,28 L -16,52" fill="none" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-    <!-- Slash / -->
-    <line x1="-40" y1="-56" x2="40" y2="56" stroke="white" stroke-width="8" stroke-linecap="round"/>
+  <rect width="192" height="192" rx="36" fill="url(#g)"/>
+  <g transform="translate(96,96)" fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M-45,-38 L-68,0 L-45,38"/>
+    <path d="M45,-38 L68,0 L45,38"/>
+    <line x1="-22" y1="-45" x2="22" y2="45"/>
   </g>
 </svg>
