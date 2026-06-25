@@ -1,18 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0" />
     </linearGradient>
   </defs>
-  <rect width="192" height="192" rx="32" fill="url(#bg)"/>
-  <!-- Book icon -->
-  <g transform="translate(30,30)">
-    <path d="M10 10 L66 10 Q66 10 66 10 L66 120 Q66 130 56 130 L20 130 Q10 130 10 120 Z" fill="none" stroke="white" stroke-width="6" stroke-linejoin="round"/>
-    <path d="M66 10 L122 10 Q122 10 122 10 L122 120 Q122 130 112 130 L76 130 Q66 130 66 120 Z" fill="none" stroke="white" stroke-width="6" stroke-linejoin="round"/>
-    <line x1="38" y1="40" x2="38" y2="100" stroke="white" stroke-width="4" stroke-linecap="round"/>
-    <line x1="94" y1="40" x2="94" y2="100" stroke="white" stroke-width="4" stroke-linecap="round"/>
-    <!-- Code brackets -->
-    <text x="66" y="155" text-anchor="middle" fill="white" font-size="28" font-family="monospace" font-weight="bold">&lt;/&gt;</text>
+  <!-- Background -->
+  <rect width="192" height="192" rx="36" fill="url(#bg)"/>
+  <!-- Glow accent -->
+  <ellipse cx="60" cy="40" rx="80" ry="60" fill="url(#glow)" transform="rotate(-20, 60, 40)"/>
+  <!-- Code brackets: < > -->
+  <g transform="translate(96, 96)">
+    <!-- Left bracket < -->
+    <path d="M 16,-52 L -16,-28 L -16,28 L 16,52" fill="none" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Right bracket > -->
+    <path d="M -16,-52 L 16,-28 L 16,28 L -16,52" fill="none" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Slash / -->
+    <line x1="-40" y1="-56" x2="40" y2="56" stroke="white" stroke-width="8" stroke-linecap="round"/>
   </g>
 </svg>
