@@ -1,4 +1,4 @@
-const CACHE = 'learn-pi-v1';
+const CACHE = 'learn-pi-v3';
 const STATIC_RES = [
   '/',
   '/index.html',
