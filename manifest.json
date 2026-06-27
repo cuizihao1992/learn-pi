@@ -2,22 +2,24 @@
   "name": "源码学习实验室",
   "short_name": "源码学吧",
   "description": "从源码链路学懂复杂系统怎么运行 — Agent、渲染、地图、量化、能源与科学技术",
-  "start_url": "/",
+  "id": "/learn-pi/",
+  "start_url": "/learn-pi/",
+  "scope": "/learn-pi/",
   "display": "standalone",
   "background_color": "#1a1a2e",
   "theme_color": "#6366f1",
   "orientation": "any",
   "icons": [
     {
-      "src": "/icon-192.svg",
+      "src": "/learn-pi/icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.svg",
+      "src": "/learn-pi/icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]

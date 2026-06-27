@@ -1,7 +1,11 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-CN">
-	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>完整运行流程 | Learn Pi</title><link rel="stylesheet" href="../../styles.css" />  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#7c3aed" />
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>完整运行流程 | Learn Pi</title><link rel="stylesheet" href="../../styles.css" />  <link rel="manifest" href="/learn-pi/manifest.json" />
+  <meta name="theme-color" content="#6366f1" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="源码学吧" />
+  <link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
 </head>
 	<body>
 		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Pi Agent 学习路径</strong><span>完整运行流程</span></div></div><nav><a href="../../index.html">首页</a><a href="architecture.html">架构</a><a href="prompt-processing.html">提示词</a><a href="tools.html">工具</a></nav></header>
@@ -129,7 +133,7 @@ agent_end</code></pre>
 			<script src="../../enhance.js"></script>
 	  <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js');
+      navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
     }
   </script>
 </body>

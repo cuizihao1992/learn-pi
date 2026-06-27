@@ -1,7 +1,11 @@
 <!doctype html>
 <html lang="zh-CN">
-	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Embedding 到 RAG 召回深挖 | 大模型 Agent 面试</title><link rel="stylesheet" href="../../styles.css" />  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#7c3aed" />
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Embedding 到 RAG 召回深挖 | 大模型 Agent 面试</title><link rel="stylesheet" href="../../styles.css" />  <link rel="manifest" href="/learn-pi/manifest.json" />
+  <meta name="theme-color" content="#6366f1" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="源码学吧" />
+  <link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
 </head>
 	<body>
 		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Embedding 到 RAG 召回深挖</strong><span>从语义坐标到证据召回</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/deep-dive-roadmap.html">深挖路线</a><a href="../../examples/embedding-search/index.html">实验</a><a href="rag-pipeline.html">RAG</a></nav></header>
@@ -94,7 +98,7 @@ RAG 把这些证据放进 prompt，让 LLM 基于证据回答。</code></pre>
 		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
 	  <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js');
+      navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
     }
   </script>
 </body>

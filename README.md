@@ -50,3 +50,12 @@ node scripts/build-search-index.mjs
 ## Deployment
 
 仓库通过 GitHub Pages 部署。推送到 `main` 后，GitHub Actions 会发布静态站点。
+
+## PWA Notes
+
+本站按 GitHub Pages 项目路径发布，生产地址是 `https://cuizihao1992.github.io/learn-pi/`。PWA 相关路径必须以 `/learn-pi/` 开头：
+
+- `manifest.json` 的 `start_url` 和 `scope` 保持 `/learn-pi/`。
+- HTML 页面使用 `/learn-pi/manifest.json` 和 `/learn-pi/sw.js`。
+- `sw.js` 只处理 `/learn-pi/` scope 内的请求，并使用 `offline.html` 作为导航失败回退页。
+- 图标优先使用 `icon-192.png` 和 `icon-512.png`，保证浏览器安装兼容性。

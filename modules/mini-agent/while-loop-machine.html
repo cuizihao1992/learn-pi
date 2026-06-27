@@ -1,7 +1,11 @@
 <!doctype html>
 <html lang="zh-CN">
-	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>while 循环的机器底层 | Learn Pi</title><link rel="stylesheet" href="../../styles.css" />  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#7c3aed" />
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>while 循环的机器底层 | Learn Pi</title><link rel="stylesheet" href="../../styles.css" />  <link rel="manifest" href="/learn-pi/manifest.json" />
+  <meta name="theme-color" content="#6366f1" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="源码学吧" />
+  <link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
 </head>
 	<body>
 		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Mini Agent 学习路径</strong><span>Agent Loop 的计算机底层</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">MVP</a><a href="model-api.html">模型接口</a><a href="practical-path.html">实战路线</a><a href="../pi-agent/index.html">Pi Agent</a></nav></header>
@@ -161,7 +165,7 @@ EB F8             ; jmp loop_start</code></pre>
 		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
 	  <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js');
+      navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
     }
   </script>
 </body>

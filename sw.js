@@ -1,70 +1,82 @@
-const CACHE = 'learn-pi-v3';
-const STATIC_RES = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/app.js',
-  '/theme.js',
-  '/enhance.js',
-  '/site-search.js',
-  '/search-index.json',
-  '/content-manifest.json',
-  '/manifest.json',
-  '/icon-192.svg',
-  '/icon-512.svg',
-  '/vendor/lunr.min.js',
-  '/.nojekyll'
+const CACHE = 'learn-pi-v4';
+const BASE_PATH = '/learn-pi';
+const OFFLINE_URL = `${BASE_PATH}/offline.html`;
+
+const STATIC_RESOURCES = [
+  `${BASE_PATH}/`,
+  `${BASE_PATH}/index.html`,
+  OFFLINE_URL,
+  `${BASE_PATH}/styles.css`,
+  `${BASE_PATH}/app.js`,
+  `${BASE_PATH}/theme.js`,
+  `${BASE_PATH}/enhance.js`,
+  `${BASE_PATH}/site-search.js`,
+  `${BASE_PATH}/search-index.json`,
+  `${BASE_PATH}/content-manifest.json`,
+  `${BASE_PATH}/manifest.json`,
+  `${BASE_PATH}/icon-192.png`,
+  `${BASE_PATH}/icon-512.png`,
+  `${BASE_PATH}/vendor/lunr.min.js`
 ];
 
-self.addEventListener('install', (e) => {
-  self.skipWaiting();
-  e.waitUntil(
-    caches.open(CACHE).then((cache) => {
-      // Try each resource individually so one failure doesn't block others
-      return Promise.allSettled(
-        STATIC_RES.map((url) =>
-          cache.add(url).catch(() => {/* skip failed */})
-        )
-      );
-    })
-  );
-});
+function shouldCache(request, response) {
+  return request.method === 'GET' && response && response.ok && response.type === 'basic';
+}
 
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE).then((cache) =>
+      Promise.allSettled(STATIC_RESOURCES.map((url) => cache.add(url)))
     )
   );
 });
 
-self.addEventListener('fetch', (e) => {
-  const { request } = e;
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))))
+      .then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
   const url = new URL(request.url);
 
-  // Only handle same-origin requests
-  if (url.origin !== location.origin) return;
+  if (url.origin !== location.origin || !url.pathname.startsWith(`${BASE_PATH}/`)) {
+    return;
+  }
 
-  // For page navigations: network-first, fallback to cache
   if (request.mode === 'navigate') {
-    e.respondWith(
+    event.respondWith(
       fetch(request)
-        .then((res) => {
-          const clone = res.clone();
-          caches.open(CACHE).then((c) => c.put(request, clone));
-          return res;
+        .then((response) => {
+          if (shouldCache(request, response)) {
+            const clone = response.clone();
+            caches.open(CACHE).then((cache) => cache.put(request, clone));
+          }
+          return response;
         })
-        .catch(() => caches.match(request).then((r) => r || caches.match('/')))
+        .catch(() =>
+          caches.match(request)
+            .then((cached) => cached || caches.match(OFFLINE_URL))
+        )
     );
     return;
   }
 
-  // For static assets: cache-first
-  e.respondWith(
-    caches.match(request).then((cached) => cached || fetch(request).then((res) => {
-      const clone = res.clone();
-      caches.open(CACHE).then((c) => c.put(request, clone));
-      return res;
-    }))
+  event.respondWith(
+    caches.match(request).then((cached) => {
+      if (cached) return cached;
+
+      return fetch(request).then((response) => {
+        if (shouldCache(request, response)) {
+          const clone = response.clone();
+          caches.open(CACHE).then((cache) => cache.put(request, clone));
+        }
+        return response;
+      });
+    })
   );
 });

@@ -49,7 +49,7 @@
 		<script src="../theme.js"></script><script src="../enhance.js"></script>
 	  <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js');
+      navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
     }
   </script>
 </body>

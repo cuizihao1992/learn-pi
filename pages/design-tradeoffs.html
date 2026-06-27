@@ -7,8 +7,12 @@
 		<title>设计取舍 | Learn Pi 已迁移 | 源码学习实验室</title>
 		<link rel="canonical" href="../modules/pi-agent/design-tradeoffs.html" />
 		<link rel="stylesheet" href="../styles.css" />
-	  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#7c3aed" />
+	  <link rel="manifest" href="/learn-pi/manifest.json" />
+  <meta name="theme-color" content="#6366f1" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="源码学吧" />
+  <link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
 </head>
 	<body>
 		<main class="doc-layout">
@@ -21,7 +25,7 @@
 		</main>
 	  <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js');
+      navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
     }
   </script>
 </body>

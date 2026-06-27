@@ -33,8 +33,12 @@
 			@media (max-width: 1000px) { .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .case-grid { grid-template-columns: 1fr; } }
 			@media (max-width: 700px) { .eval-controls, .metric-grid { grid-template-columns: 1fr; } }
 		</style>
-	  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#7c3aed" />
+	  <link rel="manifest" href="/learn-pi/manifest.json" />
+  <meta name="theme-color" content="#6366f1" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="源码学吧" />
+  <link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
 </head>
 	<body>
 		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Agent Evaluation Demo</strong><span>判断 Agent 是否真的会用工具</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/lab-index.html">实验室</a><a href="../../modules/mini-agent/agent-loop-deep-dive.html">Agent Loop</a><a href="../../modules/pi-agent/tool-call-deep-dive.html">Pi toolCall</a></nav></header>
@@ -258,7 +262,7 @@ Final Answer Correctness:
 		</script>
 	  <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js');
+      navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
     }
   </script>
 </body>

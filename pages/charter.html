@@ -1,7 +1,11 @@
 <!doctype html>
 <html lang="zh-CN">
-	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>总宪章 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" />  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#7c3aed" />
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>总宪章 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" />  <link rel="manifest" href="/learn-pi/manifest.json" />
+  <meta name="theme-color" content="#6366f1" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="源码学吧" />
+  <link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
 </head>
 	<body>
 		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>源码学习实验室</strong><span>总宪章</span></div></div><nav><a href="../index.html">首页</a><a href="dashboard.html">仪表盘</a><a href="../modules/pi-agent/charter.html">Pi 宪章</a><a href="../modules/mini-agent/charter.html">Mini Agent 宪章</a><a href="../modules/cesium/charter.html">Cesium 宪章</a><a href="../modules/openlayers/charter.html">OpenLayers 宪章</a><a href="../modules/gaussian-splatting/charter.html">Gaussian Splatting 宪章</a><a href="../modules/stock-kline/charter.html">股票 K 线宪章</a></nav></header>
@@ -101,7 +105,7 @@ examples/{module-slug}/
 		<script src="../theme.js"></script><script src="../enhance.js"></script>
 	  <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js');
+      navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
     }
   </script>
 </body>

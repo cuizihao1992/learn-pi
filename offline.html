@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>离线模式 | 源码学习实验室</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="manifest" href="/learn-pi/manifest.json" />
+    <meta name="theme-color" content="#6366f1" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="源码学吧" />
+  <link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <img src="https://pi.dev/logo-auto.svg" alt="Pi logo" />
+        <div>
+          <strong>源码学习实验室</strong>
+          <span>离线阅读模式</span>
+        </div>
+      </div>
+      <nav aria-label="页面导航">
+        <a href="/learn-pi/">首页</a>
+        <a href="/learn-pi/pages/dashboard.html">学习仪表盘</a>
+        <a href="/learn-pi/pages/search.html">全站检索</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="workspace" aria-labelledby="offline-title">
+        <div class="intro">
+          <p class="kicker">Offline</p>
+          <h1 id="offline-title">当前处于离线状态</h1>
+          <p>
+            已缓存的页面、样式、脚本、搜索索引和核心资源仍可继续使用。没有访问过的新页面需要恢复网络后再打开。
+          </p>
+          <div class="hero-actions">
+            <a class="primary-link" href="/learn-pi/">返回首页</a>
+            <a class="secondary-link" href="/learn-pi/pages/dashboard.html">打开学习仪表盘</a>
+            <a class="secondary-link" href="/learn-pi/pages/search.html">搜索已缓存内容</a>
+          </div>
+        </div>
+        <aside class="quick-panel">
+          <div class="metric"><span>模式</span><strong>PWA</strong></div>
+          <div class="metric"><span>缓存</span><strong>可用</strong></div>
+          <div class="metric"><span>网络</span><strong>离线</strong></div>
+        </aside>
+      </section>
+    </main>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
+      }
+    </script>
+  </body>
+</html>
