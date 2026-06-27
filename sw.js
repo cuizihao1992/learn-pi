@@ -1,4 +1,4 @@
-const CACHE = 'learn-pi-v4';
+const CACHE = 'learn-pi-v5';
 const BASE_PATH = '/learn-pi';
 const OFFLINE_URL = `${BASE_PATH}/offline.html`;
 
@@ -16,6 +16,8 @@ const STATIC_RESOURCES = [
   `${BASE_PATH}/manifest.json`,
   `${BASE_PATH}/icon-192.png`,
   `${BASE_PATH}/icon-512.png`,
+  `${BASE_PATH}/assets/screenshots/home.png`,
+  `${BASE_PATH}/assets/screenshots/progress.png`,
   `${BASE_PATH}/vendor/lunr.min.js`
 ];
 

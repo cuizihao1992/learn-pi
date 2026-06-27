@@ -1299,6 +1299,92 @@ progress {
 	accent-color: var(--teal);
 }
 
+.progress-dashboard {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+	gap: 12px;
+	align-items: stretch;
+	margin: 22px 0 28px;
+}
+
+.progress-dashboard div,
+.progress-dashboard button {
+	min-height: 72px;
+}
+
+.progress-dashboard div {
+	background: var(--panel);
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	padding: 14px;
+}
+
+.progress-dashboard span,
+.progress-dashboard strong {
+	display: block;
+}
+
+.progress-dashboard span {
+	color: var(--muted);
+	font-size: 12px;
+	font-weight: 800;
+}
+
+.progress-dashboard strong {
+	margin-top: 6px;
+	color: var(--teal);
+	font-size: 26px;
+	line-height: 1;
+}
+
+.progress-dashboard button {
+	justify-content: center;
+	width: 100%;
+	margin: 0;
+}
+
+[data-progress-tracker] li {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 10px;
+	margin-bottom: 14px;
+}
+
+.progress-item-text {
+	min-width: 0;
+}
+
+.progress-levels {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.progress-levels button {
+	min-height: 34px;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	background: var(--panel);
+	color: var(--muted);
+	padding: 6px 10px;
+	font: inherit;
+	font-size: 13px;
+	font-weight: 800;
+	cursor: pointer;
+}
+
+.progress-levels button.active {
+	border-color: var(--teal);
+	background: var(--teal-soft);
+	color: var(--teal);
+}
+
+[data-progress-level="done"].active {
+	border-color: var(--green);
+	background: color-mix(in srgb, var(--green) 18%, var(--panel));
+	color: var(--green);
+}
+
 .practice {
 	display: grid;
 	grid-template-columns: 0.85fr 1.15fr;
@@ -1708,6 +1794,26 @@ footer a {
 	.next-card {
 		align-items: flex-start;
 		flex-direction: column;
+	}
+
+	.progress-dashboard {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 10px;
+	}
+
+	.progress-dashboard button {
+		grid-column: 1 / -1;
+	}
+
+	.progress-levels {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.progress-levels button {
+		width: 100%;
+		padding-inline: 8px;
+		font-size: 12px;
 	}
 
 	.step {

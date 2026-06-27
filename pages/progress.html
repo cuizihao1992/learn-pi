@@ -11,10 +11,17 @@
 		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习进度打卡</strong><span>把学习变成可见的闭环</span></div></div><nav><a href="../index.html">首页</a><a href="learning-paths.html">学习路线</a><a href="dashboard.html">仪表盘</a><a href="search.html">检索</a></nav></header>
 		<main class="doc-layout">
 			<aside class="doc-sidebar"><a href="learning-paths.html">学习路线</a><a class="active" href="progress.html">学习进度</a><a href="agent-project-checklist.html">Agent 项目清单</a><a href="interview-bank.html">面试题库</a><a href="knowledge-check.html">知识测验</a><a href="search.html">全站检索</a></aside>
-			<article class="doc">
+			<article class="doc" data-progress-tracker>
 				<p class="kicker">Progress</p>
 				<h1>学习进度打卡表</h1>
-				<p class="lead">这个页面不是用来记录“看了多少页”，而是记录你是否能说清楚、画出来、写出来、跑起来。每完成一项，就在自己的笔记里打勾。</p>
+				<p class="lead">这个页面不是用来记录“看了多少页”，而是记录你是否能说清楚、画出来、写出来、跑起来。状态会保存在当前浏览器本地，安装成 PWA 后也可以继续使用。</p>
+				<section class="progress-dashboard" aria-label="学习进度概览">
+					<div><span>总项</span><strong data-progress-total>0</strong></div>
+					<div><span>已开始</span><strong data-progress-started>0</strong></div>
+					<div><span>做到</span><strong data-progress-done>0</strong></div>
+					<div><span>完成率</span><strong data-progress-rate>0%</strong></div>
+					<button type="button" class="secondary-link" data-progress-reset>重置本页进度</button>
+				</section>
 				<h2>四级掌握标准</h2>
 				<table class="compare-table">
 					<thead><tr><th>等级</th><th>判断标准</th><th>证据</th></tr></thead>

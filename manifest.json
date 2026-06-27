@@ -22,5 +22,71 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "学习仪表盘",
+      "short_name": "仪表盘",
+      "description": "打开全站学习路线和模块入口",
+      "url": "/learn-pi/pages/dashboard.html",
+      "icons": [
+        {
+          "src": "/learn-pi/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "学习进度",
+      "short_name": "进度",
+      "description": "查看并更新本地学习掌握状态",
+      "url": "/learn-pi/pages/progress.html",
+      "icons": [
+        {
+          "src": "/learn-pi/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "全站检索",
+      "short_name": "检索",
+      "description": "搜索模块、概念和实验页面",
+      "url": "/learn-pi/pages/search.html",
+      "icons": [
+        {
+          "src": "/learn-pi/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "全部模块",
+      "short_name": "模块",
+      "description": "打开全部学习模块索引",
+      "url": "/learn-pi/modules/index.html",
+      "icons": [
+        {
+          "src": "/learn-pi/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/learn-pi/assets/screenshots/home.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "源码学习实验室首页"
+    },
+    {
+      "src": "/learn-pi/assets/screenshots/progress.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "学习进度本地记录"
+    }
   ]
 }

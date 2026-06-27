@@ -59,3 +59,6 @@ node scripts/build-search-index.mjs
 - HTML 页面使用 `/learn-pi/manifest.json` 和 `/learn-pi/sw.js`。
 - `sw.js` 只处理 `/learn-pi/` scope 内的请求，并使用 `offline.html` 作为导航失败回退页。
 - 图标优先使用 `icon-192.png` 和 `icon-512.png`，保证浏览器安装兼容性。
+- `manifest.json` 提供学习仪表盘、学习进度、全站检索和全部模块四个快捷入口。
+- `assets/screenshots/` 存放 PWA 安装界面截图资源。
+- `pages/progress.html` 的掌握状态保存在浏览器 `localStorage`，不会上传到服务端。
