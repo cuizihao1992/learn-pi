@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>系统思维与复杂系统 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学习吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>系统思维</strong><span>反馈、延迟、存量、流量、涌现与杠杆点</span></div></div>
+			<nav><a href="../../index.html">首页</a><a href="../index.html">全部模块</a><a href="../../pages/learning-paths.html">学习路线</a><a href="../../pages/search.html">检索</a></nav>
+		</header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar">
+				<a class="active" href="index.html">模块总览</a>
+				<a href="charter.html">模块宪章</a>
+				<a href="feedback-loops.html">反馈环</a>
+				<a href="stock-flow.html">存量与流量</a>
+				<a href="leverage-points.html">杠杆点</a>
+				<a href="case-patterns.html">案例模式</a>
+			</aside>
+			<article class="doc">
+				<p class="kicker">Systems Thinking</p>
+				<h1>用系统思维把复杂世界看成可分析的结构</h1>
+				<p class="lead">很多问题看起来属于不同领域：Agent 为什么会循环调用工具，房价为什么难降，城市为什么拥堵，历史危机为什么升级，学习为什么容易半途而废。系统思维提供一套通用语言：反馈环、延迟、存量、流量、边界、约束、涌现和杠杆点。</p>
+
+				<h2>这个模块解决什么</h2>
+				<table class="compare-table">
+					<thead><tr><th>问题</th><th>系统思维看法</th></tr></thead>
+					<tbody>
+						<tr><td>为什么努力越多，结果反而更差？</td><td>可能存在负反馈延迟、错误指标、局部最优或反作用环。</td></tr>
+						<tr><td>为什么一个小变化会突然引发大变化？</td><td>可能积累了存量压力，触发阈值后出现非线性跃迁。</td></tr>
+						<tr><td>为什么政策或管理动作常常有副作用？</td><td>系统有多个反馈环，短期改善可能制造长期问题。</td></tr>
+						<tr><td>为什么复杂系统不能只靠单点优化？</td><td>整体行为来自组件之间的关系，而不只是组件本身。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>学习入口</h2>
+				<div class="lesson-grid">
+					<section><h3>模块宪章</h3><p>规定系统分析怎么写：先画边界，再找变量、反馈、延迟、存量和杠杆点。</p><a class="primary-link" href="charter.html">查看宪章</a></section>
+					<section><h3>反馈环</h3><p>理解增强回路、平衡回路，以及为什么系统会增长、崩溃、震荡或稳定。</p><a class="primary-link" href="feedback-loops.html">进入反馈</a></section>
+					<section><h3>存量与流量</h3><p>理解财富、库存、知识、信任、债务、用户数这些东西为什么有积累效应。</p><a class="primary-link" href="stock-flow.html">进入存量流量</a></section>
+					<section><h3>杠杆点</h3><p>学习改变系统时从哪里下手：参数、规则、信息流、目标和心智模型。</p><a class="primary-link" href="leverage-points.html">进入杠杆点</a></section>
+					<section><h3>案例模式</h3><p>用 Agent、学习、城市、经济金融和历史危机练习系统分析。</p><a class="primary-link" href="case-patterns.html">进入案例</a></section>
+				</div>
+
+				<h2>一张总图</h2>
+				<pre><code>系统边界
+  -> 关键变量
+  -> 存量与流量
+  -> 增强反馈 / 平衡反馈
+  -> 延迟与阈值
+  -> 指标与激励
+  -> 规则与约束
+  -> 杠杆点
+  -> 行为模式：增长、震荡、崩溃、稳定、涌现</code></pre>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

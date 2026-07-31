@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>反馈环 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>反馈环</strong><span>增长、稳定、震荡和失控的底层机制</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">系统思维</a><a href="../../pages/search.html">检索</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a class="active" href="feedback-loops.html">反馈环</a><a href="stock-flow.html">存量与流量</a><a href="leverage-points.html">杠杆点</a><a href="case-patterns.html">案例模式</a></aside>
+			<article class="doc">
+				<p class="kicker">Feedback Loops</p>
+				<h1>看懂反馈环，很多复杂现象就不再神秘</h1>
+				<p class="lead">反馈环是系统行为的发动机。一个变量影响另一个变量，后者又反过来影响前者，这就形成了反馈。增强反馈会放大变化，平衡反馈会抵消变化。</p>
+				<h2>两类反馈</h2>
+				<table class="compare-table">
+					<thead><tr><th>类型</th><th>作用</th><th>例子</th></tr></thead>
+					<tbody>
+						<tr><td>增强反馈</td><td>越多越多，越少越少，推动增长或崩溃。</td><td>用户越多 -> 内容越多 -> 吸引更多用户。</td></tr>
+						<tr><td>平衡反馈</td><td>偏离目标后产生纠偏力量，让系统趋向稳定。</td><td>房价太高 -> 需求下降 -> 价格压力下降。</td></tr>
+					</tbody>
+				</table>
+				<h2>为什么反馈会让系统反直觉</h2>
+				<ul>
+					<li>短期反馈和长期反馈可能方向相反。</li>
+					<li>一个动作可能同时触发多个环路。</li>
+					<li>延迟会让人误判因果，把今天的结果归因给昨天的动作。</li>
+					<li>增强反馈一旦跨过阈值，变化会突然变快。</li>
+				</ul>
+				<h2>例子：Agent 工具调用循环</h2>
+				<pre><code>模型不确定
+  -> 调用更多工具
+  -> 上下文变长、噪声增加
+  -> 模型更难判断
+  -> 继续调用工具</code></pre>
+				<p>这就是一个可能的增强反馈。解决办法不是简单禁止工具，而是加入平衡反馈：最大调用次数、工具结果摘要、任务完成判定、置信度阈值。</p>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	</body>
+</html>

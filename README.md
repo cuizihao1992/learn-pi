@@ -18,6 +18,7 @@
 - `modules/nuclear-battery/`：学习 RTG、放射性同位素电源、贝塔伏特电池，以及卫星原子钟和电源系统的区别。
 - `modules/history-society/`：学习历史、地缘政治、国家、制度、战争和全球秩序，训练从事件看到结构的社会科学框架。
 - `modules/cognitive-learning/`：学习认知科学、记忆机制、知识体系、认知偏差和 AI 学习教练，让知识库真正变成个人学习系统。
+- `modules/systems-thinking/`：学习反馈环、存量流量、延迟、杠杆点和复杂系统模式，把不同领域的问题放进同一套分析框架。
 
 ## Directory Rules
 
