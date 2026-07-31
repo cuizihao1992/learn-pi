@@ -16,6 +16,7 @@
 - `modules/stock-kline/`：学习股票 K 线、技术指标、量价关系、买卖信号、长短线分类、现实解释和风控复盘。
 - `modules/quant-trading/`：学习量化交易如何从策略假设、数据、回测、实盘执行走到服务器资源和风控监控。
 - `modules/nuclear-battery/`：学习 RTG、放射性同位素电源、贝塔伏特电池，以及卫星原子钟和电源系统的区别。
+- `modules/history-society/`：学习历史、地缘政治、国家、制度、战争和全球秩序，训练从事件看到结构的社会科学框架。
 
 ## Directory Rules
 

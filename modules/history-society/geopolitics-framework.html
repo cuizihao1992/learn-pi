@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>地缘政治分析框架 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学习吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>地缘政治框架</strong><span>地理、资源、通道、联盟与技术</span></div></div>
+			<nav><a href="../../index.html">首页</a><a href="index.html">历史社会</a><a href="../mapbox/index.html">地图模块</a><a href="../../pages/search.html">检索</a></nav>
+		</header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar">
+				<a href="index.html">模块总览</a>
+				<a href="charter.html">模块宪章</a>
+				<a href="social-science-roadmap.html">社会科学路线</a>
+				<a href="wwi-causes.html">一战起因</a>
+				<a class="active" href="geopolitics-framework.html">地缘政治框架</a>
+				<a href="../digital-twin-city/map-stack.html">地图底座</a>
+			</aside>
+			<article class="doc">
+				<p class="kicker">Geopolitics</p>
+				<h1>如何用地缘政治理解国家行为</h1>
+				<p class="lead">地缘政治不是“地图决定论”。它更像一组约束条件：山脉、河流、海峡、平原、能源、粮食、贸易路线、人口分布和技术能力，会影响国家的安全焦虑、扩张方向和合作方式。</p>
+
+				<h2>六个观察维度</h2>
+				<table class="compare-table">
+					<thead><tr><th>维度</th><th>看什么</th><th>常见问题</th></tr></thead>
+					<tbody>
+						<tr><td>地理屏障</td><td>山脉、沙漠、海洋、河流、平原。</td><td>边界是否易守难攻？有没有天然缓冲区？</td></tr>
+						<tr><td>资源结构</td><td>粮食、能源、矿产、水源、工业原料。</td><td>关键资源是否依赖进口？供应线是否脆弱？</td></tr>
+						<tr><td>交通通道</td><td>海峡、港口、铁路、运河、管道、空中航线。</td><td>谁控制 chokepoint？贸易中断会影响谁？</td></tr>
+						<tr><td>人口与城市</td><td>人口密度、城市带、工业区、边疆地区。</td><td>核心区在哪里？边疆治理成本多高？</td></tr>
+						<tr><td>军事纵深</td><td>防御距离、补给线、基地、盟友位置。</td><td>国家为什么需要缓冲地带或海外基地？</td></tr>
+						<tr><td>技术变化</td><td>铁路、蒸汽船、航空、导弹、卫星、网络、AI。</td><td>新技术是否改变距离、成本和打击能力？</td></tr>
+					</tbody>
+				</table>
+
+				<h2>从地图到战略的链路</h2>
+				<pre><code>地理位置
+  -> 资源与交通约束
+  -> 经济结构和贸易依赖
+  -> 安全焦虑和战略目标
+  -> 军事部署、联盟选择、外交姿态
+  -> 对外冲突或合作
+  -> 新的边界、规则和秩序</code></pre>
+
+				<h2>三个典型概念</h2>
+				<ul>
+					<li><strong>海权：</strong>控制海上贸易线、港口、舰队补给和关键海峡的能力。岛国和贸易型国家通常更重视海权。</li>
+					<li><strong>陆权：</strong>控制大陆腹地、铁路网络、陆上资源和军事纵深的能力。大陆国家通常更重视边界安全和缓冲区。</li>
+					<li><strong>关键通道：</strong>海峡、运河、管道和枢纽港口会把全球贸易风险集中到少数节点上。</li>
+				</ul>
+
+				<h2>如何避免误用地缘政治</h2>
+				<ol>
+					<li>不要把地理当成唯一原因。制度、技术、经济和领导层判断同样重要。</li>
+					<li>不要忽略时间。铁路、航空、导弹、卫星和互联网都会改变“距离”的意义。</li>
+					<li>不要只看大国。小国也会通过联盟、港口、资源和制度位置影响大国选择。</li>
+				</ol>
+
+				<h2>和地图技术模块的连接</h2>
+				<p>这个模块未来可以和 Mapbox、Cesium、数字孪生城市合流：用地图展示贸易路线、能源管线、港口、城市带、地形和人口分布。技术上学地图渲染，认知上学如何从空间结构理解社会。</p>
+				<div class="next-card"><span>下一步</span><a href="../econ-finance/globalization.html">回到全球化规则，看地缘与金融如何连接</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
+			}
+		</script>
+	</body>
+</html>

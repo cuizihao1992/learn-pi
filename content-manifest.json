@@ -10,7 +10,7 @@
     "labs": "pages/lab-index.html",
     "deepDives": "pages/deep-dive-roadmap.html",
     "search": "pages/search.html",
-    "rule": "The site is organized as twelve first-class modules: pi-agent, mini-agent, cesium, openlayers, mapbox, digital-twin-city, llm-agent-interview, gaussian-splatting, econ-finance, stock-kline, quant-trading, and nuclear-battery. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
+    "rule": "The site is organized as thirteen first-class modules: pi-agent, mini-agent, cesium, openlayers, mapbox, digital-twin-city, llm-agent-interview, gaussian-splatting, econ-finance, stock-kline, quant-trading, nuclear-battery, and history-society. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
     "modules": "modules/index.html"
   },
   "moduleConvention": {
@@ -223,6 +223,21 @@
         "index.html",
         "principles.html",
         "space-atomic-clock.html"
+      ]
+    },
+    {
+      "slug": "history-society",
+      "name": "History and Society",
+      "root": "modules/history-society/",
+      "charter": "modules/history-society/charter.html",
+      "entry": "modules/history-society/index.html",
+      "purpose": "Build a social-science framework for understanding history, geopolitics, states, institutions, wars, global order, and social change.",
+      "pages": [
+        "index.html",
+        "charter.html",
+        "social-science-roadmap.html",
+        "wwi-causes.html",
+        "geopolitics-framework.html"
       ]
     }
   ],

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>历史社会模块宪章 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学习吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>历史社会模块宪章</strong><span>用系统框架理解国家、制度、战争与社会变迁</span></div></div>
+			<nav><a href="../../index.html">首页</a><a href="../index.html">全部模块</a><a href="index.html">模块总览</a><a href="../../pages/search.html">检索</a></nav>
+		</header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar">
+				<a href="index.html">模块总览</a>
+				<a class="active" href="charter.html">模块宪章</a>
+				<a href="social-science-roadmap.html">社会科学路线</a>
+				<a href="wwi-causes.html">一战起因</a>
+				<a href="geopolitics-framework.html">地缘政治框架</a>
+				<a href="../econ-finance/social-system.html">社会运行系统</a>
+				<a href="../../pages/search.html">全站检索</a>
+			</aside>
+			<article class="doc">
+				<p class="kicker">Module Charter</p>
+				<h1>历史、地缘政治与社会系统模块宪章</h1>
+				<p class="lead">这个模块的目标不是背年代和人物，而是训练一种能力：看到一个历史事件、国际冲突或社会现象时，能问出“哪些结构力量在推动它，哪些制度约束在限制它，哪些人误判了局势”。</p>
+
+				<h2>一、内容边界</h2>
+				<table class="compare-table">
+					<thead><tr><th>放进本模块</th><th>不放进本模块</th></tr></thead>
+					<tbody>
+						<tr><td>战争、革命、国家形成、帝国兴衰、国际秩序、制度变迁。</td><td>单纯名人传记、孤立年份表、缺少解释框架的事件堆砌。</td></tr>
+						<tr><td>政治学、社会学、历史学、国际关系的基础概念。</td><td>当代敏感事件的即时立场判断和未经验证的阴谋叙事。</td></tr>
+						<tr><td>与经济金融、全球化、技术系统相互影响的案例。</td><td>只给结论、不说明证据链和因果链的观点输出。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>二、每篇内容必须回答的五个问题</h2>
+				<ol>
+					<li>这个事件的表层导火索是什么？</li>
+					<li>更深层的结构矛盾是什么？例如权力转移、资源分配、制度失灵、身份冲突。</li>
+					<li>关键参与者分别有什么利益、约束和误判？</li>
+					<li>为什么它没有被和平解决？是哪条反馈链把问题放大了？</li>
+					<li>它对今天理解国家、市场、技术和个人命运有什么启发？</li>
+				</ol>
+
+				<h2>三、推荐写作模板</h2>
+				<pre><code>事件：
+一句话结论：
+时间线：
+参与者：
+结构变量：
+  - 权力
+  - 资源
+  - 制度
+  - 身份
+  - 技术
+  - 信息
+升级机制：
+反事实：
+对今天的启发：</code></pre>
+
+				<h2>四、和其他模块如何连接</h2>
+				<ul>
+					<li>和 <a href="../econ-finance/index.html">经济金融</a> 连接：税收、战争融资、工业化、全球贸易和债务体系会影响国家能力。</li>
+					<li>和 <a href="../llm-agent-interview/index.html">LLM / Agent</a> 连接：可以把历史资料做成 RAG 知识库，训练多证据、多视角回答。</li>
+					<li>和 <a href="../digital-twin-city/index.html">数字孪生城市</a> 连接：城市、基础设施、交通、能源和治理本来就是社会运行系统的一部分。</li>
+				</ul>
+				<div class="next-card"><span>下一步</span><a href="index.html">进入历史社会模块总览</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
+			}
+		</script>
+	</body>
+</html>
