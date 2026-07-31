@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>学习如何发生 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学习吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习如何发生</strong><span>注意力、记忆、理解、提取和迁移</span></div></div>
+			<nav><a href="../../index.html">首页</a><a href="index.html">认知学习</a><a href="../../pages/search.html">检索</a></nav>
+		</header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar">
+				<a href="index.html">模块总览</a>
+				<a href="charter.html">模块宪章</a>
+				<a class="active" href="how-learning-works.html">学习如何发生</a>
+				<a href="knowledge-system.html">知识体系方法</a>
+				<a href="cognitive-bias.html">认知偏差</a>
+				<a href="ai-learning-coach.html">AI 学习教练</a>
+			</aside>
+			<article class="doc">
+				<p class="kicker">Learning Mechanism</p>
+				<h1>为什么“看懂了”不等于“学会了”</h1>
+				<p class="lead">学习不是把信息倒进脑子里，而是把新信息和已有结构连接起来，并能在需要时重新提取出来。真正的学习至少经过四步：注意、加工、存储、提取。</p>
+
+				<h2>一、注意力：先决定什么能进来</h2>
+				<p>注意力像入口带宽。信息太多时，大脑会优先处理新奇、强情绪、和当前目标相关的东西。所以学习时第一步不是拼命看更多，而是先明确问题：我现在要理解哪个机制？我要能回答哪个问题？</p>
+
+				<h2>二、工作记忆：容量很小</h2>
+				<p>工作记忆负责临时加工信息，但容量有限。复杂知识如果没有结构，会很快把工作记忆塞满。流程图、分层目录、最小例子、对比表，本质上都是在降低认知负荷。</p>
+				<pre><code>坏学习：
+一口气读很多术语 -> 工作记忆爆掉 -> 只剩模糊印象
+
+好学习：
+先抓一条主线 -> 每个概念挂到主线 -> 用例子验证 -> 再扩展分支</code></pre>
+
+				<h2>三、长期记忆：靠连接和重复</h2>
+				<p>长期记忆不是仓库，而是一张网络。一个概念连接的例子越多、路径越多，越容易被提取。比如“利率”如果只背定义，很快忘；如果把它连到房贷、债券、股票估值、汇率、央行政策，就会稳很多。</p>
+
+				<h2>四、提取练习：比重复阅读更有效</h2>
+				<p>重复阅读会制造熟悉感，让人以为自己会了。提取练习更像真实测试：合上页面，尝试自己说出结构、画出图、解释例子。说不出来的地方，才是真正需要回去补的地方。</p>
+
+				<h2>五、间隔复习：对抗遗忘</h2>
+				<p>遗忘不是失败，而是正常机制。有效策略是在快忘的时候重新提取：当天一次，隔天一次，一周一次，一个月一次。每次不用重读全文，只要回答几个核心问题。</p>
+
+				<h2>六、迁移：判断是否真懂</h2>
+				<p>能把一个概念用到新领域，说明你抓住了结构。比如“安全困境”可以解释一战军备竞赛，也可以类比公司之间的防御性竞争；“缓存”可以解释计算机系统，也能帮助理解人类工作记忆的限制。</p>
+
+				<div class="next-card"><span>练习</span><a href="knowledge-system.html">把这套机制落到你的知识库组织方法里</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
+			}
+		</script>
+	</body>
+</html>

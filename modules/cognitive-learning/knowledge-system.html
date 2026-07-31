@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>个人知识体系方法 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学习吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>个人知识体系方法</strong><span>TIL、概念索引、模块、实验和项目闭环</span></div></div>
+			<nav><a href="../../index.html">首页</a><a href="index.html">认知学习</a><a href="../../pages/til.html">TIL</a><a href="../../pages/search.html">检索</a></nav>
+		</header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar">
+				<a href="index.html">模块总览</a>
+				<a href="charter.html">模块宪章</a>
+				<a href="how-learning-works.html">学习如何发生</a>
+				<a class="active" href="knowledge-system.html">知识体系方法</a>
+				<a href="cognitive-bias.html">认知偏差</a>
+				<a href="ai-learning-coach.html">AI 学习教练</a>
+			</aside>
+			<article class="doc">
+				<p class="kicker">Knowledge System</p>
+				<h1>从收藏夹到可生长的知识库</h1>
+				<p class="lead">知识库的核心不是“存得多”，而是“能找回、能连接、能复用、能输出”。本站可以按五层组织：TIL 捕捉、概念索引连接、模块页面展开、实验验证、项目输出。</p>
+
+				<h2>五层结构</h2>
+				<table class="compare-table">
+					<thead><tr><th>层级</th><th>用途</th><th>本站入口</th></tr></thead>
+					<tbody>
+						<tr><td>TIL</td><td>快速记录今天学到的概念、问题、案例和灵感。</td><td><a href="../../pages/til.html">TIL 学习日志</a></td></tr>
+						<tr><td>概念索引</td><td>把术语和模块连接起来，形成可检索的知识地图。</td><td><a href="../../pages/concept-index.html">概念索引</a></td></tr>
+						<tr><td>模块页面</td><td>把一个主题拆成总览、路线、关键机制、案例和练习。</td><td><a href="../index.html">全部模块</a></td></tr>
+						<tr><td>实验 Demo</td><td>用最小可运行例子验证概念，避免只停留在文字理解。</td><td><a href="../../pages/lab-index.html">实验室</a></td></tr>
+						<tr><td>项目输出</td><td>做成工具、文章、代码、分析报告或可讲解的课程。</td><td><a href="../../pages/agent-project-checklist.html">项目清单</a></td></tr>
+					</tbody>
+				</table>
+
+				<h2>每次学习后的 10 分钟整理</h2>
+				<ol>
+					<li>写一句话：今天真正学到的是什么。</li>
+					<li>列 3 个关键词：它连接哪些概念。</li>
+					<li>补 1 个例子：最好来自现实或代码。</li>
+					<li>问 1 个问题：还有哪里没懂。</li>
+					<li>决定去向：留在 TIL，还是迁移到正式模块。</li>
+				</ol>
+
+				<h2>知识从零散到体系的路径</h2>
+				<pre><code>信息：看到一篇文章、一个视频、一次对话
+  -> TIL：记录最小条目
+  -> 概念索引：建立连接
+  -> 模块页：扩写为结构化解释
+  -> 实验：用代码、图表或案例验证
+  -> 输出：讲给别人、做成项目、形成自己的判断</code></pre>
+
+				<h2>最重要的原则</h2>
+				<p>不要把知识库当仓库，要把它当工坊。仓库追求保存，工坊追求加工。每个页面都应该能被继续改写、重组、检索和复用。</p>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
+			}
+		</script>
+	</body>
+</html>

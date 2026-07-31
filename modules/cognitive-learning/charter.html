@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>认知学习模块宪章 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学习吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>认知学习模块宪章</strong><span>把学习本身变成可设计、可复盘、可升级的系统</span></div></div>
+			<nav><a href="../../index.html">首页</a><a href="../index.html">全部模块</a><a href="index.html">模块总览</a><a href="../../pages/search.html">检索</a></nav>
+		</header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar">
+				<a href="index.html">模块总览</a>
+				<a class="active" href="charter.html">模块宪章</a>
+				<a href="how-learning-works.html">学习如何发生</a>
+				<a href="knowledge-system.html">知识体系方法</a>
+				<a href="cognitive-bias.html">认知偏差</a>
+				<a href="ai-learning-coach.html">AI 学习教练</a>
+			</aside>
+			<article class="doc">
+				<p class="kicker">Module Charter</p>
+				<h1>认知科学与学习方法模块宪章</h1>
+				<p class="lead">这个模块服务于整个知识库：不是再增加一堆新知识，而是回答“我怎样真正学会这些知识”。目标是把阅读、理解、记忆、练习、输出和复盘设计成一个闭环。</p>
+
+				<h2>一、模块目标</h2>
+				<ul>
+					<li>让学习从“看过很多”变成“能说清、能画出、能迁移、能做成”。</li>
+					<li>解释注意力、工作记忆、长期记忆、提取练习、间隔复习和迁移学习的基本机制。</li>
+					<li>把 TIL、概念索引、模块宪章、学习路线、项目练习和搜索系统整合成个人知识库方法。</li>
+					<li>训练复杂判断：基准率、反事实、一阶/二阶影响、系统反馈和认知偏差。</li>
+				</ul>
+
+				<h2>二、每篇内容必须落到行动</h2>
+				<table class="compare-table">
+					<thead><tr><th>内容类型</th><th>必须包含</th></tr></thead>
+					<tbody>
+						<tr><td>机制解释</td><td>说明大脑或学习系统发生了什么，避免只给鸡汤。</td></tr>
+						<tr><td>方法建议</td><td>给出可执行步骤，例如如何复习、如何提问、如何做卡片。</td></tr>
+						<tr><td>反例提醒</td><td>说明常见误区，例如只收藏、不提取、不输出、不复盘。</td></tr>
+						<tr><td>知识库连接</td><td>连接到本站已有模块，让方法可以马上用于 Agent、经济、历史、地图和交易学习。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>三、判断是否真的学会</h2>
+				<pre><code>看过：我能指出在哪里读过
+说清：我能不用原文复述核心机制
+画出：我能画出流程、因果链或结构图
+迁移：我能把它用到另一个领域
+做成：我能用它完成一个作品、解释一个案例或修正一次判断</code></pre>
+
+				<div class="next-card"><span>下一步</span><a href="index.html">进入认知学习模块总览</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
+			}
+		</script>
+	</body>
+</html>

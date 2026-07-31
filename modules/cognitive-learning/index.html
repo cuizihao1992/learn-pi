@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>认知科学与学习方法 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学习吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>认知科学与学习方法</strong><span>学习如何学习，判断如何判断</span></div></div>
+			<nav><a href="../../index.html">首页</a><a href="../index.html">全部模块</a><a href="../../pages/til.html">TIL</a><a href="../../pages/search.html">检索</a></nav>
+		</header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar">
+				<a class="active" href="index.html">模块总览</a>
+				<a href="charter.html">模块宪章</a>
+				<a href="how-learning-works.html">学习如何发生</a>
+				<a href="knowledge-system.html">知识体系方法</a>
+				<a href="cognitive-bias.html">认知偏差</a>
+				<a href="ai-learning-coach.html">AI 学习教练</a>
+				<a href="../../pages/concept-index.html">概念索引</a>
+			</aside>
+			<article class="doc">
+				<p class="kicker">Cognitive Learning</p>
+				<h1>让你的知识库不只是变大，而是变聪明</h1>
+				<p class="lead">你现在的站点已经有 Agent、地图、经济金融、历史社会、量化和科学技术。下一步不是无限堆页面，而是建立一套学习操作系统：如何理解、记忆、检索、迁移、输出，如何避免认知偏差，如何让 AI 成为学习教练。</p>
+
+				<h2>这个模块回答什么</h2>
+				<table class="compare-table">
+					<thead><tr><th>问题</th><th>对应能力</th></tr></thead>
+					<tbody>
+						<tr><td>为什么看懂了却记不住？</td><td>理解工作记忆、长期记忆、提取练习和间隔复习。</td></tr>
+						<tr><td>为什么学了很多还是没有体系？</td><td>用概念、因果链、模块宪章、TIL 和项目练习组织知识。</td></tr>
+						<tr><td>为什么判断复杂问题容易偏？</td><td>识别确认偏误、幸存者偏差、锚定效应、可得性偏差和过度自信。</td></tr>
+						<tr><td>AI 时代怎么学习更快？</td><td>把 Agent 当导师、陪练、检索助手、错题本和项目教练。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>学习入口</h2>
+				<div class="lesson-grid">
+					<section><h3>模块宪章</h3><p>定义本模块的写作规则：每个方法都必须落到行动、反例和知识库连接。</p><a class="primary-link" href="charter.html">查看宪章</a></section>
+					<section><h3>学习如何发生</h3><p>理解注意力、工作记忆、长期记忆、提取练习、间隔复习和迁移。</p><a class="primary-link" href="how-learning-works.html">进入机制</a></section>
+					<section><h3>知识体系方法</h3><p>把 TIL、概念索引、模块页面、实验和项目串成个人知识库。</p><a class="primary-link" href="knowledge-system.html">进入方法</a></section>
+					<section><h3>认知偏差</h3><p>学习复杂判断中最常见的错误来源，并给每种偏差配一个检查动作。</p><a class="primary-link" href="cognitive-bias.html">进入偏差</a></section>
+					<section><h3>AI 学习教练</h3><p>设计一个陪你提问、复习、出题、追踪进度和生成项目练习的 Agent。</p><a class="primary-link" href="ai-learning-coach.html">进入教练</a></section>
+				</div>
+
+				<h2>一张总图</h2>
+				<pre><code>输入：阅读、视频、对话、代码、案例
+  -> 注意力筛选
+  -> 工作记忆加工
+  -> 形成概念、例子、因果链
+  -> 提取练习和间隔复习
+  -> 写入知识库：TIL、概念索引、模块页、项目
+  -> 输出：讲解、图解、代码、案例分析
+  -> 反馈修正：错题、复盘、重构页面</code></pre>
+
+				<h2>和本站其他模块的关系</h2>
+				<ul>
+					<li>学习 Pi Agent：用调用链图和最小复现降低认知负荷。</li>
+					<li>学习经济金融：用现实案例和因果链防止只背概念。</li>
+					<li>学习历史社会：用结构变量和反事实训练复杂判断。</li>
+					<li>学习地图渲染：用“数据 -> 对象 -> 命令 -> GPU”的流程图做理解支架。</li>
+				</ul>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
+			}
+		</script>
+	</body>
+</html>

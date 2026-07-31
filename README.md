@@ -17,6 +17,7 @@
 - `modules/quant-trading/`：学习量化交易如何从策略假设、数据、回测、实盘执行走到服务器资源和风控监控。
 - `modules/nuclear-battery/`：学习 RTG、放射性同位素电源、贝塔伏特电池，以及卫星原子钟和电源系统的区别。
 - `modules/history-society/`：学习历史、地缘政治、国家、制度、战争和全球秩序，训练从事件看到结构的社会科学框架。
+- `modules/cognitive-learning/`：学习认知科学、记忆机制、知识体系、认知偏差和 AI 学习教练，让知识库真正变成个人学习系统。
 
 ## Directory Rules
 

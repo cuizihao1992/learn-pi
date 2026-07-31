@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>认知偏差与复杂判断 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学习吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>认知偏差</strong><span>在复杂问题里给自己加检查点</span></div></div>
+			<nav><a href="../../index.html">首页</a><a href="index.html">认知学习</a><a href="../history-society/index.html">历史社会</a><a href="../../pages/search.html">检索</a></nav>
+		</header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar">
+				<a href="index.html">模块总览</a>
+				<a href="charter.html">模块宪章</a>
+				<a href="how-learning-works.html">学习如何发生</a>
+				<a href="knowledge-system.html">知识体系方法</a>
+				<a class="active" href="cognitive-bias.html">认知偏差</a>
+				<a href="ai-learning-coach.html">AI 学习教练</a>
+			</aside>
+			<article class="doc">
+				<p class="kicker">Cognitive Bias</p>
+				<h1>判断复杂问题时，先给大脑装几个保险丝</h1>
+				<p class="lead">认知偏差不是“别人愚蠢”，而是人类在有限信息、有限时间、有限注意力下做判断的默认捷径。捷径有时有用，但面对金融、历史、技术和社会系统时，很容易把我们带偏。</p>
+
+				<h2>常见偏差与检查动作</h2>
+				<table class="compare-table">
+					<thead><tr><th>偏差</th><th>表现</th><th>检查动作</th></tr></thead>
+					<tbody>
+						<tr><td>确认偏误</td><td>只找支持自己观点的信息。</td><td>主动写出最强反方论据。</td></tr>
+						<tr><td>幸存者偏差</td><td>只看成功案例，忽略失败样本。</td><td>问：没被看见的样本在哪里？</td></tr>
+						<tr><td>锚定效应</td><td>被第一个数字或说法影响后续判断。</td><td>先独立估计，再看外部报价或观点。</td></tr>
+						<tr><td>可得性偏差</td><td>最近看到的案例显得格外重要。</td><td>查基准率，问长期统计是什么。</td></tr>
+						<tr><td>过度自信</td><td>把模糊判断说得太确定。</td><td>给结论配概率和失效条件。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>复杂判断四步</h2>
+				<ol>
+					<li>先写结论的置信度：我是 55% 确定，还是 90% 确定？</li>
+					<li>列变量：哪些因素最可能改变结果？</li>
+					<li>找反例：有没有一个事实能推翻我的判断？</li>
+					<li>定复盘点：什么时候回来检查自己是否判断错了？</li>
+				</ol>
+
+				<h2>用于本站学习的例子</h2>
+				<ul>
+					<li>看股票指标时，不要因为一次金叉成功就认为指标永远有效，要看不同市场环境下的失败样本。</li>
+					<li>看一战起因时，不要只抓住刺杀事件，要看长期权力结构和动员机制。</li>
+					<li>看 AI 工具能力时，不要只看演示视频，要看失败案例、边界条件和评估指标。</li>
+				</ul>
+
+				<div class="next-card"><span>下一步</span><a href="ai-learning-coach.html">把这些检查动作交给 AI 陪你执行</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>AI 学习教练 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学习吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>AI 学习教练</strong><span>让 Agent 帮你提问、复习、出题和复盘</span></div></div>
+			<nav><a href="../../index.html">首页</a><a href="index.html">认知学习</a><a href="../mini-agent/index.html">Mini Agent</a><a href="../../pages/search.html">检索</a></nav>
+		</header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar">
+				<a href="index.html">模块总览</a>
+				<a href="charter.html">模块宪章</a>
+				<a href="how-learning-works.html">学习如何发生</a>
+				<a href="knowledge-system.html">知识体系方法</a>
+				<a href="cognitive-bias.html">认知偏差</a>
+				<a class="active" href="ai-learning-coach.html">AI 学习教练</a>
+			</aside>
+			<article class="doc">
+				<p class="kicker">AI Coach</p>
+				<h1>怎样让 AI 真正帮你学习，而不是替你假装学会</h1>
+				<p class="lead">AI 最危险的用法是直接给答案，让你产生“我懂了”的错觉。更好的用法是把 AI 设计成教练：它不只回答，还追问、出题、检查盲点、安排复习、生成小项目。</p>
+
+				<h2>五种角色</h2>
+				<table class="compare-table">
+					<thead><tr><th>角色</th><th>做什么</th><th>示例提示词</th></tr></thead>
+					<tbody>
+						<tr><td>导师</td><td>把复杂主题拆成路线和台阶。</td><td>“把这个主题拆成 5 个必学问题，每个问题给一个最小例子。”</td></tr>
+						<tr><td>陪练</td><td>不直接给答案，而是追问你的解释。</td><td>“我先解释，你只指出漏洞，并给我一个反问。”</td></tr>
+						<tr><td>出题器</td><td>生成自测题、案例题和迁移题。</td><td>“基于这页内容，出 5 道从易到难的问题。”</td></tr>
+						<tr><td>检索助手</td><td>从知识库里找相关页面和概念。</td><td>“帮我找和利率、房租、城市工资相关的页面。”</td></tr>
+						<tr><td>复盘官</td><td>记录错误判断和下次检查点。</td><td>“把我这次判断拆成证据、假设、风险和复盘日期。”</td></tr>
+					</tbody>
+				</table>
+
+				<h2>一个学习 Agent 的最小设计</h2>
+				<pre><code>用户目标：学习一个主题
+  -> 读取站内搜索索引
+  -> 找到相关模块和页面
+  -> 生成学习路线
+  -> 每读完一页，出 3 道提取练习
+  -> 根据答题结果记录薄弱概念
+  -> 安排间隔复习
+  -> 推荐一个最小项目或案例输出</code></pre>
+
+				<h2>不要让 AI 破坏学习</h2>
+				<ul>
+					<li>不要一上来问“总结这篇文章”，先问“我应该带着哪 3 个问题读”。</li>
+					<li>不要只要标准答案，要让 AI 追问你的解释。</li>
+					<li>不要让 AI 替你输出最终理解，先自己写，再让 AI 找漏洞。</li>
+					<li>不要只追求快，学习的关键动作是提取和反馈，不是被动接收。</li>
+				</ul>
+
+				<h2>和 Mini Agent 的连接</h2>
+				<p>未来可以用 <a href="../mini-agent/index.html">Mini Agent</a> 做一个真正的学习教练 MVP：接入本站搜索索引，记录学习进度，用本地存储保存错题和薄弱概念，再通过工具调用生成复习计划。</p>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
+			}
+		</script>
+	</body>
+</html>
