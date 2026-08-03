@@ -769,6 +769,15 @@ h2 {
 	color: #314044;
 }
 
+.doc img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	background: var(--panel);
+}
+
 .doc code {
 	font-family: "Cascadia Mono", Consolas, monospace;
 }

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="620" viewBox="0 0 1100 620" role="img" aria-labelledby="title desc">
+  <title id="title">缓存层级图</title>
+  <desc id="desc">从 CPU 寄存器到网络服务的缓存层级，越靠近 CPU 越快越小，越靠外越慢越大。</desc>
+  <rect width="1100" height="620" fill="#fbf7ee"/>
+  <text x="550" y="48" text-anchor="middle" font-family="Microsoft YaHei, Segoe UI, sans-serif" font-size="30" font-weight="700" fill="#182125">缓存的硬件基础：速度、容量和距离的交换</text>
+  <text x="550" y="86" text-anchor="middle" font-family="Microsoft YaHei, Segoe UI, sans-serif" font-size="17" fill="#607077">越靠近 CPU：越快、越小、越贵；越远离 CPU：越慢、越大、越便宜</text>
+
+  <defs>
+    <linearGradient id="fast" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#006c67"/>
+      <stop offset="100%" stop-color="#315d91"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#607077"/>
+    </marker>
+  </defs>
+
+  <g font-family="Microsoft YaHei, Segoe UI, sans-serif">
+    <rect x="420" y="130" width="260" height="54" rx="8" fill="url(#fast)"/>
+    <text x="550" y="164" text-anchor="middle" font-size="21" font-weight="700" fill="white">CPU 寄存器</text>
+
+    <rect x="365" y="208" width="370" height="58" rx="8" fill="#d7efea" stroke="#006c67" stroke-width="2"/>
+    <text x="550" y="244" text-anchor="middle" font-size="21" font-weight="700" fill="#006c67">L1 Cache</text>
+
+    <rect x="315" y="292" width="470" height="62" rx="8" fill="#e8f1f8" stroke="#315d91" stroke-width="2"/>
+    <text x="550" y="330" text-anchor="middle" font-size="21" font-weight="700" fill="#315d91">L2 / L3 Cache</text>
+
+    <rect x="255" y="386" width="590" height="66" rx="8" fill="#fff4df" stroke="#c98620" stroke-width="2"/>
+    <text x="550" y="426" text-anchor="middle" font-size="21" font-weight="700" fill="#8b5c11">内存 RAM / 操作系统页缓存</text>
+
+    <rect x="185" y="492" width="730" height="72" rx="8" fill="#f8e7e6" stroke="#a93c38" stroke-width="2"/>
+    <text x="550" y="535" text-anchor="middle" font-size="21" font-weight="700" fill="#a93c38">SSD / 磁盘 / 网络 / 远程服务</text>
+
+    <path d="M550 184 L550 204" stroke="#607077" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M550 266 L550 288" stroke="#607077" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M550 354 L550 382" stroke="#607077" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M550 452 L550 488" stroke="#607077" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <text x="120" y="160" font-size="18" font-weight="700" fill="#006c67">快</text>
+    <text x="120" y="188" font-size="15" fill="#607077">纳秒级</text>
+    <text x="120" y="530" font-size="18" font-weight="700" fill="#a93c38">慢</text>
+    <text x="120" y="558" font-size="15" fill="#607077">微秒到毫秒级</text>
+
+    <text x="930" y="160" font-size="18" font-weight="700" fill="#006c67">小</text>
+    <text x="930" y="188" font-size="15" fill="#607077">KB / MB</text>
+    <text x="930" y="530" font-size="18" font-weight="700" fill="#a93c38">大</text>
+    <text x="930" y="558" font-size="15" fill="#607077">GB / TB / 远程数据</text>
+  </g>
+</svg>
