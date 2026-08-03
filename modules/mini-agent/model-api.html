@@ -518,20 +518,235 @@ data: [DONE]</code></pre>
 					<li><strong>指令微调：</strong>用 tool calling 数据训练模型，让它学会何时调用工具、如何填参数、何时最终回答。</li>
 				</ol>
 
-				<h2>Pi 是怎么做的</h2>
-				<p>Pi 自己没有要求所有 provider 长得一样。它在 `pi-ai` 里做 provider 适配，在 `pi-agent-core` 里只处理统一后的 AgentMessage、toolCall、toolResult。</p>
-				<pre><code>Pi 内部:
-AgentMessage / AgentTool / AgentEvent
-  -> pi-ai provider adapter
-  -> OpenAI / Anthropic / Google / ...
-  -> provider response
-  -> 统一成 AssistantMessageEvent / AssistantMessage
-  -> agent-loop 执行工具并继续</code></pre>
-				<p>所以如果你要接入自研模型，有两条路：</p>
+				<h2>Pi 源码是否已经做了多模型接口兼容</h2>
+				<p>是的。Pi 已经把不同模型 API 的差异集中放进 `packages/ai`，而不是把 OpenAI、Anthropic、Google 等 provider 的判断散落在 Agent 主循环里。Agent 主流程只面对统一后的 `Message`、`Tool`、`ToolCall`、`ToolResult`、`AssistantMessageEventStream`，真正的协议差异由 provider adapter 处理。</p>
+				<pre><code>Pi 的兼容层思想:
+Coding Agent
+  -> 统一 Context: systemPrompt + messages + tools
+  -> streamSimple(model, context, options)
+  -> 根据 model.api 找到 provider adapter
+  -> OpenAI / Anthropic / Google / Mistral / Bedrock ...
+  -> provider 原始流式响应
+  -> 转回 Pi 统一 AssistantMessageEventStream
+  -> Agent 继续执行 toolCall，写回 toolResult</code></pre>
+				<p>这和你自己做 Mini Agent 时应该采用的结构一致：业务层不要直接依赖某个厂商的 JSON 格式，先定义内部统一协议，再写 adapter。</p>
+
+				<h2>Pi 源码位置：从哪里开始看</h2>
+				<table class="compare-table">
+					<thead><tr><th>源码文件</th><th>看什么</th><th>为什么重要</th></tr></thead>
+					<tbody>
+						<tr><td><code>packages/ai/src/types.ts</code></td><td>统一的 API、Provider、Message、ToolCall、ToolResult 类型。</td><td>这是所有 provider adapter 的共同语言。</td></tr>
+						<tr><td><code>packages/ai/src/api-registry.ts</code></td><td><code>registerApiProvider</code> 和 provider 注册表。</td><td>不同模型接口通过注册表接入统一调用入口。</td></tr>
+						<tr><td><code>packages/ai/src/stream.ts</code></td><td><code>streamSimple()</code> 如何根据 <code>model.api</code> 分发。</td><td>这是 Agent 调模型时最核心的抽象入口。</td></tr>
+						<tr><td><code>packages/ai/src/providers/register-builtins.ts</code></td><td>内置 provider 如何注册。</td><td>能看到 Pi 支持哪些协议：OpenAI、Anthropic、Google、Mistral、Bedrock 等。</td></tr>
+						<tr><td><code>packages/ai/src/providers/openai-completions.ts</code></td><td>OpenAI Chat Completions 兼容实现。</td><td>最适合对照你自己的 OpenAI-compatible adapter。</td></tr>
+						<tr><td><code>packages/ai/src/providers/anthropic.ts</code></td><td>Anthropic Messages 兼容实现。</td><td>看清 <code>tool_use</code>、<code>tool_result</code> 和 OpenAI <code>tool_calls</code> 的差别。</td></tr>
+						<tr><td><code>packages/coding-agent/src/core/sdk.ts</code></td><td>Coding Agent 真正调用模型的位置。</td><td>能证明 Agent 主流程只调用统一的 <code>streamSimple</code>。</td></tr>
+						<tr><td><code>packages/coding-agent/src/core/model-registry.ts</code></td><td>模型配置、自定义 provider、API key/header 获取。</td><td>如果要接自研模型，通常从这里配置 provider 和 baseUrl。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>第一层：统一类型先定下来</h2>
+				<p>Pi 在 <code>packages/ai/src/types.ts</code> 里先定义支持哪些 API 形状。注意这里不是只写厂商名，而是写“协议形状”。例如 OpenAI Chat Completions、Anthropic Messages、Google Generative AI 都是不同的 API 形状。</p>
+				<pre><code>export type KnownApi =
+  | "openai-completions"
+  | "mistral-conversations"
+  | "openai-responses"
+  | "azure-openai-responses"
+  | "openai-codex-responses"
+  | "anthropic-messages"
+  | "bedrock-converse-stream"
+  | "google-generative-ai"
+  | "google-vertex";</code></pre>
+				<p>这个设计很关键：<code>provider</code> 是服务商，<code>api</code> 是接口协议。OpenRouter、DeepSeek、Groq、NVIDIA NIM 这类服务可能都可以伪装成 OpenAI-compatible，所以它们的 provider 不同，但 API 形状可以复用 <code>openai-completions</code>。</p>
+				<p>Pi 内部真正流转的工具调用不是 OpenAI 的原始 <code>tool_calls</code>，也不是 Anthropic 的原始 <code>tool_use</code>，而是统一的 <code>ToolCall</code>：</p>
+				<pre><code>export interface ToolCall {
+  type: "toolCall";
+  id: string;
+  name: string;
+  arguments: Record&lt;string, any&gt;;
+}</code></pre>
+				<p>这个统一类型就是“中间语言”。只要所有 provider 最后都转换成它，Agent loop 就不需要关心模型来自哪里。</p>
+
+				<h2>第二层：provider 注册表</h2>
+				<p><code>packages/ai/src/api-registry.ts</code> 是模型接口兼容的调度中心。它定义每个 provider adapter 必须实现两个函数：<code>stream</code> 和 <code>streamSimple</code>。</p>
+				<pre><code>export interface ApiProvider {
+  api: TApi;
+  stream: StreamFunction&lt;TApi, TOptions&gt;;
+  streamSimple: StreamFunction&lt;TApi, SimpleStreamOptions&gt;;
+}</code></pre>
+				<p>注册时，Pi 把 adapter 存进一个 Map：</p>
+				<pre><code>const apiProviderRegistry = new Map&lt;string, RegisteredApiProvider&gt;();
+
+export function registerApiProvider(provider, sourceId) {
+  apiProviderRegistry.set(provider.api, {
+    provider: {
+      api: provider.api,
+      stream: wrapStream(provider.api, provider.stream),
+      streamSimple: wrapStreamSimple(provider.api, provider.streamSimple),
+    },
+    sourceId,
+  });
+}</code></pre>
+				<p><code>wrapStream</code> 还会检查 <code>model.api</code> 是否匹配，避免把 Anthropic 模型错误地丢给 OpenAI adapter。这是工程上很实用的防线。</p>
+
+				<h2>第三层：Agent 调用统一入口 streamSimple</h2>
+				<p><code>packages/ai/src/stream.ts</code> 里，Pi 暴露统一入口 <code>streamSimple()</code>。调用方只需要传入模型、上下文和选项。</p>
+				<pre><code>export function streamSimple(model, context, options) {
+  const provider = resolveApiProvider(model.api);
+  return provider.streamSimple(model, context, withEnvApiKey(model, options));
+}</code></pre>
+				<p>这里有两个动作：</p>
+				<ol>
+					<li>根据 <code>model.api</code> 找到对应 adapter。</li>
+					<li>自动补 API key，然后调用 adapter 的 <code>streamSimple</code>。</li>
+				</ol>
+				<p>所以 Agent 主流程不用知道 OpenAI 是 <code>chat.completions.create</code>，Anthropic 是 <code>messages.create</code>。这些细节都藏在 adapter 里。</p>
+
+				<h2>第四层：内置 provider 如何接入</h2>
+				<p><code>packages/ai/src/providers/register-builtins.ts</code> 负责注册内置 provider。你可以把它理解成“模型协议插件清单”。</p>
+				<pre><code>registerApiProvider({
+  api: "anthropic-messages",
+  stream: streamAnthropic,
+  streamSimple: streamSimpleAnthropic,
+});
+
+registerApiProvider({
+  api: "openai-completions",
+  stream: streamOpenAICompletions,
+  streamSimple: streamSimpleOpenAICompletions,
+});</code></pre>
+				<p>这说明 Pi 的扩展点很清楚：如果你要支持一个全新的私有协议，就写一个新的 provider 文件，然后注册成新的 <code>api</code>。如果你的服务能兼容 OpenAI Chat Completions，就不用写新 adapter，直接复用 <code>openai-completions</code>。</p>
+
+				<h2>第五层：OpenAI-compatible adapter 做了什么</h2>
+				<p><code>packages/ai/src/providers/openai-completions.ts</code> 是最值得你仿写的文件。它做了四件事。</p>
+				<h3>1. 创建 OpenAI client，但 baseURL 来自模型配置</h3>
+				<pre><code>return new OpenAI({
+  apiKey,
+  baseURL: model.baseUrl,
+  defaultHeaders,
+});</code></pre>
+				<p>这就是为什么很多 OpenAI-compatible 服务能接进来：只要协议像 OpenAI，<code>baseURL</code> 可以换成你自己的推理服务地址。</p>
+				<h3>2. 把 Pi 的 Context 转成 OpenAI 参数</h3>
+				<pre><code>const messages = convertMessages(model, context, compat);
+
+const params = {
+  model: model.id,
+  messages,
+  stream: true,
+};</code></pre>
+				<p>如果有工具，Pi 会把内部工具定义转换成 OpenAI 的 function tool：</p>
+				<pre><code>params.tools = convertTools(context.tools, compat);</code></pre>
+				<h3>3. 把内部 Tool 转成 OpenAI tools</h3>
+				<pre><code>function convertTools(tools, compat) {
+  return tools.map((tool) => ({
+    type: "function",
+    function: {
+      name: tool.name,
+      description: tool.description,
+      parameters: tool.parameters,
+      strict: false,
+    },
+  }));
+}</code></pre>
+				<p>这一步对应你自己做 adapter 时的“工具模板转换”：Agent 内部只认工具名、描述和 JSON Schema，OpenAI 接口则要求包成 <code>{ type: "function", function: ... }</code>。</p>
+				<h3>4. 把 OpenAI 流式 tool_calls 转成 Pi 的 toolCall</h3>
+				<p>OpenAI 的工具调用参数是流式拼出来的 JSON 字符串。Pi 先创建一个内部 block 暂存参数：</p>
+				<pre><code>block = {
+  type: "toolCall",
+  id: toolCall.id || "",
+  name: toolCall.function?.name || "",
+  arguments: {},
+  partialArgs: "",
+};</code></pre>
+				<p>等参数片段都到齐后，再解析成对象并发出统一事件：</p>
+				<pre><code>block.arguments = parseStreamingJson(block.partialArgs);
+stream.push({
+  type: "toolcall_end",
+  toolCall: block,
+});</code></pre>
+				<p>这就是为什么 OpenAI 的 <code>function.arguments</code> 虽然是字符串，但 Pi 内部拿到的是 <code>Record&lt;string, any&gt;</code> 对象。</p>
+
+				<h2>第六层：Anthropic adapter 如何做同一件事</h2>
+				<p>Anthropic 的协议不同。它不用 OpenAI 的 <code>tool_calls</code> 字段，而是在 content blocks 里表达 <code>tool_use</code> 和 <code>tool_result</code>。</p>
+				<p>Anthropic 返回工具调用时，Pi 把它转成统一 <code>toolCall</code>：</p>
+				<pre><code>{
+  type: "toolCall",
+  id: event.content_block.id,
+  name: event.content_block.name,
+  arguments: event.content_block.input ?? {},
+}</code></pre>
+				<p>Pi 内部已有的 <code>toolCall</code> 再发回 Anthropic 时，adapter 会转回 Anthropic 的 <code>tool_use</code>：</p>
+				<pre><code>{
+  type: "tool_use",
+  id: block.id,
+  name: block.name,
+  input: block.arguments ?? {},
+}</code></pre>
+				<p>工具执行结果则转成 Anthropic 的 <code>tool_result</code>：</p>
+				<pre><code>{
+  type: "tool_result",
+  tool_use_id: msg.toolCallId,
+  content: convertContentBlocks(msg.content),
+  is_error: msg.isError,
+}</code></pre>
+				<p>对比 OpenAI 你会发现：两边外部协议完全不同，但进到 Agent 主循环前都变成了同一种内部结构。这就是 adapter 的价值。</p>
+
+				<h2>第七层：Coding Agent 真正在哪里调用模型</h2>
+				<p><code>packages/coding-agent/src/core/sdk.ts</code> 是 Coding Agent 接入模型的地方。这里不是直接调用 OpenAI 或 Anthropic，而是调用 <code>streamSimple()</code>。</p>
+				<pre><code>return streamSimple(model, context, {
+  ...options,
+  apiKey: auth.apiKey,
+  env,
+  timeoutMs,
+  headers: mergeProviderAttributionHeaders(...),
+});</code></pre>
+				<p>这段代码说明三件事：</p>
+				<ol>
+					<li>API key、headers、timeout、retry 这些运行参数在进入 provider 前统一整理。</li>
+					<li>Agent 主流程只依赖 <code>streamSimple</code>，不直接依赖厂商 SDK。</li>
+					<li>换模型时主要改变 <code>model</code> 配置，而不是改 Agent loop。</li>
+				</ol>
+
+				<h2>第八层：自定义 provider 怎么进入 Pi</h2>
+				<p><code>packages/coding-agent/src/core/model-registry.ts</code> 里有一段逻辑：如果 provider 配置里提供了 <code>streamSimple</code>，Pi 会动态调用 <code>registerApiProvider</code>。</p>
+				<pre><code>if (config.streamSimple) {
+  registerApiProvider({
+    api: config.api,
+    stream: (model, context, options) =&gt;
+      streamSimple(model, context, options),
+    streamSimple,
+  }, `provider:${providerName}`);
+}</code></pre>
+				<p>这意味着 Pi 不只支持内置 provider，也给“外部接入自己的模型接口”留了扩展口。你可以走两条路：</p>
 				<ul>
-					<li><strong>最省事：</strong>让你的服务兼容 OpenAI Chat Completions，Pi 把它当 OpenAI-like provider 使用。</li>
-					<li><strong>更原生：</strong>给 Pi 的 `pi-ai` 增加一个新的 provider adapter，直接支持你的 API。</li>
+					<li><strong>OpenAI-compatible 路线：</strong>你的推理服务实现 OpenAI Chat Completions，Pi 配置 <code>baseUrl</code> 指向你的服务。</li>
+					<li><strong>原生 adapter 路线：</strong>写一个新的 <code>streamSimple</code>，把你的私有请求和响应转成 Pi 内部事件流。</li>
 				</ul>
+
+				<h2>把 Pi 的做法迁移到 Mini Agent</h2>
+				<p>如果你自己写 Mini Agent，最小结构可以照 Pi 缩小一版：</p>
+				<pre><code>type InternalMessage =
+  | { role: "user"; content: string }
+  | { role: "assistant"; content?: string; toolCalls?: ToolCall[] }
+  | { role: "tool"; toolCallId: string; content: string };
+
+type ModelAdapter = {
+  name: string;
+  stream(messages, tools, options): AsyncIterable&lt;ModelEvent&gt;;
+};
+
+const adapters = new Map();
+
+function registerAdapter(name, adapter) {
+  adapters.set(name, adapter);
+}
+
+function callModel(model, messages, tools, options) {
+  const adapter = adapters.get(model.api);
+  return adapter.stream(messages, tools, options);
+}</code></pre>
+				<p>重点不是代码长什么样，而是边界：Agent loop 只处理“要不要继续、有没有工具调用、工具结果怎么回填”；adapter 只处理“这个模型 API 的消息格式和流式响应怎么互相转换”。这个边界立住后，后面加 Claude、Gemini、自研模型、OpenRouter，就不会把主循环搅乱。</p>
 
 				<h2>推荐落地路线</h2>
 				<ol>
