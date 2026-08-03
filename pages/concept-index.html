@@ -46,7 +46,9 @@
 						<tr><td>Embedding</td><td>把文本、图片、代码等对象变成可比较的语义向量。</td><td><a href="../modules/llm-agent-interview/embedding-rag-multimodal.html">Embedding 与多模态</a></td></tr>
 						<tr><td>RAG</td><td>先检索证据，再让模型回答。</td><td><a href="../modules/llm-agent-interview/rag-pipeline.html">RAG 工程</a></td></tr>
 						<tr><td>多模态模型</td><td>把图像、音频、视频等模态接入语言模型的理解和生成能力。</td><td><a href="../modules/llm-agent-interview/embedding-rag-multimodal.html">Embedding 与多模态</a></td></tr>
-						<tr><td>KV Cache</td><td>推理时保存历史 token 的 Key/Value，避免重复计算。</td><td><a href="../modules/llm-agent-interview/transformer-long-context.html">长文本优化</a></td></tr>
+						<tr><td>Prompt Cache</td><td>复用稳定 prompt 前缀的预填充计算，减少重复推理成本。</td><td><a href="../modules/llm-agent-interview/runtime-cache.html">角色优先级与缓存</a></td></tr>
+						<tr><td>KV Cache</td><td>推理时保存历史 token 的 Key/Value，避免每生成一个 token 都重算历史上下文。</td><td><a href="../modules/llm-agent-interview/runtime-cache.html">角色优先级与缓存</a></td></tr>
+						<tr><td>运行日志</td><td>Agent 本轮可见的 system、developer、user、assistant、tool、RAG 证据和文件片段。</td><td><a href="../modules/llm-agent-interview/runtime-cache.html">角色优先级与缓存</a></td></tr>
 					</tbody>
 				</table>
 				<h2>地图与渲染</h2>

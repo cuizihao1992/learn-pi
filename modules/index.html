@@ -14,199 +14,72 @@
 </head>
 	<body>
 		<header class="topbar">
-			<div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>全部模块</strong><span>十五大块，互相参照但边界清楚</span></div></div>
-			<nav><a href="../index.html">首页</a><a href="../pages/dashboard.html">仪表盘</a><a href="../pages/learning-paths.html">学习路线</a><a href="../pages/search.html">检索</a><a href="../pages/charter.html">总宪章</a></nav>
+			<div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>全部模块</strong><span>按知识域分组，而不是一条长列表</span></div></div>
+			<nav><a href="../index.html">首页</a><a href="../pages/dashboard.html">仪表盘</a><a href="../pages/learning-paths.html">学习路线</a><a href="../pages/knowledge-architecture.html">知识库架构</a><a href="../pages/search.html">检索</a></nav>
 		</header>
 		<main>
 			<section class="section">
 				<div class="section-head">
 					<div>
 						<p class="kicker">Modules</p>
-						<h1>十五个并列学习模块</h1>
-						<p class="lead-like">不要把所有内容混成一条线。这里按学习目标拆成十五块：Agent、LLM 面试、渲染、OpenLayers、Mapbox、数字孪生城市、神经重建、经济金融、股票 K 线、量化交易、核电池与卫星原子钟、历史社会系统、认知科学与学习方法、系统思维与复杂系统。</p>
-						<p><a class="primary-link" href="../pages/learning-paths.html">不知道先学什么？先看学习路线</a></p>
+						<h1>十五个模块，五个知识域</h1>
+						<p class="lead-like">模块之间可以互相引用，但学习入口要清楚：先选知识域，再进入模块，再选择总览、深挖页、实验或项目路线。</p>
 					</div>
 				</div>
-				<div class="module-roadmap-grid">
-					<section>
-						<div><span>Pi</span><h3>Pi Agent</h3><p>读源码，理解真实开源 Agent 的架构。</p></div>
-						<ol>
-							<li><a href="pi-agent/index.html">模块总览</a></li>
-							<li><a href="pi-agent/architecture.html">架构设计</a></li>
-							<li><a href="pi-agent/lifecycle.html">运行流程</a></li>
-							<li><a href="pi-agent/tools.html">工具调用</a></li>
-							<li><a href="pi-agent/charter.html">模块宪章</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>MA</span><h3>Mini Agent</h3><p>写代码，从命令行 MVP 做到带前端、记忆和 RAG 的最小产品。</p></div>
-						<ol>
-							<li><a href="mini-agent/index.html">MVP 实现</a></li>
-							<li><a href="mini-agent/model-api.html">模型接口兼容</a></li>
-							<li><a href="mini-agent/practical-path.html">从零实战路线</a></li>
-							<li><a href="mini-agent/roadmap.html">产品化路线</a></li>
-							<li><a href="../examples/mini-agent-node/mini-agent.mjs">示例代码</a></li>
-							<li><a href="mini-agent/charter.html">模块宪章</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>LLM</span><h3>LLM / Agent 面试</h3><p>看算法系统题，理解记忆、RAG、长上下文和 Transformer 长文本优化。</p></div>
-						<ol>
-							<li><a href="llm-agent-interview/index.html">模块总览</a></li>
-							<li><a href="llm-agent-interview/memory.html">AI 记忆机制</a></li>
-							<li><a href="llm-agent-interview/embedding-rag-multimodal.html">Embedding 与多模态</a></li>
-							<li><a href="llm-agent-interview/rag-pipeline.html">RAG 数据工程</a></li>
-							<li><a href="llm-agent-interview/long-context.html">长上下文 vs RAG</a></li>
-							<li><a href="llm-agent-interview/transformer-long-context.html">Transformer 长文本优化</a></li>
-							<li><a href="llm-agent-interview/interview-playbook.html">面试答题模板</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>3D</span><h3>Cesium</h3><p>看渲染，理解三维引擎如何走到 GPU。</p></div>
-						<ol>
-							<li><a href="cesium/index.html">模块总览</a></li>
-							<li><a href="cesium/render-path.html">渲染路径</a></li>
-							<li><a href="cesium/custom-shader.html">自定义着色器</a></li>
-							<li><a href="cesium/debugging.html">调试手册</a></li>
-							<li><a href="cesium/glossary.html">术语表</a></li>
-							<li><a href="cesium/charter.html">模块宪章</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>2D</span><h3>OpenLayers</h3><p>看地图，理解二维地图如何组织数据和渲染。</p></div>
-						<ol>
-							<li><a href="openlayers/index.html">模块总览</a></li>
-							<li><a href="openlayers/render-path.html">渲染路径</a></li>
-							<li><a href="openlayers/debugging.html">调试手册</a></li>
-							<li><a href="openlayers/charter.html">模块宪章</a></li>
-							<li><a href="../pages/search.html">搜索内容</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>GS</span><h3>Gaussian Splatting</h3><p>看重建，理解照片如何优化成可实时渲染的 3D 高斯场景。</p></div>
-						<ol>
-							<li><a href="gaussian-splatting/index.html">模块总览</a></li>
-							<li><a href="gaussian-splatting/render-path.html">训练与渲染路径</a></li>
-							<li><a href="gaussian-splatting/debugging.html">调试手册</a></li>
-							<li><a href="gaussian-splatting/charter.html">模块宪章</a></li>
-							<li><a href="../pages/search.html">搜索内容</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>EF</span><h3>经济学与金融学</h3><p>补基础，理解社会运行、金钱流动、财政货币、城市差异、全球规则和金融市场。</p></div>
-						<ol>
-							<li><a href="econ-finance/index.html">模块总览</a></li>
-							<li><a href="econ-finance/course-system.html">系统课程总纲</a></li>
-							<li><a href="econ-finance/social-system.html">社会运行总图</a></li>
-							<li><a href="econ-finance/money-flow.html">金钱流动与分配</a></li>
-							<li><a href="econ-finance/fiscal-money.html">财政与货币循环</a></li>
-							<li><a href="econ-finance/urban-economics.html">城市经济</a></li>
-							<li><a href="econ-finance/globalization.html">全球化规则</a></li>
-							<li><a href="econ-finance/economics.html">经济学基础框架</a></li>
-							<li><a href="econ-finance/welfare-theorems.html">福利经济学第一定理</a></li>
-							<li><a href="econ-finance/finance.html">金融学基础框架</a></li>
-							<li><a href="econ-finance/macro-cycle.html">宏观指标与周期</a></li>
-							<li><a href="econ-finance/case-study.html">案例分析</a></li>
-							<li><a href="econ-finance/terms-map.html">术语地图</a></li>
-							<li><a href="econ-finance/roadmap.html">学习路线与书单</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>K</span><h3>股票 K 线</h3><p>看图表，理解价格、成交量、指标、现实背景和风控如何组成交易学习系统。</p></div>
-						<ol>
-							<li><a href="stock-kline/index.html">模块总览</a></li>
-							<li><a href="stock-kline/kline-basics.html">K 线基础</a></li>
-							<li><a href="stock-kline/indicators.html">指标底层逻辑</a></li>
-							<li><a href="stock-kline/signals.html">买卖信号整理</a></li>
-							<li><a href="stock-kline/risk-journal.html">风控日志</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>QT</span><h3>量化交易</h3><p>看系统，理解策略如何从假设、数据、回测走到实盘和风控。</p></div>
-						<ol>
-							<li><a href="quant-trading/index.html">模块总览</a></li>
-							<li><a href="quant-trading/architecture.html">系统架构</a></li>
-							<li><a href="quant-trading/strategies.html">常见策略</a></li>
-							<li><a href="quant-trading/resources.html">资源与风控</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>NB</span><h3>核电池</h3><p>看能源，理解 RTG、贝塔伏特电池、热电转换和卫星原子钟供电。</p></div>
-						<ol>
-							<li><a href="nuclear-battery/index.html">模块总览</a></li>
-							<li><a href="nuclear-battery/principles.html">工作原理</a></li>
-							<li><a href="nuclear-battery/space-atomic-clock.html">卫星与原子钟</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>MB</span><h3>Mapbox</h3><p>看二维地图，理解 source、layer、style、vector tile 和 WebGL 渲染。</p></div>
-						<ol>
-							<li><a href="mapbox/index.html">模块总览</a></li>
-							<li><a href="mapbox/architecture.html">渲染架构</a></li>
-							<li><a href="mapbox/vs-cesium.html">与 Cesium 对比</a></li>
-							<li><a href="mapbox/api-debugging.html">接口与调试</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>DT</span><h3>数字孪生城市</h3><p>看系统集成，理解地图、三维资产、实时数据和 Agent 如何组成城市级应用。</p></div>
-						<ol>
-							<li><a href="digital-twin-city/index.html">模块总览</a></li>
-							<li><a href="digital-twin-city/map-stack.html">地图底座</a></li>
-							<li><a href="digital-twin-city/assets-data.html">三维资产与数据</a></li>
-							<li><a href="digital-twin-city/realtime-agent.html">实时数据与 Agent</a></li>
-							<li><a href="digital-twin-city/mvp.html">MVP 路线</a></li>
-						</ol>
-					</section>
-				</div>
-			</section>
-			<section class="section">
-				<div class="section-head"><div><p class="kicker">New Module</p><h2>历史、地缘政治与社会系统</h2></div></div>
-				<div class="module-roadmap-grid">
-					<section>
-						<div><span>HS</span><h3>历史社会系统</h3><p>看社会运行，理解历史、政治、地缘、制度、战争和全球秩序如何互相塑造。</p></div>
-						<ol>
-							<li><a href="history-society/index.html">模块总览</a></li>
-							<li><a href="history-society/charter.html">模块宪章</a></li>
-							<li><a href="history-society/social-science-roadmap.html">社会科学路线</a></li>
-							<li><a href="history-society/wwi-causes.html">一战起因</a></li>
-							<li><a href="history-society/geopolitics-framework.html">地缘政治框架</a></li>
-						</ol>
-					</section>
-				</div>
-			</section>
-			<section class="section">
-				<div class="section-head"><div><p class="kicker">Learning System</p><h2>认知科学与学习方法</h2></div></div>
-				<div class="module-roadmap-grid">
-					<section>
-						<div><span>CL</span><h3>认知学习系统</h3><p>理解注意力、记忆、知识体系、认知偏差和 AI 学习教练，让整个知识库更会生长。</p></div>
-						<ol>
-							<li><a href="cognitive-learning/index.html">模块总览</a></li>
-							<li><a href="cognitive-learning/charter.html">模块宪章</a></li>
-							<li><a href="cognitive-learning/how-learning-works.html">学习如何发生</a></li>
-							<li><a href="cognitive-learning/knowledge-system.html">知识体系方法</a></li>
-							<li><a href="cognitive-learning/cognitive-bias.html">认知偏差</a></li>
-							<li><a href="cognitive-learning/ai-learning-coach.html">AI 学习教练</a></li>
-						</ol>
-					</section>
-				</div>
-			</section>
-			<section class="section">
-				<div class="section-head"><div><p class="kicker">General Framework</p><h2>系统思维与复杂系统</h2></div></div>
-				<div class="module-roadmap-grid">
-					<section>
-						<div><span>ST</span><h3>系统思维</h3><p>用反馈环、存量流量、延迟和杠杆点分析 Agent、经济、城市、历史和学习系统。</p></div>
-						<ol>
-							<li><a href="systems-thinking/index.html">模块总览</a></li>
-							<li><a href="systems-thinking/charter.html">模块宪章</a></li>
-							<li><a href="systems-thinking/feedback-loops.html">反馈环</a></li>
-							<li><a href="systems-thinking/stock-flow.html">存量与流量</a></li>
-							<li><a href="systems-thinking/leverage-points.html">杠杆点</a></li>
-							<li><a href="systems-thinking/case-patterns.html">案例模式</a></li>
-						</ol>
-					</section>
+				<div class="module-grid">
+					<section class="module-card"><h3>Agent 与大模型系统</h3><p>Pi Agent、Mini Agent、LLM/Agent 面试。重点是 agent loop、工具调用、模型接口、RAG、记忆、缓存和评估。</p><a class="primary-link" href="#agent-ai">查看</a></section>
+					<section class="module-card"><h3>地图、渲染与数字孪生</h3><p>OpenLayers、Mapbox、Cesium、Gaussian Splatting、Digital Twin City。重点是数据如何走到渲染和交互。</p><a class="primary-link" href="#geo-rendering">查看</a></section>
+					<section class="module-card"><h3>经济、金融与社会系统</h3><p>经济金融、股票 K 线、量化交易、历史社会。重点是资源、价格、风险、制度和反馈。</p><a class="primary-link" href="#econ-society">查看</a></section>
+					<section class="module-card"><h3>认知学习与系统思维</h3><p>认知学习、系统思维。重点是如何学习、如何建模复杂系统、如何避免只堆资料。</p><a class="primary-link" href="#learning-system">查看</a></section>
+					<section class="module-card"><h3>科学技术专题</h3><p>核电池、空间原子钟、高斯泼溅等硬核专题。重点是用底层链路理解技术，而不是只记名词。</p><a class="primary-link" href="#science-tech">查看</a></section>
 				</div>
 			</section>
 
+			<section class="section" id="agent-ai">
+				<div class="section-head"><div><p class="kicker">Track 1</p><h2>Agent 与大模型系统</h2></div></div>
+				<div class="module-roadmap-grid">
+					<section><div><span>Pi</span><h3>Pi Agent</h3><p>读源码，理解真实开源 Agent 的架构、运行时和工程取舍。</p></div><ol><li><a href="pi-agent/index.html">模块总览</a></li><li><a href="pi-agent/architecture.html">架构设计</a></li><li><a href="pi-agent/lifecycle.html">运行流程</a></li><li><a href="pi-agent/tools.html">工具调用</a></li><li><a href="pi-agent/tool-call-deep-dive.html">toolCall 深挖</a></li><li><a href="pi-agent/ua-pi-agent-scan.html">UA 扫描结果</a></li></ol></section>
+					<section><div><span>MA</span><h3>Mini Agent</h3><p>从零写出最小 Agent，再补模型兼容、前端事件流、记忆和 RAG。</p></div><ol><li><a href="mini-agent/index.html">MVP 实现</a></li><li><a href="mini-agent/agent-loop-deep-dive.html">Agent Loop 深挖</a></li><li><a href="mini-agent/model-api.html">模型接口兼容</a></li><li><a href="mini-agent/while-loop-machine.html">while 循环到底层</a></li><li><a href="mini-agent/practical-path.html">从零实战路线</a></li><li><a href="mini-agent/roadmap.html">产品化路线</a></li></ol></section>
+					<section><div><span>LLM</span><h3>LLM / Agent 面试</h3><p>把 embedding、RAG、记忆、长上下文、角色优先级和缓存讲成系统课。</p></div><ol><li><a href="llm-agent-interview/index.html">课程入口</a></li><li><a href="llm-agent-interview/embedding-rag-deep-dive.html">Embedding -> RAG 深挖</a></li><li><a href="llm-agent-interview/rag-pipeline.html">RAG 数据工程</a></li><li><a href="llm-agent-interview/memory.html">AI 记忆机制</a></li><li><a href="llm-agent-interview/runtime-cache.html">角色优先级与缓存</a></li><li><a href="llm-agent-interview/interview-playbook.html">答题模板</a></li></ol></section>
+				</div>
+			</section>
+
+			<section class="section" id="geo-rendering">
+				<div class="section-head"><div><p class="kicker">Track 2</p><h2>地图、渲染与数字孪生</h2></div></div>
+				<div class="module-roadmap-grid">
+					<section><div><span>2D</span><h3>OpenLayers</h3><p>二维地图基础：Map、View、Layer、Source、Canvas/WebGL renderer。</p></div><ol><li><a href="openlayers/index.html">模块总览</a></li><li><a href="openlayers/render-path.html">渲染路径</a></li><li><a href="openlayers/debugging.html">调试手册</a></li><li><a href="openlayers/charter.html">模块宪章</a></li></ol></section>
+					<section><div><span>MB</span><h3>Mapbox</h3><p>高性能二维地图：style、source、layer、vector tile、WebGL 渲染。</p></div><ol><li><a href="mapbox/index.html">模块总览</a></li><li><a href="mapbox/architecture.html">渲染架构</a></li><li><a href="mapbox/vs-cesium.html">与 Cesium 对比</a></li><li><a href="mapbox/api-debugging.html">接口与调试</a></li></ol></section>
+					<section><div><span>3D</span><h3>Cesium</h3><p>三维地球和大规模空间数据：Viewer、Scene、Primitive、DrawCommand。</p></div><ol><li><a href="cesium/index.html">模块总览</a></li><li><a href="cesium/render-path.html">渲染路径</a></li><li><a href="cesium/custom-shader.html">自定义着色器</a></li><li><a href="cesium/debugging.html">调试手册</a></li><li><a href="cesium/glossary.html">术语表</a></li></ol></section>
+					<section><div><span>GS</span><h3>Gaussian Splatting</h3><p>神经重建：照片、相机位姿、稀疏点云、3D 高斯、可微渲染。</p></div><ol><li><a href="gaussian-splatting/index.html">模块总览</a></li><li><a href="gaussian-splatting/render-path.html">训练与渲染路径</a></li><li><a href="gaussian-splatting/debugging.html">调试手册</a></li></ol></section>
+					<section><div><span>DT</span><h3>数字孪生城市</h3><p>系统集成：地图底座、三维资产、实时数据、Agent 分析、前后端架构。</p></div><ol><li><a href="digital-twin-city/index.html">模块总览</a></li><li><a href="digital-twin-city/map-stack.html">地图底座</a></li><li><a href="digital-twin-city/assets-data.html">三维资产与数据</a></li><li><a href="digital-twin-city/realtime-agent.html">实时数据与 Agent</a></li><li><a href="digital-twin-city/mvp.html">MVP 路线</a></li></ol></section>
+				</div>
+			</section>
+
+			<section class="section" id="econ-society">
+				<div class="section-head"><div><p class="kicker">Track 3</p><h2>经济、金融与社会系统</h2></div></div>
+				<div class="module-roadmap-grid">
+					<section><div><span>EF</span><h3>经济学与金融学</h3><p>从社会运行、金钱流动、财政货币、城市经济、全球规则走到金融定价。</p></div><ol><li><a href="econ-finance/index.html">模块总览</a></li><li><a href="econ-finance/course-system.html">系统课程总纲</a></li><li><a href="econ-finance/social-system.html">社会运行总图</a></li><li><a href="econ-finance/money-flow.html">金钱流动</a></li><li><a href="econ-finance/interest-discount-deep-dive.html">利率折现深挖</a></li><li><a href="econ-finance/roadmap.html">学习路线</a></li></ol></section>
+					<section><div><span>K</span><h3>股票 K 线</h3><p>价格图表、成交量、指标、买卖信号、长短线和风控复盘。</p></div><ol><li><a href="stock-kline/index.html">模块总览</a></li><li><a href="stock-kline/kline-basics.html">K 线基础</a></li><li><a href="stock-kline/indicators.html">指标底层逻辑</a></li><li><a href="stock-kline/signals.html">买卖信号</a></li><li><a href="stock-kline/risk-journal.html">风控日志</a></li></ol></section>
+					<section><div><span>QT</span><h3>量化交易</h3><p>把交易想法变成数据、回测、实盘、风控和监控系统。</p></div><ol><li><a href="quant-trading/index.html">模块总览</a></li><li><a href="quant-trading/architecture.html">系统架构</a></li><li><a href="quant-trading/strategies.html">常见策略</a></li><li><a href="quant-trading/resources.html">资源与风控</a></li></ol></section>
+					<section><div><span>HS</span><h3>历史社会系统</h3><p>从事件看到结构：国家、制度、战争、地缘政治和全球秩序。</p></div><ol><li><a href="history-society/index.html">模块总览</a></li><li><a href="history-society/social-science-roadmap.html">社会科学路线</a></li><li><a href="history-society/wwi-causes.html">一战起因</a></li><li><a href="history-society/geopolitics-framework.html">地缘政治框架</a></li></ol></section>
+				</div>
+			</section>
+
+			<section class="section" id="learning-system">
+				<div class="section-head"><div><p class="kicker">Track 4</p><h2>认知学习与系统思维</h2></div></div>
+				<div class="module-roadmap-grid">
+					<section><div><span>CL</span><h3>认知学习系统</h3><p>理解注意力、记忆、知识体系、认知偏差和 AI 学习教练。</p></div><ol><li><a href="cognitive-learning/index.html">模块总览</a></li><li><a href="cognitive-learning/how-learning-works.html">学习如何发生</a></li><li><a href="cognitive-learning/knowledge-system.html">知识体系方法</a></li><li><a href="cognitive-learning/cognitive-bias.html">认知偏差</a></li><li><a href="cognitive-learning/ai-learning-coach.html">AI 学习教练</a></li></ol></section>
+					<section><div><span>ST</span><h3>系统思维</h3><p>用反馈环、存量流量、延迟和杠杆点分析复杂系统。</p></div><ol><li><a href="systems-thinking/index.html">模块总览</a></li><li><a href="systems-thinking/feedback-loops.html">反馈环</a></li><li><a href="systems-thinking/stock-flow.html">存量与流量</a></li><li><a href="systems-thinking/leverage-points.html">杠杆点</a></li><li><a href="systems-thinking/case-patterns.html">案例模式</a></li></ol></section>
+				</div>
+			</section>
+
+			<section class="section" id="science-tech">
+				<div class="section-head"><div><p class="kicker">Track 5</p><h2>科学技术专题</h2></div></div>
+				<div class="module-roadmap-grid">
+					<section><div><span>NB</span><h3>核电池</h3><p>理解 RTG、同位素热源、热电转换、贝塔伏特电池和卫星原子钟供电。</p></div><ol><li><a href="nuclear-battery/index.html">模块总览</a></li><li><a href="nuclear-battery/principles.html">工作原理</a></li><li><a href="nuclear-battery/space-atomic-clock.html">卫星与原子钟</a></li></ol></section>
+					<section><div><span>More</span><h3>跨模块科学主题</h3><p>高斯、三维重建、空间电源等主题未来继续按“原理 + 示例 + 实验”扩展。</p></div><ol><li><a href="../pages/deep-dive-roadmap.html">深挖路线</a></li><li><a href="../pages/lab-index.html">实验室</a></li><li><a href="../pages/concept-index.html">概念索引</a></li></ol></section>
+				</div>
+			</section>
 		</main>
 		<script src="../theme.js"></script><script src="../enhance.js"></script>
 	  <script>

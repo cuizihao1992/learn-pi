@@ -18,33 +18,16 @@
 				<img src="https://pi.dev/logo-auto.svg" alt="Pi logo" />
 				<div>
 					<strong>源码学习实验室</strong>
-					<span>Agent、渲染、地图、量化、能源与科学技术的长期学习站</span>
+					<span>从源码、系统和案例理解复杂技术</span>
 				</div>
 			</div>
 			<nav aria-label="页面导航">
-				<a href="pages/dashboard.html">学习仪表盘</a>
+				<a href="pages/dashboard.html">仪表盘</a>
 				<a href="pages/learning-paths.html">学习路线</a>
-				<a href="pages/lab-index.html">实验室</a>
-				<a href="pages/deep-dive-roadmap.html">深挖路线</a>
-				<a href="pages/progress.html">学习工具</a>
 				<a href="modules/index.html">全部模块</a>
-				<a href="pages/charter.html">内容宪章</a>
-				<a href="modules/pi-agent/index.html">Pi Agent</a>
-				<a href="modules/mini-agent/index.html">Mini Agent</a>
-				<a href="modules/cesium/index.html">Cesium</a>
-				<a href="modules/openlayers/index.html">OpenLayers</a>
-				<a href="modules/llm-agent-interview/index.html">LLM 面试</a>
-				<a href="modules/gaussian-splatting/index.html">Gaussian Splatting</a>
-				<a href="modules/econ-finance/index.html">经济金融</a>
-				<a href="modules/stock-kline/index.html">股票 K 线</a>
-				<a href="modules/quant-trading/index.html">量化</a>
-				<a href="modules/nuclear-battery/index.html">核电池</a>
-				<a href="modules/mapbox/index.html">Mapbox</a>
-				<a href="modules/digital-twin-city/index.html">数字孪生</a>
-				<a href="modules/history-society/index.html">历史社会</a>
-				<a href="modules/cognitive-learning/index.html">认知学习</a>
-				<a href="modules/systems-thinking/index.html">系统思维</a>
-				<a href="pages/search.html">全站检索</a>
+				<a href="pages/lab-index.html">实验室</a>
+				<a href="pages/knowledge-architecture.html">知识库架构</a>
+				<a href="pages/search.html">检索</a>
 				<a href="https://github.com/cuizihao1992/learn-pi">GitHub</a>
 			</nav>
 		</header>
@@ -52,246 +35,62 @@
 		<main>
 			<section class="workspace" aria-labelledby="page-title">
 				<div class="intro">
-					<p class="kicker">Learn Pi Agent From Source</p>
-					<h1 id="page-title">从源码链路学懂复杂系统怎么运行</h1>
+					<p class="kicker">Learn Complex Systems By Source</p>
+					<h1 id="page-title">不是收集资料，而是把每个知识点学到底层</h1>
 					<p>
-						这个网站重构为可持续扩展的学习站。当前有十五个并列模块：
-						Pi Agent 学开源 Agent 架构，Mini Agent 学从零实现最小 Agent，Cesium 学三维引擎如何走到 GPU，
-						OpenLayers 和 Mapbox 学二维地图，LLM 面试学记忆、RAG、长上下文和 Transformer 优化，Gaussian Splatting 学三维重建，数字孪生学城市级系统集成，经济金融学价格、资源、风险与周期，股票 K 线学指标和风控，量化学策略系统化，核电池学放射性同位素电源和卫星原子钟的关系。
+						这个知识库按“目标路线 -> 知识模块 -> 深挖专题 -> 实验验证 -> 项目输出”组织。当前包含 Agent、LLM/RAG、地图渲染、数字孪生、经济金融、量化交易、历史社会、认知学习、系统思维和科学技术等十五个模块。
 					</p>
 					<div class="hero-actions">
-						<a class="primary-link" href="pages/dashboard.html">打开学习仪表盘</a>
-						<a class="secondary-link" href="pages/learning-paths.html">选择学习路线</a>
-						<a class="secondary-link" href="pages/lab-index.html">进入实验室</a>
-						<a class="secondary-link" href="pages/deep-dive-roadmap.html">查看深挖路线</a>
-						<a class="secondary-link" href="pages/progress.html">打开学习工具</a>
+						<a class="primary-link" href="pages/learning-paths.html">按目标选择路线</a>
+						<a class="secondary-link" href="pages/dashboard.html">打开学习仪表盘</a>
 						<a class="secondary-link" href="modules/index.html">查看全部模块</a>
-						<a class="secondary-link" href="pages/search.html">搜索本站内容</a>
+						<a class="secondary-link" href="pages/search.html">搜索知识库</a>
 					</div>
 				</div>
 				<aside class="quick-panel">
 					<div class="metric"><span>学习模块</span><strong>15</strong></div>
-					<div class="metric"><span>专题页面</span><strong>70+</strong></div>
-					<div class="metric"><span>可持续扩展</span><strong>∞</strong></div>
+					<div class="metric"><span>索引页面</span><strong>130+</strong></div>
+					<div class="metric"><span>学习标准</span><strong>讲清 / 画出 / 做成</strong></div>
 				</aside>
 			</section>
 
 			<section class="section">
-				<div class="section-head"><div><p class="kicker">Paths</p><h2>按目标选择路线</h2></div></div>
+				<div class="section-head"><div><p class="kicker">Start Here</p><h2>你现在想完成什么</h2></div></div>
 				<div class="module-grid">
-					<section class="module-card"><h3>Agent 产品实战</h3><p>从 Pi 源码、Mini Agent、模型接口、记忆、RAG 到网页事件流，做出自己的 Agent。</p><a class="primary-link" href="pages/learning-paths.html">查看路线</a></section>
-					<section class="module-card"><h3>LLM 面试路线</h3><p>把记忆机制、RAG、长上下文和 Transformer 优化组织成可回答的系统设计题。</p><a class="primary-link" href="modules/llm-agent-interview/index.html">进入面试模块</a></section>
-					<section class="module-card"><h3>地图与数字孪生</h3><p>按 OpenLayers、Mapbox、Cesium、数字孪生城市的顺序理解地图系统。</p><a class="primary-link" href="pages/learning-paths.html">查看路线</a></section>
+					<section class="module-card"><h3>开发自己的 Agent</h3><p>从 Pi 源码读懂真实 Agent，再用 Mini Agent 做出工具调用、模型兼容、记忆、RAG 和前端事件流。</p><a class="primary-link" href="modules/mini-agent/practical-path.html">进入 Agent 实战</a></section>
+					<section class="module-card"><h3>准备 LLM / Agent 面试</h3><p>系统学习 embedding、RAG、记忆、长上下文、角色优先级、Prompt Cache、KV Cache 和答题模板。</p><a class="primary-link" href="modules/llm-agent-interview/index.html">进入 LLM 系统课</a></section>
+					<section class="module-card"><h3>理解地图和数字孪生</h3><p>按 OpenLayers、Mapbox、Cesium、Gaussian Splatting、数字孪生城市的顺序理解地图系统。</p><a class="primary-link" href="pages/rendering-cheatsheet.html">进入渲染速查</a></section>
+					<section class="module-card"><h3>理解经济金融与交易</h3><p>从社会运行、金钱流动、财政货币、利率折现走到 K 线、风险控制和量化交易系统。</p><a class="primary-link" href="pages/finance-cheatsheet.html">进入金融速查</a></section>
+					<section class="module-card"><h3>建立学习和系统思维</h3><p>用认知科学、知识体系、反馈环、存量流量和杠杆点，让知识库变成可持续训练系统。</p><a class="primary-link" href="modules/systems-thinking/index.html">进入系统思维</a></section>
+					<section class="module-card"><h3>整理知识库结构</h3><p>查看当前知识库的问题、合并拆分原则、最终形态和下一步优化顺序。</p><a class="primary-link" href="pages/knowledge-architecture.html">查看架构整理</a></section>
 				</div>
 			</section>
 
 			<section class="section">
-				<div class="section-head"><div><p class="kicker">Toolkit</p><h2>学习工具箱</h2></div></div>
+				<div class="section-head"><div><p class="kicker">Learning Loop</p><h2>每个模块都按同一套方式学</h2></div></div>
+				<p class="lead-like">先看总览建立边界，再读核心链路，再选一个底层点深挖，用例子和实验验证，最后通过自测或小项目确认自己真的掌握。</p>
+				<p><img src="assets/diagrams/knowledge-architecture.svg" alt="知识库目标架构图" /></p>
+				<div class="lesson-grid">
+					<section><h3>总览</h3><p>这个模块解决什么问题，和其他模块边界在哪里。</p></section>
+					<section><h3>核心链路</h3><p>从输入到输出，中间经过哪些对象、状态、协议或计算。</p></section>
+					<section><h3>深挖专题</h3><p>一次只打穿一个点：底层原理、例子、误解、失败模式。</p></section>
+					<section><h3>实验验证</h3><p>通过 demo、代码或图表观察系统行为，而不是只看文字。</p></section>
+				</div>
+			</section>
+
+			<section class="section">
+				<div class="section-head"><div><p class="kicker">Tools</p><h2>常用入口</h2></div></div>
 				<div class="module-grid">
-					<section class="module-card"><h3>学习进度</h3><p>用“看过、说清、画出、做成”四级标准检查自己是否真的掌握。</p><a class="primary-link" href="pages/progress.html">开始打卡</a></section>
-					<section class="module-card"><h3>Agent 项目清单</h3><p>把自己的 Agent 拆成模型、工具、记忆、RAG、前端、评测和部署任务。</p><a class="primary-link" href="pages/agent-project-checklist.html">查看清单</a></section>
-					<section class="module-card"><h3>LLM 面试题库</h3><p>按 Agent、RAG、长上下文、Transformer 四类准备系统设计题。</p><a class="primary-link" href="pages/interview-bank.html">刷题库</a></section>
-					<section class="module-card"><h3>地图渲染速查</h3><p>快速对比 OpenLayers、Mapbox、Cesium 的对象、场景和渲染链路。</p><a class="primary-link" href="pages/rendering-cheatsheet.html">看速查</a></section>
-					<section class="module-card"><h3>金融量化速查</h3><p>把 K 线、指标、买卖信号、风控和量化系统链路放到一页。</p><a class="primary-link" href="pages/finance-cheatsheet.html">看速查</a></section>
-					<section class="module-card"><h3>TIL 学习日志</h3><p>把今天学到的小知识先记录下来，再长成模块、案例和 demo。</p><a class="primary-link" href="pages/til.html">写入日志</a></section>
-					<section class="module-card"><h3>学习实验室</h3><p>用可操作 demo 验证 embedding、RAG、K 线指标、地图图层和宏观周期等概念。</p><a class="primary-link" href="pages/lab-index.html">进入实验室</a></section>
-					<section class="module-card"><h3>模块深挖路线</h3><p>每个模块先打穿一个底层关键点：原理、例子、实验、误解和自测。</p><a class="primary-link" href="pages/deep-dive-roadmap.html">看计划</a></section>
-					<section class="module-card"><h3>概念索引</h3><p>把 toolCall、Embedding、RAG、DrawCommand、Vector Tile、K 线等术语放到一张关系图上。</p><a class="primary-link" href="pages/concept-index.html">查概念</a></section>
-				</div>
-			</section>
-
-			<section class="section">
-				<div class="section-head"><div><p class="kicker">Modules</p><h2>十五个并列学习模块</h2></div></div>
-				<div class="module-grid">
-					<section class="module-card"><h3>Pi Agent</h3><p>研究 Pi 源码：提示词、模型、工具、会话、事件和架构取舍。</p><a class="primary-link" href="modules/pi-agent/index.html">进入 Pi Agent</a></section>
-					<section class="module-card"><h3>Mini Agent</h3><p>从零实现自己的 Agent：Node MVP、模型兼容、实战路线、前端事件流和产品化路线。</p><a class="primary-link" href="modules/mini-agent/index.html">进入 Mini Agent</a></section>
-					<section class="module-card"><h3>Cesium</h3><p>理解三维引擎如何从 Viewer、Scene、Primitive、DrawCommand 走到 GPU。</p><a class="primary-link" href="modules/cesium/index.html">进入 Cesium</a></section>
-					<section class="module-card"><h3>OpenLayers</h3><p>理解二维地图如何从 Map、View、Layer、Source 走到 Canvas/WebGL。</p><a class="primary-link" href="modules/openlayers/index.html">进入 OpenLayers</a></section>
-					<section class="module-card"><h3>LLM / Agent 面试</h3><p>学习记忆机制、Embedding、RAG、多模态模型、长上下文与 Transformer 长文本优化。</p><a class="primary-link" href="modules/llm-agent-interview/index.html">进入 LLM 面试</a></section>
-					<section class="module-card"><h3>Gaussian Splatting</h3><p>理解 3D Gaussian Splatting 如何从照片、相机位姿、点云优化到实时渲染。</p><a class="primary-link" href="modules/gaussian-splatting/index.html">进入高斯泼溅</a></section>
-					<section class="module-card"><h3>经济学与金融学</h3><p>按系统课程学习社会运行：金钱流动、财政货币、城市工资房租、全球化规则、金融定价和宏观周期。</p><a class="primary-link" href="modules/econ-finance/course-system.html">进入系统课程</a></section>
-					<section class="module-card"><h3>股票 K 线</h3><p>学习 K 线、均线、MACD、RSI、成交量、买卖信号、长短线和风控复盘。</p><a class="primary-link" href="modules/stock-kline/index.html">进入股票 K 线</a></section>
-					<section class="module-card"><h3>量化交易</h3><p>学习从策略假设、数据、回测、实盘、服务器资源到风控监控的完整量化系统。</p><a class="primary-link" href="modules/quant-trading/index.html">进入量化交易</a></section>
-					<section class="module-card"><h3>核电池</h3><p>学习 RTG、同位素热源、热电转换、贝塔伏特电池，以及卫星原子钟和电源的关系。</p><a class="primary-link" href="modules/nuclear-battery/index.html">进入核电池</a></section>
-					<section class="module-card"><h3>Mapbox</h3><p>学习 Mapbox GL JS 的 source、layer、style、vector tiles、WebGL 渲染和 Cesium 性能对比。</p><a class="primary-link" href="modules/mapbox/index.html">进入 Mapbox</a></section>
-					<section class="module-card"><h3>数字孪生城市</h3><p>学习 Mapbox/Cesium、3D Tiles、实时数据、Agent 工具调用、前后端架构和 MVP 路线。</p><a class="primary-link" href="modules/digital-twin-city/index.html">进入数字孪生</a></section>
-					<section class="module-card"><h3>历史、地缘政治与社会系统</h3><p>学习国家、制度、战争、全球秩序和社会变迁，训练从事件看到结构的能力。</p><a class="primary-link" href="modules/history-society/index.html">进入历史社会</a></section>
-					<section class="module-card"><h3>认知科学与学习方法</h3><p>学习注意力、记忆、知识体系、认知偏差和 AI 学习教练，让知识库变成个人学习系统。</p><a class="primary-link" href="modules/cognitive-learning/index.html">进入认知学习</a></section>
-					<section class="module-card"><h3>系统思维与复杂系统</h3><p>学习反馈环、存量流量、延迟和杠杆点，用同一套语言分析 Agent、经济、城市、历史和学习。</p><a class="primary-link" href="modules/systems-thinking/index.html">进入系统思维</a></section>
-				</div>
-			</section>
-
-			<section class="section">
-				<div class="section-head">
-					<div>
-						<p class="kicker">Module Roadmap</p>
-						<h2>十五个模块分别学什么</h2>
-					</div>
-				</div>
-				<div class="module-roadmap-grid">
-					<section>
-						<div><span>Pi</span><h3>Pi Agent 源码阅读</h3><p>目标是读懂一个真实开源 Agent 的架构。</p></div>
-						<ol>
-							<li><a href="modules/pi-agent/architecture.html">架构设计</a></li>
-							<li><a href="modules/pi-agent/lifecycle.html">完整运行流程</a></li>
-							<li><a href="modules/pi-agent/prompt-processing.html">提示词处理</a></li>
-							<li><a href="modules/pi-agent/tools.html">工具调用</a></li>
-							<li><a href="modules/pi-agent/callgraph.html">源码调用图</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>MA</span><h3>Mini Agent 从零实现</h3><p>目标是自己写出一个最小可运行 Agent。</p></div>
-						<ol>
-							<li><a href="modules/mini-agent/index.html">Node MVP</a></li>
-							<li><a href="modules/mini-agent/model-api.html">模型接口兼容</a></li>
-							<li><a href="modules/mini-agent/practical-path.html">从零实战路线</a></li>
-							<li><a href="modules/mini-agent/roadmap.html">产品化路线</a></li>
-							<li><a href="examples/mini-agent-node/mini-agent.mjs">示例代码</a></li>
-							<li><a href="modules/mini-agent/charter.html">模块宪章</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>3D</span><h3>Cesium 渲染路径</h3><p>目标是理解三维数据如何变成 GPU 像素。</p></div>
-						<ol>
-							<li><a href="modules/cesium/index.html">模块总览</a></li>
-							<li><a href="modules/cesium/render-path.html">完整渲染路径</a></li>
-							<li><a href="modules/cesium/custom-shader.html">自定义着色器</a></li>
-							<li><a href="modules/cesium/debugging.html">调试手册</a></li>
-							<li><a href="modules/cesium/glossary.html">术语表</a></li>
-							<li><a href="modules/cesium/charter.html">模块宪章</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>2D</span><h3>OpenLayers 渲染路径</h3><p>目标是理解二维地图如何组织数据和渲染。</p></div>
-						<ol>
-							<li><a href="modules/openlayers/index.html">模块总览</a></li>
-							<li><a href="modules/openlayers/render-path.html">完整渲染路径</a></li>
-							<li><a href="modules/openlayers/debugging.html">调试手册</a></li>
-							<li><a href="modules/openlayers/charter.html">模块宪章</a></li>
-							<li><a href="pages/search.html">搜索相关内容</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>LLM</span><h3>大模型 / Agent 面试</h3><p>目标是把记忆、RAG、长上下文和 Transformer 底层优化讲成系统设计答案。</p></div>
-						<ol>
-							<li><a href="modules/llm-agent-interview/index.html">模块总览</a></li>
-							<li><a href="modules/llm-agent-interview/memory.html">AI 记忆机制</a></li>
-							<li><a href="modules/llm-agent-interview/embedding-rag-multimodal.html">Embedding 与多模态</a></li>
-							<li><a href="modules/llm-agent-interview/rag-pipeline.html">RAG 数据工程</a></li>
-							<li><a href="modules/llm-agent-interview/long-context.html">长上下文 vs RAG</a></li>
-							<li><a href="modules/llm-agent-interview/transformer-long-context.html">Transformer 长文本优化</a></li>
-							<li><a href="modules/llm-agent-interview/interview-playbook.html">面试答题模板</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>GS</span><h3>Gaussian Splatting 路径</h3><p>目标是理解照片如何变成一组可微、可优化、可实时渲染的高斯椭球。</p></div>
-						<ol>
-							<li><a href="modules/gaussian-splatting/index.html">模块总览</a></li>
-							<li><a href="modules/gaussian-splatting/render-path.html">训练与渲染路径</a></li>
-							<li><a href="modules/gaussian-splatting/debugging.html">调试手册</a></li>
-							<li><a href="modules/gaussian-splatting/charter.html">模块宪章</a></li>
-							<li><a href="pages/search.html">搜索相关内容</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>EF</span><h3>经济学与金融学基础</h3><p>目标是补齐专业底层框架，理解价格、资源、风险、利率、现金流和宏观周期。</p></div>
-						<ol>
-							<li><a href="modules/econ-finance/index.html">模块总览</a></li>
-							<li><a href="modules/econ-finance/course-system.html">系统课程总纲</a></li>
-							<li><a href="modules/econ-finance/social-system.html">社会运行总图</a></li>
-							<li><a href="modules/econ-finance/money-flow.html">金钱流动与分配</a></li>
-							<li><a href="modules/econ-finance/fiscal-money.html">财政与货币循环</a></li>
-							<li><a href="modules/econ-finance/urban-economics.html">城市经济</a></li>
-							<li><a href="modules/econ-finance/globalization.html">全球化规则</a></li>
-							<li><a href="modules/econ-finance/economics.html">经济学基础框架</a></li>
-							<li><a href="modules/econ-finance/welfare-theorems.html">福利经济学第一定理</a></li>
-							<li><a href="modules/econ-finance/finance.html">金融学基础框架</a></li>
-							<li><a href="modules/econ-finance/macro-cycle.html">宏观指标与周期</a></li>
-							<li><a href="modules/econ-finance/case-study.html">案例分析</a></li>
-							<li><a href="modules/econ-finance/terms-map.html">术语地图</a></li>
-							<li><a href="modules/econ-finance/roadmap.html">学习路线与书单</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>K</span><h3>股票 K 线学习路径</h3><p>目标是把图形、指标、现实背景、买卖信号和风控连成一个入门系统。</p></div>
-						<ol>
-							<li><a href="modules/stock-kline/index.html">模块总览</a></li>
-							<li><a href="modules/stock-kline/kline-basics.html">K 线基础</a></li>
-							<li><a href="modules/stock-kline/indicators.html">指标底层逻辑</a></li>
-							<li><a href="modules/stock-kline/signals.html">买卖信号整理</a></li>
-							<li><a href="modules/stock-kline/risk-journal.html">风控日志</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>QT</span><h3>量化交易系统</h3><p>目标是理解量化如何从想法走到回测、实盘、服务器和风控。</p></div>
-						<ol>
-							<li><a href="modules/quant-trading/index.html">模块总览</a></li>
-							<li><a href="modules/quant-trading/architecture.html">系统架构</a></li>
-							<li><a href="modules/quant-trading/strategies.html">常见策略</a></li>
-							<li><a href="modules/quant-trading/resources.html">资源与风控</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>NB</span><h3>核电池与原子钟</h3><p>目标是区分 RTG、贝塔伏特电池、太阳能供电和卫星原子钟。</p></div>
-						<ol>
-							<li><a href="modules/nuclear-battery/index.html">模块总览</a></li>
-							<li><a href="modules/nuclear-battery/principles.html">工作原理</a></li>
-							<li><a href="modules/nuclear-battery/space-atomic-clock.html">卫星与原子钟</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>MB</span><h3>Mapbox 渲染路径</h3><p>目标是理解 source/layer/style/vector tile 如何组织高性能二维地图。</p></div>
-						<ol>
-							<li><a href="modules/mapbox/index.html">模块总览</a></li>
-							<li><a href="modules/mapbox/architecture.html">渲染架构</a></li>
-							<li><a href="modules/mapbox/vs-cesium.html">与 Cesium 对比</a></li>
-							<li><a href="modules/mapbox/api-debugging.html">接口与调试</a></li>
-						</ol>
-					</section>
-					<section>
-						<div><span>DT</span><h3>数字孪生城市</h3><p>目标是理解城市级实时系统如何把地图、三维资产、数据和 Agent 串起来。</p></div>
-						<ol>
-							<li><a href="modules/digital-twin-city/index.html">模块总览</a></li>
-							<li><a href="modules/digital-twin-city/map-stack.html">地图底座</a></li>
-							<li><a href="modules/digital-twin-city/realtime-agent.html">实时与 Agent</a></li>
-							<li><a href="modules/digital-twin-city/backend-frontend.html">前后端架构</a></li>
-							<li><a href="modules/digital-twin-city/mvp.html">MVP 路线</a></li>
-						</ol>
-					</section>
-				</div>
-			</section>
-
-			<section class="section">
-				<div class="section-head">
-					<div>
-						<p class="kicker">One Sentence Model</p>
-						<h2>先记住这一句</h2>
-					</div>
-				</div>
-				<div class="big-explain">
-					<p>
-						Pi Agent 运行一次任务时，模型只负责“根据上下文决定下一步”，比如要读文件、改文件、运行测试；
-						真正的文件系统操作、命令执行、状态管理、会话保存、上下文压缩和前端更新，都由 Pi 的运行时负责。
-					</p>
-					<pre><code>用户提示词
-  -> AgentSession 组装上下文和工具
-  -> AgentLoop 调用模型
-  -> 模型返回 toolCall
-  -> Pi 执行工具并生成 toolResult
-  -> toolResult 再发给模型
-  -> 最终回答通过事件返回前端</code></pre>
+					<section class="module-card"><h3>学习路线</h3><p>按目标串起多个模块，适合不知道下一步学什么时使用。</p><a class="primary-link" href="pages/learning-paths.html">选择路线</a></section>
+					<section class="module-card"><h3>全部模块</h3><p>按知识域分组查看十五个模块和关键页面。</p><a class="primary-link" href="modules/index.html">查看模块</a></section>
+					<section class="module-card"><h3>实验室</h3><p>用可操作 demo 验证 embedding、RAG、K 线指标、地图和 Agent 安全。</p><a class="primary-link" href="pages/lab-index.html">进入实验室</a></section>
+					<section class="module-card"><h3>学习进度</h3><p>用“看过、说清、画出、做成”四级标准检查掌握程度。</p><a class="primary-link" href="pages/progress.html">打开进度</a></section>
+					<section class="module-card"><h3>概念索引</h3><p>快速回查 toolCall、Embedding、RAG、DrawCommand、Vector Tile、折现率等概念。</p><a class="primary-link" href="pages/concept-index.html">查概念</a></section>
+					<section class="module-card"><h3>全站检索</h3><p>当你已经知道关键词时，直接从搜索进入页面。</p><a class="primary-link" href="pages/search.html">开始检索</a></section>
 				</div>
 			</section>
 		</main>
-
-		<footer>
-			<span>资料来源：earendil-works/pi 源码和官方 README。</span>
-			<a href="https://github.com/earendil-works/pi">Pi GitHub</a>
-			<a href="https://pi.dev">pi.dev</a>
-			<a href="https://github.com/cuizihao1992/learn-pi">本站仓库</a>
-		</footer>
-			<script src="theme.js"></script>
-			<script src="enhance.js"></script>
+		<script src="theme.js"></script><script src="enhance.js"></script>
 	  <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
@@ -299,5 +98,3 @@
   </script>
 </body>
 </html>
-
-

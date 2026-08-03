@@ -27,13 +27,14 @@
   -> 自测问题
   -> 回到模块复盘</code></pre>
 
-				<h2>十二个模块的第一批深挖点</h2>
+				<h2>十五个模块的第一批深挖点</h2>
 				<table class="compare-table">
 					<thead><tr><th>模块</th><th>先打穿的点</th><th>需要补的知识</th><th>例子 / 实验</th><th>状态</th></tr></thead>
 					<tbody>
 						<tr><td>Pi Agent</td><td>toolCall 到 toolResult 闭环</td><td>runLoop、executeToolCalls、schema 校验、hook、事件流、toolResult 回填。</td><td><a href="../modules/pi-agent/tool-call-deep-dive.html">toolCall 源码深挖</a> + <a href="../examples/agent-evaluation/index.html">Agent Evaluation Demo</a>。</td><td>样板已完成</td></tr>
 						<tr><td>Mini Agent</td><td>最小 Agent Loop 与 OpenAI-compatible 适配</td><td>while 底层、messages、tools、tool_calls、tool result、终止条件、OpenAI-compatible API、安全边界。</td><td><a href="../modules/mini-agent/agent-loop-deep-dive.html">Agent Loop 深挖</a> + <a href="../examples/agent-safety/index.html">Agent Safety Demo</a>。</td><td>样板已完成</td></tr>
 						<tr><td>LLM / Agent 面试</td><td>Embedding 到 RAG 召回</td><td>向量、余弦相似度、chunk、topK、rerank、prompt、评估。</td><td><a href="../modules/llm-agent-interview/embedding-rag-deep-dive.html">Embedding -> RAG 深挖</a> + <a href="../examples/rag-evaluation/index.html">RAG Evaluation Demo</a>。</td><td>样板已完成</td></tr>
+						<tr><td>LLM Runtime</td><td>角色优先级与缓存</td><td>system/developer/user/tool、运行日志、CPU cache、Prompt Cache、KV Cache。</td><td><a href="../modules/llm-agent-interview/runtime-cache.html">角色优先级与缓存</a>：从硬件缓存讲到大模型上下文缓存。</td><td>样板已完成</td></tr>
 						<tr><td>Cesium</td><td>Primitive -> DrawCommand -> GPU</td><td>WebGL、ShaderProgram、VertexArray、RenderState、渲染队列。</td><td>一个 box primitive 如何变成 DrawCommand。</td><td>待补</td></tr>
 						<tr><td>OpenLayers</td><td>Layer / Source / View 分工</td><td>坐标系、瓦片、视口、矢量要素、Canvas/WebGL。</td><td>同一份数据换不同 layer style。</td><td>待补</td></tr>
 						<tr><td>Mapbox</td><td>Style JSON 驱动渲染</td><td>source、layer、paint、layout、vector tile。</td><td>一个 source 加两个 layer，展示不同符号样式。</td><td>待补</td></tr>
@@ -43,6 +44,9 @@
 						<tr><td>Stock K Line</td><td>指标只是价格和成交量的加工</td><td>OHLC、移动平均、差分、标准化、滞后性。</td><td><a href="../examples/kline-indicators/index.html">K 线指标 Demo</a>：价格序列 -> SMA / EMA / MACD / RSI。</td><td>样板已完成</td></tr>
 						<tr><td>Quant Trading</td><td>回测为什么容易骗人</td><td>时间序列、过拟合、手续费、滑点、幸存者偏差。</td><td>同一策略加入手续费和滑点后收益消失。</td><td>待补</td></tr>
 						<tr><td>Nuclear Battery</td><td>衰变热如何变成电能</td><td>放射性衰变、半衰期、热电效应、能量转换效率。</td><td>同位素热源 -> 热电偶 -> 电流。</td><td>待补</td></tr>
+						<tr><td>History and Society</td><td>局部危机如何升级成系统性战争</td><td>安全困境、联盟锁链、动员机制、民族主义、帝国竞争。</td><td><a href="../modules/history-society/wwi-causes.html">一战起因</a>：刺杀事件如何被结构性矛盾放大。</td><td>样板已完成</td></tr>
+						<tr><td>Cognitive Learning</td><td>为什么看懂不等于学会</td><td>工作记忆、长期记忆、提取练习、间隔复习、迁移。</td><td><a href="../modules/cognitive-learning/how-learning-works.html">学习如何发生</a>：从输入到提取的学习闭环。</td><td>样板已完成</td></tr>
+						<tr><td>Systems Thinking</td><td>反馈环为什么会放大或稳定系统</td><td>增强回路、平衡回路、延迟、存量流量、杠杆点。</td><td><a href="../modules/systems-thinking/feedback-loops.html">反馈环</a>：用 Agent、经济和学习案例迁移。</td><td>样板已完成</td></tr>
 					</tbody>
 				</table>
 

@@ -278,6 +278,7 @@
   "commonPages": [
     "pages/dashboard.html",
     "pages/learning-paths.html",
+    "pages/knowledge-architecture.html",
     "pages/progress.html",
     "pages/agent-project-checklist.html",
     "pages/interview-bank.html",

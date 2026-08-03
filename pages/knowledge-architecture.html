@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>知识库架构整理 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css" />  <link rel="manifest" href="/learn-pi/manifest.json" />
+  <meta name="theme-color" content="#6366f1" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="源码学吧" />
+  <link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+</head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>知识库架构整理</strong><span>Structure, Merge, Split, Deepen</span></div></div><nav><a href="../index.html">首页</a><a href="dashboard.html">仪表盘</a><a href="learning-paths.html">学习路线</a><a href="../modules/index.html">全部模块</a><a href="search.html">检索</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="dashboard.html">学习仪表盘</a><a href="learning-paths.html">学习路线</a><a class="active" href="knowledge-architecture.html">知识库架构</a><a href="deep-dive-roadmap.html">深挖路线</a><a href="lab-index.html">实验室</a><a href="concept-index.html">概念索引</a><a href="charter.html">总宪章</a><a href="../modules/index.html">全部模块</a><a href="search.html">全站检索</a></aside>
+			<article class="doc">
+				<p class="kicker">Architecture</p>
+				<h1>整个知识库应该长成什么样</h1>
+				<p class="lead">这个站点的目标不是把所有资料都收集进来，而是把复杂系统拆成可学习、可解释、可实验、可复盘的知识模块。每个模块都要能回答一个问题：我如何从一个具体例子理解它的底层原理，并最终做出一个小作品或讲清一条链路。</p>
+				<p><img src="../assets/diagrams/knowledge-architecture.svg" alt="知识库目标架构图" /></p>
+
+				<h2>一、这次诊断发现的问题</h2>
+				<table class="compare-table">
+					<thead><tr><th>问题</th><th>表现</th><th>优化方向</th></tr></thead>
+					<tbody>
+						<tr><td>首页承担太多职责</td><td>首页既放路线、工具箱、模块卡片，又重复一套模块 roadmap，顶部导航也过长。</td><td>首页只做目标入口和少量推荐，把全量目录交给模块页和搜索。</td></tr>
+						<tr><td>模块目录缺少分组</td><td>十五个模块并列展示，后续再增长会变成长列表。</td><td>按 Agent/AI、地图渲染、经济社会、学习系统、科学技术分组。</td></tr>
+						<tr><td>仪表盘内容过期</td><td>页面仍写“十二个模块”，没有覆盖历史社会、认知学习、系统思维等新增模块。</td><td>改成全局驾驶舱：学习轨道、当前重点、验收问题。</td></tr>
+						<tr><td>部分新专题入口弱</td><td>例如“角色优先级与缓存”已经有内容，但全局路线和模块目录入口不足。</td><td>把新专题纳入 LLM/Agent 路线、模块目录和搜索索引。</td></tr>
+						<tr><td>深挖标准需要显式化</td><td>有些页面是资料型，有些页面是原理型，读者不容易判断学习目标。</td><td>统一“概念 -> 底层链路 -> 例子 -> 误解 -> 自测 -> 实验”的深挖模板。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>二、最终形态</h2>
+				<pre><code>首页：回答“我该从哪里开始”
+学习路线：按目标组织跨模块路径
+全部模块：按知识域分组，回答“这个模块里有什么”
+模块首页：回答“这个模块解决什么问题、先学哪几页”
+深挖页：每次只打穿一个底层点
+实验页：用可操作 demo 验证概念
+仪表盘：追踪当前重点、下一步和验收问题
+搜索/概念索引：用于回查，不承担主路线</code></pre>
+
+				<h2>三、合并与拆分原则</h2>
+				<ul>
+					<li><strong>同一个用户目标，合并到同一条路线：</strong>比如 Agent 实战路线可以串 Pi 源码、Mini Agent、模型兼容、记忆、RAG 和前端事件流。</li>
+					<li><strong>同一个底层原理，拆成独立深挖页：</strong>比如 while 循环底层、toolCall 闭环、Embedding 召回、Prompt/KV Cache。</li>
+					<li><strong>兼容跳转页保留：</strong>旧 `pages/` URL 不直接删除，避免外部链接失效；新内容以 `modules/` 为准。</li>
+					<li><strong>图片只服务理解：</strong>只有当结构、流程、层级或反馈关系很难用文字扫清时才加图。</li>
+					<li><strong>每个模块都要有验收问题：</strong>读完不是“看过”，而是能说清、画出、做成、复盘。</li>
+				</ul>
+
+				<h2>四、接下来逐步优化</h2>
+				<table class="compare-table">
+					<thead><tr><th>优先级</th><th>动作</th><th>原因</th></tr></thead>
+					<tbody>
+						<tr><td>P0</td><td>收敛首页、模块目录、仪表盘。</td><td>入口清楚后，后续补内容才不会继续变乱。</td></tr>
+						<tr><td>P1</td><td>统一每个模块首页的结构。</td><td>让用户一进模块就知道目标、顺序、深挖点和实验。</td></tr>
+						<tr><td>P1</td><td>把重复的全局列表迁移到路线页或模块目录。</td><td>减少维护同一份信息的多个版本。</td></tr>
+						<tr><td>P2</td><td>补齐重点模块图示。</td><td>Agent loop、RAG、地图渲染、经济循环、系统反馈都适合图解。</td></tr>
+						<tr><td>P2</td><td>增加模块级自测和项目输出。</td><td>让知识库从阅读站变成训练系统。</td></tr>
+					</tbody>
+				</table>
+			</article>
+		</main>
+		<script src="../theme.js"></script><script src="../enhance.js"></script>
+	  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
+    }
+  </script>
+</body>
+</html>
