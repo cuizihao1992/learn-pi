@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>福利经济学第一定理 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css" />  <link rel="manifest" href="/learn-pi/manifest.json" />
+  <meta name="theme-color" content="#6366f1" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="源码学习吧" />
+  <link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+</head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>福利经济学第一定理</strong><span>市场效率、假设边界与政策诊断</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">经济金融</a><a href="economics.html">经济学</a><a href="finance.html">金融学</a><a href="macro-cycle.html">宏观</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="course-system.html">系统课程总纲</a><a href="social-system.html">社会运行总图</a><a href="money-flow.html">金钱流动与分配</a><a href="fiscal-money.html">财政与货币</a><a href="urban-economics.html">城市经济</a><a href="globalization.html">全球化规则</a><a href="economics.html">经济学基础</a><a class="active" href="welfare-theorems.html">福利经济学定理</a><a href="finance.html">金融学基础</a><a href="macro-cycle.html">宏观周期</a><a href="case-study.html">案例分析</a><a href="terms-map.html">术语地图</a><a href="roadmap.html">学习路线</a></aside>
+			<article class="doc">
+				<p class="kicker">Economics / Welfare Theorems</p>
+				<h1>福利经济学第一定理：市场为什么有效，以及什么时候失效</h1>
+				<p class="lead">这个定理不是说“市场永远正确”，而是给出一个理想基准：当竞争、信息、产权和市场完整性等条件都满足时，竞争均衡会达到帕累托有效；现实分析则从这些条件的失效开始。</p>
+
+				<h2>一、定理到底说什么</h2>
+				<p>在完全竞争、市场完整、信息充分、没有外部性、产权清晰等条件下，任何竞争均衡都是帕累托有效的。</p>
+				<pre><code>帕累托有效：
+不存在另一种可行配置，
+能让至少一个人变好，
+同时没有任何人变差。</code></pre>
+				<p>注意：它只证明“效率”，不证明“公平”，也不证明“总幸福最大化”。一个极端不平等的配置，也可能是帕累托有效的。</p>
+
+				<h2>二、证明思路</h2>
+				<table class="compare-table">
+					<thead><tr><th>步骤</th><th>逻辑</th></tr></thead>
+					<tbody>
+						<tr><td>1. 消费者最优</td><td>每个人在价格和预算约束下，选择自己最偏好的商品组合。</td></tr>
+						<tr><td>2. 企业最优</td><td>企业在价格和技术约束下，选择利润最大的生产方案。</td></tr>
+						<tr><td>3. 市场出清</td><td>总需求等于总供给，所有可交易资源都被价格系统协调。</td></tr>
+						<tr><td>4. 反设可改进</td><td>如果存在一个帕累托改进，它必须让某些人更好，且无人更差。</td></tr>
+						<tr><td>5. 得出矛盾</td><td>这个新配置在均衡价格下必须更贵，但可行资源和生产价值不能凭空超过均衡支持的价值。</td></tr>
+					</tbody>
+				</table>
+				<p>直觉上，价格像统一的稀缺性信号。消费者和企业都在同一套价格下最优化，如果价格没有扭曲、市场没有缺口，就不会再有“无人受损、有人受益”的免费改进空间。</p>
+
+				<h2>三、它是怎么形成的</h2>
+				<ul>
+					<li><strong>亚当·斯密：</strong>提出“看不见的手”的市场协调直觉。</li>
+					<li><strong>瓦尔拉斯：</strong>把经济看成多个市场同时出清的一般均衡系统。</li>
+					<li><strong>帕累托：</strong>提出不做人际效用比较的效率标准。</li>
+					<li><strong>阿罗、德布鲁、萨缪尔森：</strong>把这些直觉数学化，形成现代福利经济学定理。</li>
+				</ul>
+
+				<h2>四、它基于哪些事实</h2>
+				<div class="lesson-grid">
+					<section><h3>资源稀缺</h3><p>资源不能满足所有欲望，所以社会必须选择。</p></section>
+					<section><h3>人有偏好</h3><p>消费者会在预算约束下权衡不同商品组合。</p></section>
+					<section><h3>生产受限</h3><p>企业只能在技术可行范围内转换投入和产出。</p></section>
+					<section><h3>价格传递信息</h3><p>价格把相对稀缺性传递给分散的个人和企业。</p></section>
+					<section><h3>交换可以互利</h3><p>当不同人评价不同，交易能让双方都改善。</p></section>
+					<section><h3>竞争压缩浪费</h3><p>竞争减少长期垄断利润、套利空间和资源闲置。</p></section>
+				</div>
+
+				<h2>五、现实中哪些假设最容易失败</h2>
+				<table class="compare-table">
+					<thead><tr><th>失效点</th><th>典型表现</th><th>政策方向</th></tr></thead>
+					<tbody>
+						<tr><td>外部性</td><td>污染、噪音、传染风险没有进入价格。</td><td>碳税、排污权、监管标准、清洁技术补贴。</td></tr>
+						<tr><td>公共品</td><td>国防、基础科研、公共卫生容易被搭便车。</td><td>税收融资、政府供给、公共投资。</td></tr>
+						<tr><td>信息不对称</td><td>医疗、保险、金融产品和二手车市场质量难辨。</td><td>强制披露、认证、审计、消费者保护。</td></tr>
+						<tr><td>垄断</td><td>平台网络效应、专利药、自然垄断会扭曲价格。</td><td>反垄断、互操作要求、价格监管。</td></tr>
+						<tr><td>交易成本</td><td>搜寻、谈判、执行合同和维权成本过高。</td><td>明确产权、标准合同、低成本争端解决。</td></tr>
+						<tr><td>分配不公</td><td>市场有效但结果可能极端不平等。</td><td>累进税、转移支付、教育医疗可及性。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>六、类似定理分别有什么作用</h2>
+				<table class="compare-table">
+					<thead><tr><th>定理</th><th>核心意思</th><th>作用</th></tr></thead>
+					<tbody>
+						<tr><td>福利经济学第二定理</td><td>在一定条件下，任何帕累托有效配置都可通过初始财富再分配后由竞争市场实现。</td><td>把效率和公平分开：先调禀赋，再让市场配置。</td></tr>
+						<tr><td>科斯定理</td><td>产权清晰且交易成本为零时，外部性可通过私人谈判解决。</td><td>强调产权安排和交易成本是制度设计核心。</td></tr>
+						<tr><td>阿罗不可能定理</td><td>不存在完美规则能把个人偏好汇总成完全合理的社会偏好。</td><td>解释公共选择、投票和社会福利判断的内在困难。</td></tr>
+						<tr><td>比较优势定理</td><td>只要相对成本不同，即使一方处处更强，贸易仍可互利。</td><td>说明贸易收益来自相对优势，而不是绝对优势。</td></tr>
+						<tr><td>斯托尔珀-萨缪尔森定理</td><td>贸易会改变国内要素收入分配。</td><td>解释自由贸易为何总体增益却制造国内赢家和输家。</td></tr>
+						<tr><td>莫迪利安尼-米勒定理</td><td>完美资本市场中，企业价值与融资结构无关。</td><td>作为公司金融的理想基准，用来定位现实偏离。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>七、怎么用这条定理分析现实</h2>
+				<pre><code>看到一个市场结果很糟糕：
+1. 先问它是否真的低效率，还是只是分配不公平。
+2. 如果低效率，检查哪个理想条件失败。
+3. 找到失败条件后，再比较市场修正、制度设计、政府干预的成本。
+4. 不只看干预初衷，还要看副作用和执行能力。</code></pre>
+				<p>所以第一福利定理最大的价值不是崇拜市场，而是提供诊断框架：先理解理想市场为什么有效，才能精确判断现实市场为什么失灵。</p>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+	  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
+    }
+  </script>
+</body>
+</html>
