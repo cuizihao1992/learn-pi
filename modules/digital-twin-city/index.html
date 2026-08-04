@@ -15,6 +15,7 @@
 				<p class="kicker">Digital Twin City</p>
 				<h1>数字孪生城市系统：把地图、三维、实时数据和 Agent 串起来</h1>
 				<p class="lead">数字孪生城市不是“做一个好看的三维大屏”。真正的系统要能接入城市资产、地图底座、三维模型、传感器、车辆、摄像头、告警、历史时序数据和 AI Agent 分析能力，让用户能看见、查询、推演、处置和复盘。</p>
+				<p><img src="../../assets/diagrams/module-learning-loop.svg" alt="模块学习闭环：目标、核心链路、深挖点、实验、验收输出" /></p>
 
 				<h2>一句话总览</h2>
 				<pre><code>城市数据源
@@ -34,6 +35,17 @@
 					<section><h3>前端交互</h3><p>图层树、时间轴、对象选中、属性面板、告警面板、测量、剖切、路径回放、对话式查询。</p></section>
 					<section><h3>后端治理</h3><p>权限、审计、数据质量、服务降级、缓存、监控、任务队列、模型调用成本控制。</p></section>
 				</div>
+				<h2>建议学习顺序</h2>
+				<table class="compare-table">
+					<thead><tr><th>阶段</th><th>页面</th><th>学会什么</th></tr></thead>
+					<tbody>
+						<tr><td>先定边界</td><td><a href="index.html">模块总览</a></td><td>数字孪生不是大屏，而是城市数据、地图场景、实时状态和处置流程的系统。</td></tr>
+						<tr><td>选地图底座</td><td><a href="map-stack.html">地图底座</a></td><td>什么时候用 Mapbox，什么时候用 Cesium，传统 GIS 页面为什么还会用 OpenLayers。</td></tr>
+						<tr><td>接三维资产</td><td><a href="assets-data.html">三维资产与数据</a></td><td>BIM、3D Tiles、倾斜摄影、点云、高斯泼溅分别解决什么问题。</td></tr>
+						<tr><td>接实时状态</td><td><a href="realtime-agent.html">实时数据与 Agent</a></td><td>告警、传感器、轨迹数据如何进入地图，Agent 如何调用受控工具。</td></tr>
+						<tr><td>落成产品</td><td><a href="mvp.html">MVP 路线</a></td><td>先做可运行闭环，再逐步扩展图层、资产、告警和分析能力。</td></tr>
+					</tbody>
+				</table>
 
 				<h2>和已有模块的关系</h2>
 				<table class="compare-table">
@@ -56,6 +68,12 @@
 					<li>Agent 能调用哪些工具，哪些操作必须让人确认？</li>
 					<li>一个最小可运行数字孪生 Demo 应该先做哪些功能？</li>
 				</ul>
+				<h2>验收标准</h2>
+				<pre><code>能画出：设备数据 -> 后端服务 -> 地图图层 -> Agent 工具调用 -> 人工确认。
+能区分：Mapbox、Cesium、OpenLayers 在同一城市系统里的职责。
+能解释：3D Tiles、BIM、点云、倾斜摄影、高斯泼溅的适用边界。
+能设计：一个只包含地图、一个实时对象、一个告警和一个 Agent 查询工具的 MVP。
+能指出：哪些操作必须人工确认，不能让 Agent 直接执行。</code></pre>
 				<div class="next-card"><span>下一步</span><a href="map-stack.html">看地图底座怎么分工</a></div>
 			</article>
 		</main>
