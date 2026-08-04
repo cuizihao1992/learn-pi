@@ -235,12 +235,13 @@
       "entry": "modules/history-society/index.html",
       "purpose": "Build a social-science framework for understanding history, geopolitics, states, institutions, wars, global order, and social change.",
       "pages": [
-        "index.html",
-        "charter.html",
-        "social-science-roadmap.html",
-        "wwi-causes.html",
-        "geopolitics-framework.html"
-      ]
+          "index.html",
+          "charter.html",
+          "social-science-roadmap.html",
+          "worldview-meaning.html",
+          "wwi-causes.html",
+          "geopolitics-framework.html"
+        ]
     },
     {
       "slug": "cognitive-learning",
