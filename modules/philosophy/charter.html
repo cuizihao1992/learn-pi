@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>哲学模块宪章 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学习吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>哲学模块宪章</strong><span>How To Think Philosophically</span></div></div>
+			<nav><a href="../../index.html">首页</a><a href="index.html">哲学</a><a href="../../pages/search.html">检索</a></nav>
+		</header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar">
+				<a href="index.html">模块总览</a>
+				<a class="active" href="charter.html">模块宪章</a>
+				<a href="worldview-method.html">世界观分析方法</a>
+				<a href="../christianity/index.html">基督教模块</a>
+				<a href="../history-society/worldview-meaning.html">对话整理页</a>
+			</aside>
+			<article class="doc">
+				<p class="kicker">Charter</p>
+				<h1>哲学模块怎么写</h1>
+				<p class="lead">哲学模块的目标不是堆名人名言，而是训练你把问题问清楚、把前提摆出来、把反驳纳入视野，并能用例子说明抽象概念。</p>
+
+				<h2>内容标准</h2>
+				<ol>
+					<li>先说明问题层级：终极问题、认识论、伦理学、政治哲学、宗教哲学，不能混用。</li>
+					<li>每个观点必须写出核心命题、前提、推理链、能解释的现象和难点。</li>
+					<li>比较世界观时，同一组问题要问所有候选答案，避免只攻击弱版本。</li>
+					<li>抽象概念必须配例子：例如“客观道德”要落到撒谎、伤害、承诺、尊严等场景。</li>
+					<li>哲学讨论要连接生活：如果这个观点是真的，人应该如何行动、如何面对痛苦和死亡。</li>
+				</ol>
+
+				<h2>每篇页面模板</h2>
+				<pre><code>1. 这个问题到底在问什么
+2. 常见答案有哪些
+3. 每个答案的前提是什么
+4. 最强反驳是什么
+5. 一个具体例子
+6. 和其他模块的连接
+7. 自测问题</code></pre>
+
+				<h2>和其他模块的边界</h2>
+				<table class="compare-table">
+					<thead><tr><th>模块</th><th>哲学模块保留</th><th>转交给对方模块</th></tr></thead>
+					<tbody>
+						<tr><td>基督教</td><td>神是否能作为道德和意义根基、启示如何被评估。</td><td>圣经叙事、耶稣、十字架、复活、祷告和门徒实践。</td></tr>
+						<tr><td>历史社会</td><td>政治思想和终极意义的边界。</td><td>国家、战争、制度、地缘政治和国际秩序。</td></tr>
+						<tr><td>系统思维</td><td>概念层级、前提关系和论证结构。</td><td>反馈环、存量流量、延迟、杠杆点。</td></tr>
+						<tr><td>认知学习</td><td>什么是知识、信念和理由。</td><td>注意力、记忆、学习方法和认知偏差训练。</td></tr>
+					</tbody>
+				</table>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
+			}
+		</script>
+	</body>
+</html>

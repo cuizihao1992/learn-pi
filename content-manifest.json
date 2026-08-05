@@ -10,7 +10,7 @@
     "labs": "pages/lab-index.html",
     "deepDives": "pages/deep-dive-roadmap.html",
     "search": "pages/search.html",
-    "rule": "The site is organized as fifteen first-class modules: pi-agent, mini-agent, cesium, openlayers, mapbox, digital-twin-city, llm-agent-interview, gaussian-splatting, econ-finance, stock-kline, quant-trading, nuclear-battery, history-society, cognitive-learning, and systems-thinking. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
+    "rule": "The site is organized as seventeen first-class modules: pi-agent, mini-agent, cesium, openlayers, mapbox, digital-twin-city, llm-agent-interview, gaussian-splatting, econ-finance, stock-kline, quant-trading, nuclear-battery, history-society, philosophy, christianity, cognitive-learning, and systems-thinking. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
     "modules": "modules/index.html"
   },
   "moduleConvention": {
@@ -242,6 +242,32 @@
           "wwi-causes.html",
           "geopolitics-framework.html"
         ]
+    },
+    {
+      "slug": "philosophy",
+      "name": "Philosophy and Worldviews",
+      "root": "modules/philosophy/",
+      "charter": "modules/philosophy/charter.html",
+      "entry": "modules/philosophy/index.html",
+      "purpose": "Train first-principle questioning about existence, truth, knowledge, morality, meaning, freedom, death, and worldview comparison.",
+      "pages": [
+        "index.html",
+        "charter.html",
+        "worldview-method.html"
+      ]
+    },
+    {
+      "slug": "christianity",
+      "name": "Christianity Basics",
+      "root": "modules/christianity/",
+      "charter": "modules/christianity/charter.html",
+      "entry": "modules/christianity/index.html",
+      "purpose": "Understand the Christian account of God, humanity, sin, Jesus, the cross, resurrection, faith, prayer, and discipleship.",
+      "pages": [
+        "index.html",
+        "charter.html",
+        "gospel-logic.html"
+      ]
     },
     {
       "slug": "cognitive-learning",

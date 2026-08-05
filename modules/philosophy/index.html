@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>哲学与世界观 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学习吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>哲学与世界观</strong><span>Meaning, Knowledge, Morality</span></div></div>
+			<nav><a href="../../index.html">首页</a><a href="../index.html">全部模块</a><a href="../../pages/learning-paths.html">学习路线</a><a href="../../pages/search.html">检索</a></nav>
+		</header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar">
+				<a class="active" href="index.html">模块总览</a>
+				<a href="charter.html">模块宪章</a>
+				<a href="worldview-method.html">世界观分析方法</a>
+				<a href="../christianity/index.html">基督教模块</a>
+				<a href="../history-society/worldview-meaning.html">对话整理页</a>
+				<a href="../../pages/concept-index.html">概念索引</a>
+			</aside>
+			<article class="doc">
+				<p class="kicker">Philosophy</p>
+				<h1>训练追问能力，而不是只收集观点</h1>
+				<p class="lead">哲学模块专门处理“第一层问题”：存在、真理、知识、道德、意义、自由、死亡、痛苦和人格尊严。它不替代历史、政治、宗教或科学模块，而是提供一套追问和比较的方法，让你知道一个观点到底在回答什么问题、依赖什么前提、还能被怎样反驳。</p>
+
+				<h2>这个模块解决什么问题</h2>
+				<table class="compare-table">
+					<thead><tr><th>问题</th><th>训练出的能力</th></tr></thead>
+					<tbody>
+						<tr><td>为什么一个答案听起来正确，却仍然让人觉得空？</td><td>区分终极理由、实践路径、情绪共鸣和个人确信。</td></tr>
+						<tr><td>不同世界观如何比较？</td><td>用解释力、自洽性、反驳处理、实践后果和可活性评估观点。</td></tr>
+						<tr><td>道德为什么有约束力？</td><td>理解神圣根基、进化解释、社会契约、功利主义、义务论和德性伦理。</td></tr>
+						<tr><td>政治思想能不能回答人生意义？</td><td>分清终极问题、世界观、治理方案和日常实践的层级。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>学习入口</h2>
+				<div class="lesson-grid">
+					<section><h3>模块宪章</h3><p>规定哲学内容如何写：先定义问题层级，再列前提、推理、反驳和生活后果。</p><a class="primary-link" href="charter.html">查看宪章</a></section>
+					<section><h3>世界观分析方法</h3><p>把基督教、佛教、自然主义、存在主义、康德和马克思主义放到同一张比较表里。</p><a class="primary-link" href="worldview-method.html">进入方法页</a></section>
+					<section><h3>基督教模块</h3><p>当问题进入圣经、耶稣、罪、十字架、复活和祷告时，转入独立的基督教模块。</p><a class="primary-link" href="../christianity/index.html">进入基督教</a></section>
+					<section><h3>对话整理页</h3><p>保留原始长对话整理：从人生意义一路追问到世界观、政治思想和道德根基。</p><a class="primary-link" href="../history-society/worldview-meaning.html">查看整理页</a></section>
+				</div>
+
+				<h2>核心框架</h2>
+				<pre><code>问题层级
+  -> 终极问题：为什么存在？为什么应该？人生为何值得？
+  -> 世界观：基督教、佛教、自然主义、康德、存在主义等整体解释
+  -> 政治思想：国家、制度、权力、分配、公共秩序
+  -> 日常实践：阅读、祷告、修行、工作、服务、行动
+
+分析顺序
+  -> 它回答什么问题
+  -> 它依赖什么前提
+  -> 它解释了什么
+  -> 它解释不了什么
+  -> 它如何面对最强反驳
+  -> 它能不能被真实生活出来</code></pre>
+
+				<h2>先记住三个判断</h2>
+				<ol>
+					<li>一个观点“有用”“流行”“让我舒服”，都不等于它真实。</li>
+					<li>哲学问题不能只靠口号解决，必须追到前提、推理和反驳。</li>
+					<li>真正理解一个世界观，不是能背定义，而是能说明它如何处理存在、道德、痛苦、死亡和行动。</li>
+				</ol>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
+			}
+		</script>
+	</body>
+</html>
