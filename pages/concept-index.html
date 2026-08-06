@@ -27,6 +27,7 @@
 					<thead><tr><th>链路</th><th>从哪里开始</th><th>流向哪里</th><th>最终能力</th></tr></thead>
 					<tbody>
 						<tr><td>Agent 应用链</td><td>toolCall、toolResult、Agent Loop</td><td>Memory、Embedding、RAG、前端事件流</td><td>能设计一个可用 Agent。</td></tr>
+						<tr><td>推理加速链</td><td>自回归、KV Cache、Speculative Decoding</td><td>DFlash、FP4、MoE、TileRT、GPU 调度碎片</td><td>能解释大模型为什么能从逐 token 生成优化到高速输出。</td></tr>
 						<tr><td>知识库链</td><td>Embedding、Chunk、Vector DB</td><td>Hybrid Search、Rerank、引用回答</td><td>能解释 RAG 为什么不只是向量库。</td></tr>
 						<tr><td>多模态链</td><td>图文对、Vision Encoder、Projector</td><td>视觉指令微调、原生多模态、模型安全</td><td>能讲清多模态模型和纯 LLM 的差异。</td></tr>
 						<tr><td>渲染链</td><td>Layer / Source、Primitive、DrawCommand</td><td>Shader、WebGL、GPU pixels</td><td>能顺着管线定位“为什么没画出来”。</td></tr>
@@ -50,6 +51,11 @@
 						<tr><td>Prompt Cache</td><td>复用稳定 prompt 前缀的预填充计算，减少重复推理成本。</td><td><a href="../modules/llm-agent-interview/runtime-cache.html">角色优先级与缓存</a></td></tr>
 						<tr><td>KV Cache</td><td>推理时保存历史 token 的 Key/Value，避免每生成一个 token 都重算历史上下文。</td><td><a href="../modules/llm-agent-interview/runtime-cache.html">角色优先级与缓存</a></td></tr>
 						<tr><td>运行日志</td><td>Agent 本轮可见的 system、developer、user、assistant、tool、RAG 证据和文件片段。</td><td><a href="../modules/llm-agent-interview/runtime-cache.html">角色优先级与缓存</a></td></tr>
+						<tr><td>自回归生成</td><td>用已经生成的前文预测下一个 token，因此 token 与 token 之间天然串行。</td><td><a href="../modules/llm-inference-acceleration/speculative-decoding.html">投机解码原理</a></td></tr>
+						<tr><td>Speculative Decoding</td><td>小模型先草拟多个 token，大模型一次验证并接受最长有效前缀。</td><td><a href="../modules/llm-inference-acceleration/speculative-decoding.html">投机解码原理</a></td></tr>
+						<tr><td>DFlash</td><td>用轻量 block diffusion / masked parallel prediction drafter 一次生成一块草稿 token。</td><td><a href="../modules/llm-inference-acceleration/speculative-decoding.html">投机解码原理</a></td></tr>
+						<tr><td>TileRT</td><td>面向低延迟推理的 runtime，通过 persistent kernel、tile pipeline 等减少 GPU 执行缝隙。</td><td><a href="../modules/llm-inference-acceleration/mimo-ultraspeed.html">MiMo UltraSpeed 案例</a></td></tr>
+						<tr><td>GPU 调度碎片</td><td>kernel 启动、同步、通信和数据搬运之间的微小等待，会在高速推理中放大成瓶颈。</td><td><a href="../modules/llm-inference-acceleration/mimo-ultraspeed.html">MiMo UltraSpeed 案例</a></td></tr>
 					</tbody>
 				</table>
 				<h2>地图与渲染</h2>

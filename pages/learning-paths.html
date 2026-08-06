@@ -10,11 +10,11 @@
 	<body>
 		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习路线导航</strong><span>按目标选择下一步</span></div></div><nav><a href="../index.html">首页</a><a href="dashboard.html">仪表盘</a><a href="../modules/index.html">全部模块</a><a href="search.html">检索</a><a href="charter.html">总宪章</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="dashboard.html">学习仪表盘</a><a class="active" href="learning-paths.html">学习路线</a><a href="til.html">TIL 学习日志</a><a href="deep-dive-roadmap.html">深挖路线</a><a href="lab-index.html">实验室</a><a href="progress.html">学习进度</a><a href="agent-project-checklist.html">Agent 项目清单</a><a href="interview-bank.html">面试题库</a><a href="concept-index.html">概念索引</a><a href="../modules/index.html">全部模块</a><a href="../modules/mini-agent/practical-path.html">Agent 实战路线</a><a href="../modules/llm-agent-interview/index.html">LLM 面试路线</a><a href="../modules/digital-twin-city/index.html">数字孪生路线</a><a href="../modules/econ-finance/index.html">经济金融</a><a href="../modules/stock-kline/index.html">股票 K 线</a><a href="../modules/quant-trading/index.html">量化交易</a><a href="../modules/history-society/index.html">历史社会</a><a href="../modules/philosophy/index.html">哲学世界观</a><a href="../modules/christianity/index.html">基督教基础</a><a href="../modules/cognitive-learning/index.html">认知学习</a><a href="../modules/systems-thinking/index.html">系统思维</a><a href="search.html">全站检索</a></aside>
+			<aside class="doc-sidebar"><a href="dashboard.html">学习仪表盘</a><a class="active" href="learning-paths.html">学习路线</a><a href="til.html">TIL 学习日志</a><a href="deep-dive-roadmap.html">深挖路线</a><a href="lab-index.html">实验室</a><a href="progress.html">学习进度</a><a href="agent-project-checklist.html">Agent 项目清单</a><a href="interview-bank.html">面试题库</a><a href="concept-index.html">概念索引</a><a href="../modules/index.html">全部模块</a><a href="../modules/mini-agent/practical-path.html">Agent 实战路线</a><a href="../modules/llm-agent-interview/index.html">LLM 面试路线</a><a href="../modules/llm-inference-acceleration/index.html">推理加速</a><a href="../modules/digital-twin-city/index.html">数字孪生路线</a><a href="../modules/econ-finance/index.html">经济金融</a><a href="../modules/stock-kline/index.html">股票 K 线</a><a href="../modules/quant-trading/index.html">量化交易</a><a href="../modules/history-society/index.html">历史社会</a><a href="../modules/philosophy/index.html">哲学世界观</a><a href="../modules/christianity/index.html">基督教基础</a><a href="../modules/cognitive-learning/index.html">认知学习</a><a href="../modules/systems-thinking/index.html">系统思维</a><a href="search.html">全站检索</a></aside>
 			<article class="doc">
 				<p class="kicker">Learning Paths</p>
 				<h1>不要从页面开始，从目标开始</h1>
-				<p class="lead">这个网站已经有 17 个模块。小白最容易卡住的地方不是资料不够，而是不知道先学哪条线。这里把内容按目标重组：想开发 Agent、准备面试、学地图渲染、做数字孪生、理解经济金融与社会系统、研究哲学信仰，或者建立自己的学习系统，可以直接选路线。</p>
+				<p class="lead">这个网站已经有 18 个模块。小白最容易卡住的地方不是资料不够，而是不知道先学哪条线。这里把内容按目标重组：想开发 Agent、准备面试、理解大模型推理加速、学地图渲染、做数字孪生、理解经济金融与社会系统、研究哲学信仰，或者建立自己的学习系统，可以直接选路线。</p>
 
 				<h2>先选一个目标</h2>
 				<table class="compare-table">
@@ -22,6 +22,7 @@
 					<tbody>
 						<tr><td>自己开发 Agent</td><td>Agent 产品实战路线</td><td>能写一个带工具、模型适配、记忆、RAG、前端事件流的最小产品。</td></tr>
 						<tr><td>准备大模型 / Agent 面试</td><td>LLM 面试路线</td><td>能讲清记忆机制、RAG、长上下文、Transformer 长文本优化。</td></tr>
+						<tr><td>理解大模型为什么能更快</td><td>大模型推理加速路线</td><td>能讲清自回归瓶颈、投机解码、DFlash、FP4、MoE、TileRT 和 GPU 调度碎片。</td></tr>
 						<tr><td>理解地图和三维渲染</td><td>GIS / 渲染路线</td><td>能区分 OpenLayers、Mapbox、Cesium 的架构和适用场景。</td></tr>
 						<tr><td>做城市级可视化系统</td><td>数字孪生路线</td><td>能设计地图底座、三维资产、实时数据、Agent 分析和 MVP。</td></tr>
 						<tr><td>理解社会运行</td><td>经济金融与社会系统路线</td><td>能从社会运行、金钱流动、财政货币、城市经济、全球化走到金融和量化。</td></tr>
@@ -74,7 +75,16 @@
   -> 讲评估指标
   -> 落到真实系统怎么做</code></pre>
 
-				<h2>路线三：GIS / 渲染</h2>
+				<h2>路线三：大模型推理加速</h2>
+				<p>适合目标：想理解为什么某些大模型能宣称 1000 tokens/s，普通自回归模型慢在哪里，以及算法和 GPU runtime 如何配合。</p>
+				<ol>
+					<li><a href="../modules/llm-inference-acceleration/index.html">大模型推理加速总览</a>：先建立普通生成、投机解码和 runtime 优化的总图。</li>
+					<li><a href="../modules/llm-inference-acceleration/speculative-decoding.html">投机解码原理</a>：理解 drafter、verifier、接受率和最长有效前缀。</li>
+					<li><a href="../modules/llm-inference-acceleration/mimo-ultraspeed.html">MiMo UltraSpeed 案例</a>：拆解 DFlash、FP4、MoE、TileRT 为什么能共同提速。</li>
+					<li><a href="../modules/llm-agent-interview/runtime-cache.html">角色优先级与缓存</a>：补 KV Cache、Prompt Cache、GPU cache 等推理基础。</li>
+				</ol>
+
+				<h2>路线四：GIS / 渲染</h2>
 				<p>适合目标：想理解地图、WebGL、三维引擎、渲染命令如何到 GPU。</p>
 				<ol>
 					<li><a href="../modules/openlayers/index.html">OpenLayers 总览</a>：先学传统二维 GIS 的 Map、View、Layer、Source。</li>
@@ -86,7 +96,7 @@
 					<li><a href="../modules/cesium/custom-shader.html">Cesium 自定义着色器</a>：理解 shader 最终如何进入渲染命令。</li>
 				</ol>
 
-				<h2>路线四：数字孪生城市</h2>
+				<h2>路线五：数字孪生城市</h2>
 				<p>适合目标：想做城市级地图可视化、应急系统、园区管理、设备监控。</p>
 				<ol>
 					<li><a href="../modules/digital-twin-city/index.html">数字孪生城市总览</a>：看完整系统分层。</li>
@@ -97,7 +107,7 @@
 					<li><a href="../modules/digital-twin-city/mvp.html">MVP 路线</a>：先做最小闭环，不一开始做大屏。</li>
 				</ol>
 
-				<h2>路线五：经济金融与社会系统</h2>
+				<h2>路线六：经济金融与社会系统</h2>
 				<p>适合目标：想理解钱如何流动、工资房租如何形成、政府和市场如何共同分配，再入门金融市场和量化交易系统。</p>
 				<ol>
 					<li><a href="../modules/econ-finance/index.html">经济学与金融学总览</a>：先建立价格、资源、现金流、利率和风险框架。</li>
@@ -120,7 +130,7 @@
 					<li><a href="../modules/quant-trading/architecture.html">量化系统架构</a>：理解数据、研究、回测、实盘、风控、监控。</li>
 				</ol>
 
-				<h2>路线六：科学技术</h2>
+				<h2>路线七：科学技术</h2>
 				<p>适合目标：想保持好奇心，同时理解高斯、三维重建、空间电源这些硬核主题。</p>
 				<ol>
 					<li><a href="../modules/gaussian-splatting/index.html">Gaussian Splatting 总览</a>：理解照片到 3D 场景。</li>
@@ -151,7 +161,7 @@
 					<section><h3>学习实验室</h3><p>通过最小 demo 检验概念，避免只停留在读懂。</p><a class="primary-link" href="lab-index.html">打开实验室</a></section>
 				</div>
 
-				<h2>路线七：历史、地缘政治与社会系统</h2>
+				<h2>路线八：历史、地缘政治与社会系统</h2>
 				<p>适合目标：想理解国家、制度、战争、全球秩序和社会变迁，能够把新闻、历史事件和经济金融放进同一张结构图。</p>
 				<ol>
 					<li><a href="../modules/history-society/index.html">历史社会系统总览</a>：先建立“事件 -> 结构 -> 反馈 -> 结果”的分析方式。</li>
@@ -163,7 +173,7 @@
 					<li><a href="../modules/econ-finance/globalization.html">全球化规则</a>：把地缘政治和贸易、汇率、资本流动、美元体系连接起来。</li>
 				</ol>
 
-				<h2>路线八：哲学、世界观与基督教</h2>
+				<h2>路线九：哲学、世界观与基督教</h2>
 				<p>适合目标：想理解人生意义、信仰、道德根基和“为什么值得”这类终极问题，不想只停留在观点堆叠或情绪判断。</p>
 				<ol>
 					<li><a href="../modules/philosophy/index.html">哲学与世界观总览</a>：先建立终极问题、世界观、政治思想和日常实践的层级。</li>
@@ -174,7 +184,7 @@
 					<li><a href="../modules/history-society/worldview-meaning.html">世界观与人生意义对话整理</a>：把长对话作为案例复盘，看追问如何一层层推进。</li>
 				</ol>
 
-				<h2>路线九：认知科学与学习方法</h2>
+				<h2>路线十：认知科学与学习方法</h2>
 				<p>适合目标：想让知识库不只是越来越大，而是越来越能帮助自己理解、记忆、判断和输出。</p>
 				<ol>
 					<li><a href="../modules/cognitive-learning/index.html">认知学习总览</a>：先建立“输入 -> 加工 -> 存储 -> 提取 -> 输出 -> 反馈”的学习闭环。</li>
@@ -184,7 +194,7 @@
 					<li><a href="../modules/cognitive-learning/ai-learning-coach.html">AI 学习教练</a>：设计一个能提问、出题、复习、追踪进度和推荐项目的 Agent。</li>
 				</ol>
 
-				<h2>路线十：系统思维与复杂系统</h2>
+				<h2>路线十一：系统思维与复杂系统</h2>
 				<p>适合目标：想用一套通用框架理解 Agent、经济、城市、历史、学习和组织问题中的复杂反馈。</p>
 				<ol>
 					<li><a href="../modules/systems-thinking/index.html">系统思维总览</a>：先建立边界、变量、反馈、延迟、存量和杠杆点的通用语言。</li>

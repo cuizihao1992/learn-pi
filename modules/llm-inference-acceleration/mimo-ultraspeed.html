@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>MiMo UltraSpeed 案例 | 大模型推理加速</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学习吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>MiMo UltraSpeed 案例</strong><span>FP4, DFlash, MoE, TileRT</span></div></div>
+			<nav><a href="../../index.html">首页</a><a href="index.html">推理加速</a><a href="../../pages/search.html">检索</a></nav>
+		</header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar">
+				<a href="index.html">模块总览</a>
+				<a href="charter.html">模块宪章</a>
+				<a href="speculative-decoding.html">投机解码原理</a>
+				<a class="active" href="mimo-ultraspeed.html">MiMo UltraSpeed 案例</a>
+			</aside>
+			<article class="doc">
+				<p class="kicker">Case Study</p>
+				<h1>MiMo-V2.5-Pro-UltraSpeed 为什么快</h1>
+				<p class="lead">Xiaomi MiMo 官方文档称，MiMo × TileRT 的 UltraSpeed 模式让 MiMo-V2.5-Pro 这种 1T 级模型输出速度超过 1000 tokens/s。这个案例适合用来理解“模型算法 + 量化 + runtime + GPU kernel”如何共同决定端到端速度。</p>
+
+				<h2>一、先不要误解：普通 Pro 也并行</h2>
+				<p>普通大模型部署不是没有并行。矩阵乘法、attention head、MoE experts、tensor parallel、expert parallel 都在并行。真正的瓶颈是：自回归生成的外层 token 循环必须一个接一个推进。</p>
+				<pre><code>普通 Pro:
+  大模型 forward 1 次 -> 1 token
+  10 个 token -> 大约 10 次主模型 forward
+
+UltraSpeed:
+  DFlash 猜一块
+  主模型验一块
+  如果平均接受 6 个 token
+  10 个 token 可能只需要约 2 次主模型验证</code></pre>
+
+				<h2>二、四层加速</h2>
+				<table class="compare-table">
+					<thead><tr><th>层次</th><th>做了什么</th><th>省了什么</th></tr></thead>
+					<tbody>
+						<tr><td>DFlash</td><td>轻量 block drafter 一次预测多个未来 token。</td><td>减少主模型 forward 次数。</td></tr>
+						<tr><td>Speculative verification</td><td>主模型一次 forward 验证多个草稿位置，接受最长有效前缀。</td><td>把并行推进到 token 之间。</td></tr>
+						<tr><td>FP4 + MoE</td><td>官方称对 MoE Experts 做 FP4 QAT，降低模型大小和访存压力。</td><td>减少显存带宽压力，保留主要能力。</td></tr>
+						<tr><td>TileRT</td><td>用 persistent kernels、compute-transfer overlap、heterogeneous pipelines 等系统优化。</td><td>减少 kernel 启动、同步、通信和调度碎片。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>三、GPU 调度碎片是什么</h2>
+				<p>推理不是一个巨大的单一算子，而是一串 kernel 和通信步骤。速度很高时，每个 token 的预算进入毫秒甚至亚毫秒级，kernel 启动、等待、同步、显存搬运和 MoE 通信都会变成明显开销。</p>
+				<pre><code>RMSNorm kernel
+QKV projection kernel
+RoPE / Attention kernel
+MoE routing
+Expert GEMM
+AllReduce / AllToAll
+FFN kernel
+...
+
+如果每一步中间都有等待和切换，
+GPU 就会“算一小段、停一下、再算一小段”。</code></pre>
+				<p>TileRT 这类 runtime 要做的，就是把这些小停顿压缩掉，让计算、搬运、通信尽量重叠。</p>
+
+				<h2>四、为什么任务会影响加速比</h2>
+				<table class="compare-table">
+					<thead><tr><th>任务类型</th><th>DFlash 接受率倾向</th><th>原因</th></tr></thead>
+					<tbody>
+						<tr><td>代码、格式化输出、确定性补全</td><td>较高</td><td>未来 token 更可预测，drafter 容易猜中。</td></tr>
+						<tr><td>开放聊天、创作、发散推理</td><td>较低</td><td>合理下一步很多，主模型更容易拒绝草稿。</td></tr>
+						<tr><td>长上下文场景</td><td>依赖实现</td><td>DFlash drafter、SWA、KV cache 和 runtime 适配都会影响成本。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>五、这是不是“最快模型”</h2>
+				<p>更稳妥的说法是：MiMo UltraSpeed 是 2026 年被公开宣传的 1T 级模型高速推理代表案例之一。是否“最快”取决于统计口径：模型规模、硬件、batch、上下文长度、是否缓存命中、任务类型、是否峰值、是否端到端、是否质量无损。官方重点主张是 1T 级模型在通用 GPU 节点上超过 1000 tokens/s，而不是所有场景下绝对最快。</p>
+
+				<h2>来源与延伸</h2>
+				<ul>
+					<li><a href="https://mimo.mi.com/docs/en-US/news/latest/1000tps">Xiaomi MiMo × TileRT: 1T Model Breaks 1000 tokens/s</a></li>
+					<li><a href="https://mimo.mi.com/">Xiaomi MiMo Home</a></li>
+					<li><a href="https://arxiv.org/abs/2602.06036">DFlash paper</a></li>
+					<li><a href="https://docs.vllm.ai/projects/speculators/en/latest/user_guide/algorithms/dflash/">vLLM DFlash docs</a></li>
+				</ul>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
+			}
+		</script>
+	</body>
+</html>

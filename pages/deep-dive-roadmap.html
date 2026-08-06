@@ -27,7 +27,7 @@
   -> 自测问题
   -> 回到模块复盘</code></pre>
 
-				<h2>十七个模块的第一批深挖点</h2>
+				<h2>十八个模块的第一批深挖点</h2>
 				<table class="compare-table">
 					<thead><tr><th>模块</th><th>先打穿的点</th><th>需要补的知识</th><th>例子 / 实验</th><th>状态</th></tr></thead>
 					<tbody>
@@ -35,6 +35,7 @@
 						<tr><td>Mini Agent</td><td>最小 Agent Loop 与 OpenAI-compatible 适配</td><td>while 底层、messages、tools、tool_calls、tool result、终止条件、OpenAI-compatible API、安全边界。</td><td><a href="../modules/mini-agent/agent-loop-deep-dive.html">Agent Loop 深挖</a> + <a href="../examples/agent-safety/index.html">Agent Safety Demo</a>。</td><td>样板已完成</td></tr>
 						<tr><td>LLM / Agent 面试</td><td>Embedding 到 RAG 召回</td><td>向量、余弦相似度、chunk、topK、rerank、prompt、评估。</td><td><a href="../modules/llm-agent-interview/embedding-rag-deep-dive.html">Embedding -> RAG 深挖</a> + <a href="../examples/rag-evaluation/index.html">RAG Evaluation Demo</a>。</td><td>样板已完成</td></tr>
 						<tr><td>LLM Runtime</td><td>角色优先级与缓存</td><td>system/developer/user/tool、运行日志、CPU cache、Prompt Cache、KV Cache。</td><td><a href="../modules/llm-agent-interview/runtime-cache.html">角色优先级与缓存</a>：从硬件缓存讲到大模型上下文缓存。</td><td>样板已完成</td></tr>
+						<tr><td>LLM Inference Acceleration</td><td>投机解码如何减少主模型 forward 次数</td><td>自回归瓶颈、drafter、verifier、接受率、DFlash、FP4、MoE、TileRT、GPU 调度碎片。</td><td><a href="../modules/llm-inference-acceleration/speculative-decoding.html">投机解码原理</a> + <a href="../modules/llm-inference-acceleration/mimo-ultraspeed.html">MiMo UltraSpeed 案例</a>。</td><td>样板已完成</td></tr>
 						<tr><td>Cesium</td><td>Primitive -> DrawCommand -> GPU</td><td>WebGL、ShaderProgram、VertexArray、RenderState、渲染队列。</td><td>一个 box primitive 如何变成 DrawCommand。</td><td>待补</td></tr>
 						<tr><td>OpenLayers</td><td>Layer / Source / View 分工</td><td>坐标系、瓦片、视口、矢量要素、Canvas/WebGL。</td><td>同一份数据换不同 layer style。</td><td>待补</td></tr>
 						<tr><td>Mapbox</td><td>Style JSON 驱动渲染</td><td>source、layer、paint、layout、vector tile。</td><td>一个 source 加两个 layer，展示不同符号样式。</td><td>待补</td></tr>

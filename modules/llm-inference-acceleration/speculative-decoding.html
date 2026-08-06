@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>投机解码原理 | 大模型推理加速</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学习吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>投机解码原理</strong><span>Draft, Verify, Accept</span></div></div>
+			<nav><a href="../../index.html">首页</a><a href="index.html">推理加速</a><a href="../../pages/search.html">检索</a></nav>
+		</header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar">
+				<a href="index.html">模块总览</a>
+				<a href="charter.html">模块宪章</a>
+				<a class="active" href="speculative-decoding.html">投机解码原理</a>
+				<a href="mimo-ultraspeed.html">MiMo UltraSpeed 案例</a>
+			</aside>
+			<article class="doc">
+				<p class="kicker">Speculative Decoding</p>
+				<h1>预测一个 token 和验收多个 token，不是一回事</h1>
+				<p class="lead">普通自回归模型每次 forward 只能确定下一个 token。投机解码的想法是：让便宜的 drafter 先猜一段，再让昂贵的大模型 verifier 一次验证多个位置。如果草稿足够准，主模型 forward 次数就会大幅减少。</p>
+
+				<h2>一、普通生成为什么慢</h2>
+				<pre><code>上下文: A B C
+大模型 forward -> D
+上下文: A B C D
+大模型 forward -> E
+上下文: A B C D E
+大模型 forward -> F</code></pre>
+				<p>每一步内部都有矩阵乘法、attention head、MoE expert、tensor parallel 等并行。但外层 token 循环仍然串行：不知道 D，就无法正确条件化 E。</p>
+
+				<h2>二、验收和预测的区别</h2>
+				<table class="compare-table">
+					<thead><tr><th>动作</th><th>输入</th><th>输出</th><th>关键成本</th></tr></thead>
+					<tbody>
+						<tr><td>预测</td><td>真实前缀 A B C</td><td>从全词表选择 D</td><td>1 次主模型 forward 推进 1 个 token。</td></tr>
+						<tr><td>验收</td><td>真实前缀 A B C + 草稿 D E F G</td><td>检查每个草稿 token 是否符合主模型分布</td><td>1 次主模型 forward 可能推进多个 token。</td></tr>
+					</tbody>
+				</table>
+				<p>验收不是免费，也不是简单判断对错。大模型仍要算这些位置的 logits。收益来自：验证 8 个 token 的成本小于做 8 次单 token 预测。</p>
+
+				<h2>三、投机解码链路</h2>
+				<pre><code>1. drafter 快速生成草稿: D E F G H I J K
+2. verifier 大模型一次 forward 验证这些位置
+3. 从左到右接受最长有效前缀
+4. 如果前 6 个通过，就一次推进 6 个 token
+5. 第 7 个不通过，就从那里回到主模型修正</code></pre>
+
+				<h2>四、小模型为什么必须又快又准</h2>
+				<table class="compare-table">
+					<thead><tr><th>情况</th><th>结果</th></tr></thead>
+					<tbody>
+						<tr><td>drafter 很快但太弱</td><td>大模型拒绝多，平均接受长度短，加速有限。</td></tr>
+						<tr><td>drafter 很准但太大</td><td>草稿成本吃掉省下的主模型时间。</td></tr>
+						<tr><td>drafter 又快又接近主模型</td><td>接受率高，主模型 forward 次数显著减少。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>五、DFlash 的特殊点</h2>
+				<p>传统 drafter 也可能一个 token 一个 token 草拟，仍有自己的串行瓶颈。DFlash 用轻量 block diffusion / masked parallel prediction 模型，一次 forward 生成一个 block 的候选 token，并用目标模型的 hidden states 作为条件。vLLM Speculators 文档也把 DFlash 描述为：小 diffusion-LLM draft model 一次预测整块 token，再由目标模型验证。</p>
+				<pre><code>普通 drafter:
+  guess D -> guess E -> guess F -> guess G
+
+DFlash drafter:
+  [MASK] [MASK] [MASK] [MASK]
+  -> D E F G，一次生成一块</code></pre>
+
+				<h2>来源与延伸</h2>
+				<ul>
+					<li><a href="https://arxiv.org/abs/2602.06036">DFlash: Block Diffusion for Flash Speculative Decoding</a></li>
+					<li><a href="https://docs.vllm.ai/projects/speculators/en/latest/user_guide/algorithms/dflash/">vLLM Speculators: DFlash</a></li>
+				</ul>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
+			}
+		</script>
+	</body>
+</html>

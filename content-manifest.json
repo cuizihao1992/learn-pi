@@ -10,7 +10,7 @@
     "labs": "pages/lab-index.html",
     "deepDives": "pages/deep-dive-roadmap.html",
     "search": "pages/search.html",
-    "rule": "The site is organized as seventeen first-class modules: pi-agent, mini-agent, cesium, openlayers, mapbox, digital-twin-city, llm-agent-interview, gaussian-splatting, econ-finance, stock-kline, quant-trading, nuclear-battery, history-society, philosophy, christianity, cognitive-learning, and systems-thinking. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
+    "rule": "The site is organized as eighteen first-class modules: pi-agent, mini-agent, cesium, openlayers, mapbox, digital-twin-city, llm-agent-interview, llm-inference-acceleration, gaussian-splatting, econ-finance, stock-kline, quant-trading, nuclear-battery, history-society, philosophy, christianity, cognitive-learning, and systems-thinking. Common pages stay in pages/. Old pages URLs are compatibility redirects.",
     "modules": "modules/index.html"
   },
   "moduleConvention": {
@@ -145,6 +145,20 @@
         "transformer-long-context.html",
         "runtime-cache.html",
         "interview-playbook.html"
+      ]
+    },
+    {
+      "slug": "llm-inference-acceleration",
+      "name": "LLM Inference Acceleration",
+      "root": "modules/llm-inference-acceleration/",
+      "charter": "modules/llm-inference-acceleration/charter.html",
+      "entry": "modules/llm-inference-acceleration/index.html",
+      "purpose": "Understand autoregressive decoding bottlenecks, speculative decoding, DFlash, quantization, MoE runtime, TileRT, and GPU scheduling gaps.",
+      "pages": [
+        "index.html",
+        "charter.html",
+        "speculative-decoding.html",
+        "mimo-ultraspeed.html"
       ]
     },
     {

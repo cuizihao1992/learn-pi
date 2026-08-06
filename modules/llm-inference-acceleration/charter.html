@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>推理加速模块宪章 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学习吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>推理加速模块宪章</strong><span>Latency, Throughput, Runtime</span></div></div>
+			<nav><a href="../../index.html">首页</a><a href="index.html">推理加速</a><a href="../../pages/search.html">检索</a></nav>
+		</header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar">
+				<a href="index.html">模块总览</a>
+				<a class="active" href="charter.html">模块宪章</a>
+				<a href="speculative-decoding.html">投机解码原理</a>
+				<a href="mimo-ultraspeed.html">MiMo UltraSpeed 案例</a>
+			</aside>
+			<article class="doc">
+				<p class="kicker">Charter</p>
+				<h1>推理加速内容怎么写</h1>
+				<p class="lead">这个模块必须避免只堆新名词。每个加速技术都要回答四件事：原瓶颈是什么，算法怎么减少工作量，runtime 怎么把理论收益落到 GPU，限制条件在哪里。</p>
+
+				<h2>内容标准</h2>
+				<ol>
+					<li>先区分指标：首 token 延迟、输出 tokens/s、吞吐、并发、成本、显存占用。</li>
+					<li>先讲自回归瓶颈，再讲优化技术，不要直接从 DFlash、TileRT 这些名词开始。</li>
+					<li>每个技术都要写“它省了什么”：forward 次数、显存带宽、kernel 启动、通信同步，还是 KV 读写。</li>
+					<li>必须写限制：接受率、任务类型、草稿模型成本、量化损失、硬件和 runtime 适配。</li>
+					<li>用同一个例子贯穿：生成 8 个 token，普通预测需要 8 次主模型 forward，投机解码可能只需 1 次验证。</li>
+				</ol>
+
+				<h2>页面模板</h2>
+				<pre><code>1. 原始瓶颈是什么
+2. 一句话模型
+3. 输入 -> 计算 -> 输出链路
+4. 它到底省了什么
+5. 为什么不会明显掉质量
+6. 限制和失败场景
+7. 一个数字例子
+8. 来源与延伸</code></pre>
+
+				<h2>和其他模块的边界</h2>
+				<table class="compare-table">
+					<thead><tr><th>模块</th><th>本模块保留</th><th>转交给对方模块</th></tr></thead>
+					<tbody>
+						<tr><td>LLM / Agent 面试</td><td>推理速度、投机解码、量化、runtime、GPU 执行。</td><td>Embedding、RAG、记忆、长上下文概念总览。</td></tr>
+						<tr><td>Mini Agent</td><td>模型响应速度如何影响 Agent 体验。</td><td>OpenAI-compatible API、工具调用、Agent loop 实现。</td></tr>
+						<tr><td>系统思维</td><td>推理链路中的瓶颈转移。</td><td>反馈环、存量流量、杠杆点通用方法。</td></tr>
+					</tbody>
+				</table>
+			</article>
+		</main>
+		<script src="../../theme.js"></script><script src="../../enhance.js"></script>
+		<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
+			}
+		</script>
+	</body>
+</html>
