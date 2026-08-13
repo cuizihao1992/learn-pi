@@ -7,6 +7,9 @@ function walk(dir) {
 	const out = [];
 	for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
 		if (entry.name === ".git") continue;
+		if (entry.name === "obsidian-vault") continue;
+		if (entry.name === ".obsidian") continue;
+		if (entry.name.startsWith("tmp-")) continue;
 		const full = path.join(dir, entry.name);
 		if (entry.isDirectory()) out.push(...walk(full));
 		else out.push(full);

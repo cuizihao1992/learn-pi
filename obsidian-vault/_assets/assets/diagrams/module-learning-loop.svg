@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="560" viewBox="0 0 1100 560" role="img" aria-labelledby="title desc">
+  <title id="title">模块学习闭环</title>
+  <desc id="desc">每个模块从目标开始，经过核心链路、深挖专题、实验验证和验收输出，再回到复盘。</desc>
+  <rect width="1100" height="560" fill="#fbf7ee"/>
+  <text x="550" y="50" text-anchor="middle" font-family="Microsoft YaHei, Segoe UI, sans-serif" font-size="30" font-weight="700" fill="#182125">每个模块都按同一个学习闭环推进</text>
+  <text x="550" y="86" text-anchor="middle" font-family="Microsoft YaHei, Segoe UI, sans-serif" font-size="17" fill="#607077">目标不是看完页面，而是能讲清、画出、做成、复盘</text>
+  <defs>
+    <marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,7 L10,3.5 z" fill="#607077"/>
+    </marker>
+  </defs>
+  <g font-family="Microsoft YaHei, Segoe UI, sans-serif">
+    <rect x="85" y="160" width="170" height="86" rx="8" fill="#d7efea" stroke="#006c67" stroke-width="2"/>
+    <text x="170" y="194" text-anchor="middle" font-size="20" font-weight="700" fill="#006c67">目标</text>
+    <text x="170" y="222" text-anchor="middle" font-size="14" fill="#182125">这个模块解决什么问题</text>
+
+    <rect x="315" y="160" width="170" height="86" rx="8" fill="#e8f1f8" stroke="#315d91" stroke-width="2"/>
+    <text x="400" y="194" text-anchor="middle" font-size="20" font-weight="700" fill="#315d91">核心链路</text>
+    <text x="400" y="222" text-anchor="middle" font-size="14" fill="#182125">输入如何变成输出</text>
+
+    <rect x="545" y="160" width="170" height="86" rx="8" fill="#fff4df" stroke="#c98620" stroke-width="2"/>
+    <text x="630" y="194" text-anchor="middle" font-size="20" font-weight="700" fill="#8b5c11">深挖点</text>
+    <text x="630" y="222" text-anchor="middle" font-size="14" fill="#182125">一次讲透一个原理</text>
+
+    <rect x="775" y="160" width="170" height="86" rx="8" fill="#f8e7e6" stroke="#a93c38" stroke-width="2"/>
+    <text x="860" y="194" text-anchor="middle" font-size="20" font-weight="700" fill="#a93c38">实验</text>
+    <text x="860" y="222" text-anchor="middle" font-size="14" fill="#182125">观察、计算或运行</text>
+
+    <path d="M255 203 L310 203" stroke="#607077" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M485 203 L540 203" stroke="#607077" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M715 203 L770 203" stroke="#607077" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <rect x="315" y="340" width="470" height="86" rx="8" fill="#ffffff" stroke="#d9d0c0" stroke-width="2"/>
+    <text x="550" y="374" text-anchor="middle" font-size="21" font-weight="700" fill="#182125">验收输出</text>
+    <text x="550" y="404" text-anchor="middle" font-size="15" fill="#607077">能说出误解、画出链路、完成一个小例子或项目</text>
+    <path d="M860 246 L860 383 L790 383" stroke="#607077" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+    <path d="M315 383 L170 383 L170 252" stroke="#607077" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+    <text x="170" y="412" text-anchor="middle" font-size="15" font-weight="700" fill="#607077">复盘后回到目标</text>
+  </g>
+</svg>

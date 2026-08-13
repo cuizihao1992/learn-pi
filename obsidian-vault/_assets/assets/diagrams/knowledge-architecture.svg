@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">知识库目标架构</title>
+  <desc id="desc">源码学习实验室从目标路线进入，再到知识域、模块、深挖专题、实验和项目输出。</desc>
+  <rect width="1200" height="720" fill="#fbf7ee"/>
+  <text x="600" y="54" text-anchor="middle" font-family="Microsoft YaHei, Segoe UI, sans-serif" font-size="32" font-weight="700" fill="#182125">知识库目标架构：从目标到项目输出</text>
+  <text x="600" y="91" text-anchor="middle" font-family="Microsoft YaHei, Segoe UI, sans-serif" font-size="17" fill="#607077">不是大而全地堆页面，而是让每个模块都有入口、底层原理、示例、实验和验收</text>
+  <defs>
+    <marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,7 L10,3.5 z" fill="#607077"/>
+    </marker>
+  </defs>
+  <g font-family="Microsoft YaHei, Segoe UI, sans-serif">
+    <rect x="85" y="145" width="1030" height="74" rx="8" fill="#ffffff" stroke="#d9d0c0" stroke-width="2"/>
+    <text x="600" y="177" text-anchor="middle" font-size="22" font-weight="700" fill="#182125">入口层：首页 / 学习路线 / 仪表盘 / 全站搜索</text>
+    <text x="600" y="204" text-anchor="middle" font-size="15" fill="#607077">帮助用户先选目标，而不是先面对所有页面</text>
+
+    <path d="M600 219 L600 256" stroke="#607077" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <rect x="70" y="270" width="205" height="92" rx="8" fill="#d7efea" stroke="#006c67" stroke-width="2"/>
+    <text x="172" y="304" text-anchor="middle" font-size="19" font-weight="700" fill="#006c67">Agent / LLM</text>
+    <text x="172" y="333" text-anchor="middle" font-size="14" fill="#182125">Pi、Mini、RAG、记忆、缓存</text>
+
+    <rect x="300" y="270" width="205" height="92" rx="8" fill="#e8f1f8" stroke="#315d91" stroke-width="2"/>
+    <text x="402" y="304" text-anchor="middle" font-size="19" font-weight="700" fill="#315d91">地图 / 渲染</text>
+    <text x="402" y="333" text-anchor="middle" font-size="14" fill="#182125">OpenLayers、Mapbox、Cesium</text>
+
+    <rect x="530" y="270" width="205" height="92" rx="8" fill="#fff4df" stroke="#c98620" stroke-width="2"/>
+    <text x="632" y="304" text-anchor="middle" font-size="19" font-weight="700" fill="#8b5c11">经济 / 社会</text>
+    <text x="632" y="333" text-anchor="middle" font-size="14" fill="#182125">经济金融、K 线、量化、历史</text>
+
+    <rect x="760" y="270" width="205" height="92" rx="8" fill="#f8e7e6" stroke="#a93c38" stroke-width="2"/>
+    <text x="862" y="304" text-anchor="middle" font-size="19" font-weight="700" fill="#a93c38">学习 / 系统</text>
+    <text x="862" y="333" text-anchor="middle" font-size="14" fill="#182125">认知学习、系统思维</text>
+
+    <rect x="990" y="270" width="140" height="92" rx="8" fill="#edf8ef" stroke="#527b2d" stroke-width="2"/>
+    <text x="1060" y="304" text-anchor="middle" font-size="19" font-weight="700" fill="#527b2d">科学技术</text>
+    <text x="1060" y="333" text-anchor="middle" font-size="14" fill="#182125">高斯泼溅、核电池</text>
+
+    <path d="M600 366 L600 410" stroke="#607077" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <rect x="105" y="425" width="990" height="76" rx="8" fill="#ffffff" stroke="#d9d0c0" stroke-width="2"/>
+    <text x="600" y="458" text-anchor="middle" font-size="22" font-weight="700" fill="#182125">模块层：每个模块统一有总览、路线、概念、核心链路、深挖页和练习</text>
+    <text x="600" y="486" text-anchor="middle" font-size="15" fill="#607077">模块之间互相引用，但边界清楚，避免同一个问题散落在多个地方</text>
+
+    <path d="M600 501 L600 538" stroke="#607077" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <rect x="120" y="552" width="280" height="78" rx="8" fill="#d7efea" stroke="#006c67" stroke-width="2"/>
+    <text x="260" y="584" text-anchor="middle" font-size="20" font-weight="700" fill="#006c67">深挖专题</text>
+    <text x="260" y="611" text-anchor="middle" font-size="14" fill="#182125">一个点讲到底层原理和例子</text>
+
+    <rect x="460" y="552" width="280" height="78" rx="8" fill="#e8f1f8" stroke="#315d91" stroke-width="2"/>
+    <text x="600" y="584" text-anchor="middle" font-size="20" font-weight="700" fill="#315d91">实验 / Demo</text>
+    <text x="600" y="611" text-anchor="middle" font-size="14" fill="#182125">用可操作页面验证理解</text>
+
+    <rect x="800" y="552" width="280" height="78" rx="8" fill="#fff4df" stroke="#c98620" stroke-width="2"/>
+    <text x="940" y="584" text-anchor="middle" font-size="20" font-weight="700" fill="#8b5c11">项目输出</text>
+    <text x="940" y="611" text-anchor="middle" font-size="14" fill="#182125">能讲清、画出、做成、复盘</text>
+  </g>
+</svg>
