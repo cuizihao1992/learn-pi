@@ -1722,6 +1722,298 @@ pre {
 	}
 }
 
+/* Visual direction pass: make the site feel like a focused learning app, not a document dump. */
+body {
+	background:
+		linear-gradient(rgba(23, 32, 38, 0.035) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(23, 32, 38, 0.035) 1px, transparent 1px),
+		linear-gradient(180deg, #f7fafc 0%, #eef3f7 44%, var(--paper) 100%);
+	background-size: 36px 36px, 36px 36px, auto;
+}
+
+:root[data-theme="graphite"] body {
+	background:
+		linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+		linear-gradient(180deg, #15191c 0%, #111518 48%, var(--paper) 100%);
+	background-size: 36px 36px, 36px 36px, auto;
+}
+
+.topbar {
+	top: 12px;
+	width: min(1240px, calc(100% - 32px));
+	margin: 12px auto 0;
+	border: 1px solid color-mix(in srgb, var(--line) 84%, transparent);
+	border-radius: 8px;
+	padding: 12px 16px;
+}
+
+.brand img {
+	border-radius: 8px;
+	padding: 5px;
+	background: color-mix(in srgb, var(--panel) 78%, transparent);
+	box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--line) 72%, transparent);
+}
+
+.brand strong {
+	font-size: 15px;
+	font-weight: 860;
+	letter-spacing: 0;
+}
+
+nav a {
+	min-height: 34px;
+	display: inline-flex;
+	align-items: center;
+	border: 1px solid transparent;
+}
+
+nav a:hover {
+	border-color: color-mix(in srgb, var(--teal) 24%, transparent);
+}
+
+main {
+	margin-top: 18px;
+}
+
+.workspace {
+	position: relative;
+	min-height: min(720px, calc(100vh - 92px));
+	margin-top: 18px;
+	padding: 56px;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 8px;
+	background:
+		linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03)),
+		linear-gradient(115deg, #10232f 0%, #163746 45%, #1d5c62 100%);
+	box-shadow: 0 34px 90px rgba(16, 35, 47, 0.28);
+	overflow: hidden;
+}
+
+.workspace::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background:
+		linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+	background-size: 42px 42px;
+	mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.62), transparent 72%);
+}
+
+.workspace > * {
+	position: relative;
+	z-index: 1;
+}
+
+.workspace .kicker {
+	color: #9ee8dd;
+}
+
+.workspace h1 {
+	color: #f8fbfc;
+	text-wrap: balance;
+}
+
+.workspace .intro p:last-child,
+.workspace .lead-like {
+	color: rgba(248, 251, 252, 0.78);
+}
+
+.workspace .secondary-link {
+	background: rgba(255, 255, 255, 0.12);
+	border-color: rgba(255, 255, 255, 0.24);
+	color: #effaf8;
+	backdrop-filter: blur(18px) saturate(150%);
+	-webkit-backdrop-filter: blur(18px) saturate(150%);
+}
+
+.workspace .primary-link {
+	background: #f7fbfa;
+	color: #0d4847;
+}
+
+.quick-panel {
+	align-self: stretch;
+	align-content: center;
+}
+
+.metric {
+	border-color: rgba(255, 255, 255, 0.24);
+	background: rgba(255, 255, 255, 0.13);
+	color: #f8fbfc;
+	box-shadow: 0 18px 44px rgba(5, 15, 22, 0.22);
+}
+
+.metric span {
+	color: rgba(248, 251, 252, 0.66);
+}
+
+.metric strong {
+	color: #9ee8dd;
+}
+
+.section {
+	padding-top: 54px;
+}
+
+.section-head {
+	padding-inline: 2px;
+}
+
+.section-head h1,
+.section-head h2 {
+	text-wrap: balance;
+}
+
+.module-grid,
+.module-roadmap-grid,
+.course-grid,
+.track-grid,
+.deep-grid,
+.lesson-grid {
+	gap: 18px;
+}
+
+.module-card,
+.module-roadmap-grid section,
+.course-grid a,
+.track-grid section,
+.deep-card,
+.lesson-grid section,
+.big-explain,
+.example-detail,
+.code-detail,
+.task-grid div,
+.term-list section,
+.faq-list section,
+.step {
+	border-color: color-mix(in srgb, var(--line) 86%, transparent);
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.52), var(--shadow-soft);
+}
+
+.module-card {
+	position: relative;
+	padding: 22px;
+	border-top: 0;
+	overflow: hidden;
+}
+
+.module-card::before {
+	content: "";
+	position: absolute;
+	inset: 0 0 auto 0;
+	height: 5px;
+	background: var(--blue);
+}
+
+.module-card:nth-child(2n)::before {
+	background: var(--teal);
+}
+
+.module-card:nth-child(3n)::before {
+	background: var(--red);
+}
+
+.module-card h3,
+.module-roadmap-grid h3,
+.course-grid h3 {
+	font-weight: 840;
+	letter-spacing: 0;
+}
+
+.module-card p,
+.module-roadmap-grid p,
+.course-grid p,
+.lesson-grid p,
+.doc p,
+.doc li {
+	color: color-mix(in srgb, var(--ink) 74%, var(--muted));
+}
+
+.primary-link {
+	background: linear-gradient(180deg, color-mix(in srgb, var(--teal) 90%, white), var(--teal));
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), var(--shadow-soft);
+}
+
+.secondary-link,
+.search-filter-row button,
+.progress-levels button,
+.copy-code {
+	background: color-mix(in srgb, var(--panel) 88%, transparent);
+}
+
+.doc-layout {
+	padding-top: 28px;
+}
+
+.doc-sidebar {
+	top: 94px;
+	padding: 10px;
+	background: color-mix(in srgb, var(--panel) 80%, transparent);
+}
+
+.doc-sidebar a.active {
+	box-shadow: inset 3px 0 0 var(--teal);
+}
+
+.doc {
+	padding: 44px;
+	border-color: color-mix(in srgb, var(--line) 84%, transparent);
+}
+
+.doc .lead {
+	color: color-mix(in srgb, var(--ink) 82%, var(--teal));
+}
+
+.compare-table {
+	border-color: color-mix(in srgb, var(--line) 86%, transparent);
+	box-shadow: var(--shadow-soft);
+}
+
+.compare-table th {
+	background: color-mix(in srgb, var(--teal-soft) 72%, var(--panel));
+}
+
+pre {
+	border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 980px) {
+	.topbar {
+		top: 0;
+		width: 100%;
+		margin-top: 0;
+		border-radius: 0;
+		border-inline: 0;
+	}
+
+	main {
+		margin-top: 0;
+	}
+
+	.workspace {
+		min-height: auto;
+		padding: 36px 24px;
+	}
+}
+
+@media (max-width: 640px) {
+	.workspace {
+		margin-top: 10px;
+		padding: 30px 18px;
+	}
+
+	.module-card {
+		padding: 18px;
+	}
+
+	.doc {
+		padding: 22px 16px;
+	}
+}
+
 @media (max-width: 980px) {
 	.topbar,
 	.section-head,
