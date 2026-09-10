@@ -1,4 +1,4 @@
-const CACHE = 'learn-pi-v5';
+const CACHE = 'learn-pi-v6';
 const BASE_PATH = '/learn-pi';
 const OFFLINE_URL = `${BASE_PATH}/offline.html`;
 
@@ -25,12 +25,23 @@ function shouldCache(request, response) {
   return request.method === 'GET' && response && response.ok && response.type === 'basic';
 }
 
+function isFreshnessCritical(url) {
+  return /\.(?:css|js|json)$/.test(url.pathname);
+}
+
+async function fetchAndCache(request) {
+  const response = await fetch(request, { cache: 'no-cache' });
+  if (shouldCache(request, response)) {
+    const cache = await caches.open(CACHE);
+    await cache.put(request, response.clone());
+  }
+  return response;
+}
+
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE).then((cache) =>
-      Promise.allSettled(STATIC_RESOURCES.map((url) => cache.add(url)))
-    )
+    Promise.allSettled(STATIC_RESOURCES.map((url) => fetchAndCache(new Request(url))))
   );
 });
 
@@ -52,18 +63,18 @@ self.addEventListener('fetch', (event) => {
 
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          if (shouldCache(request, response)) {
-            const clone = response.clone();
-            caches.open(CACHE).then((cache) => cache.put(request, clone));
-          }
-          return response;
-        })
+      fetchAndCache(request)
         .catch(() =>
           caches.match(request)
             .then((cached) => cached || caches.match(OFFLINE_URL))
         )
+    );
+    return;
+  }
+
+  if (isFreshnessCritical(url)) {
+    event.respondWith(
+      fetchAndCache(request).catch(() => caches.match(request))
     );
     return;
   }

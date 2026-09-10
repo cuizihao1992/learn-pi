@@ -57,6 +57,39 @@
 		});
 	}
 
+	function addArticleHero() {
+		const doc = document.querySelector(".doc");
+		if (!doc || doc.querySelector(":scope > .article-hero")) return;
+		const heading = Array.from(doc.children).find((node) => node.matches("h1"));
+		if (!heading) return;
+
+		const kicker = heading.previousElementSibling?.matches(".kicker") ? heading.previousElementSibling : null;
+		const lead = heading.nextElementSibling?.matches(".lead") ? heading.nextElementSibling : null;
+		const hero = document.createElement("header");
+		hero.className = "article-hero";
+		doc.insertBefore(hero, kicker || heading);
+		if (kicker) hero.appendChild(kicker);
+		hero.appendChild(heading);
+		if (lead) hero.appendChild(lead);
+
+		const sectionCount = Array.from(doc.children).filter((node) => node.matches("h2")).length;
+		const characterCount = doc.textContent.replace(/\s/g, "").length;
+		const readingMinutes = Math.max(2, Math.ceil(characterCount / 500));
+		const meta = document.createElement("p");
+		meta.className = "article-meta";
+		meta.innerHTML = `<span>${sectionCount || 1} 个章节</span><span>约 ${readingMinutes} 分钟</span>`;
+		hero.appendChild(meta);
+		document.body.classList.add("has-article-hero");
+	}
+
+	function keepServiceWorkerFresh() {
+		if (!("serviceWorker" in navigator) || location.protocol !== "https:") return;
+		navigator.serviceWorker
+			.register("/learn-pi/sw.js", { scope: "/learn-pi/", updateViaCache: "none" })
+			.then((registration) => registration.update())
+			.catch(() => {});
+	}
+
 	function addLearningProgressTracker() {
 		const root = document.querySelector("[data-progress-tracker]");
 		if (!root || root.dataset.progressReady) return;
@@ -148,7 +181,9 @@
 	document.addEventListener("DOMContentLoaded", () => {
 		addReadingProgress();
 		addCopyButtons();
+		addArticleHero();
 		addPageSearch();
 		addLearningProgressTracker();
+		keepServiceWorkerFresh();
 	});
 })();

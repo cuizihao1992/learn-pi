@@ -7,6 +7,13 @@
 		mint: "青绿",
 		rose: "玫瑰",
 	};
+	const themeColors = {
+		paper: "#f3f6f8",
+		ocean: "#eaf6f7",
+		graphite: "#171b1d",
+		mint: "#edf8ef",
+		rose: "#fbf0f2",
+	};
 
 	function applyTheme(theme) {
 		const safeTheme = themes.includes(theme) ? theme : "paper";
@@ -15,6 +22,8 @@
 		document.querySelectorAll("[data-theme-choice]").forEach((button) => {
 			button.classList.toggle("active", button.dataset.themeChoice === safeTheme);
 		});
+		const themeColor = document.querySelector('meta[name="theme-color"]');
+		if (themeColor) themeColor.content = themeColors[safeTheme];
 	}
 
 	function mountSwitcher() {
