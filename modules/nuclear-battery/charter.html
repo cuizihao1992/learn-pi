@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>核电池模块宪章 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css?v=6" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>核电池模块宪章</strong><span>Decay, Conversion, Power, Lifetime</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/charter.html">总宪章</a><a href="index.html">核电池</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a class="active" href="charter.html">模块宪章</a><a href="principles.html">工作原理</a><a href="space-atomic-clock.html">卫星与原子钟</a></aside>
+			<article class="doc">
+				<p class="kicker">Module Charter</p>
+				<h1>核电池：从原子核衰变追到可用电功率</h1>
+				<p class="lead">本模块把“核电池”拆成能量来源、转换器、输出特性、屏蔽封装和任务负载。重点是区分 RTG、直接转换核电池、裂变反应堆与原子钟，避免把所有带“原子”的设备混为一谈。</p>
+				<h2>学习目标</h2>
+				<ul><li>解释放射性衰变释放的粒子或热量如何转换为电能。</li><li>比较 RTG 与 betavoltaic 在功率、寿命、效率和使用场景上的差异。</li><li>说明能源系统与原子钟的计时基准是两条不同技术链。</li></ul>
+				<h2>模块边界</h2>
+				<p>课程提供物理与工程概念，不涉及放射源获取、加工或危险实验。核安全数据以权威机构和具体同位素条件为准；网页中的数量级示例不能替代工程评审。</p>
+				<h2>核心链路</h2>
+				<pre><code>radioisotope decay
+  -> heat or charged particles
+  -> thermoelectric / semiconductor conversion
+  -> voltage and current conditioning
+  -> shielding, packaging and thermal management
+  -> electrical load
+  -> output declines with half-life and material aging</code></pre>
+				<h2>必须深挖的一个点</h2>
+				<p><strong>为什么“能工作几十年”不等于“能提供很大功率”？</strong>比较微瓦级长寿命器件与百瓦级 RTG 的能量流，计算目标负载的功率预算，理解能量密度、转换效率与任务需求的约束。</p>
+				<h2>实践产物</h2>
+				<ul><li>画出 RTG 与 betavoltaic 的两条能量转换链。</li><li>为深空探测器、心脏起搏器和卫星时钟分别判断需要的是哪类技术。</li><li>写出一份功率预算，明确初始输出、衰减、转换损耗和安全余量。</li></ul>
+				<h2>完成标准</h2>
+				<p>能够从“衰变释放什么能量”开始，逐层解释转换、封装和负载，而不是把核电池、核反应堆和原子钟当成同一种装置。</p>
+			</article>
+		</main>
+		<script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script>
+		<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

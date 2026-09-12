@@ -2,13 +2,14 @@ import fs from "node:fs";
 import path from "node:path";
 
 const repoRoot = path.resolve(import.meta.dirname, "..");
+const contentManifest = JSON.parse(fs.readFileSync(path.join(repoRoot, "content-manifest.json"), "utf8"));
+const ignoredDirectories = new Set([".git", ".github", ".obsidian", "node_modules", "obsidian-vault", "scripts", "vendor"]);
 
 function walk(dir) {
 	const out = [];
-	for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-		if (entry.name === ".git") continue;
-		if (entry.name === "obsidian-vault") continue;
-		if (entry.name === ".obsidian") continue;
+	const entries = fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+	for (const entry of entries) {
+		if (ignoredDirectories.has(entry.name)) continue;
 		if (entry.name.startsWith("tmp-")) continue;
 		const full = path.join(dir, entry.name);
 		if (entry.isDirectory()) out.push(...walk(full));
@@ -33,17 +34,18 @@ function stripHtml(value) {
 function inferModule(relativePath) {
 	const moduleMatch = relativePath.match(/^modules\/([^/]+)\//);
 	if (moduleMatch) return moduleMatch[1];
-	if (relativePath.startsWith("examples/mini-agent")) return "mini-agent";
+	if (relativePath.startsWith("examples/")) return "examples";
 	return "common";
 }
 
 function inferType(relativePath) {
+	if (relativePath.startsWith("examples/") && relativePath.endsWith(".html")) return "example";
 	if (relativePath.endsWith(".html")) return "page";
 	if (relativePath.endsWith(".mjs") || relativePath.endsWith(".js")) return "code";
 	return "file";
 }
 
-const files = walk(repoRoot).filter((file) => /\.(html|md|mjs|json)$/.test(file));
+const files = walk(repoRoot).filter((file) => /\.(html|md|mjs)$/.test(file));
 const docs = [];
 
 for (const file of files) {
@@ -69,8 +71,12 @@ for (const file of files) {
 }
 
 const payload = {
-	generatedAt: new Date().toISOString(),
 	count: docs.length,
+	modules: [
+		...contentManifest.modules.map(({ slug, name }) => ({ slug, name })),
+		{ slug: "examples", name: "交互实验" },
+		{ slug: "common", name: "公共内容" },
+	],
 	docs,
 };
 

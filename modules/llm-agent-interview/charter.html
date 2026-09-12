@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>LLM 与 Agent 系统课宪章 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css?v=6" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>LLM 与 Agent 系统课宪章</strong><span>机制、取舍、实验与表达</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/charter.html">总宪章</a><a href="index.html">LLM 系统课</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a class="active" href="charter.html">模块宪章</a><a href="memory.html">记忆</a><a href="embedding-rag-deep-dive.html">Embedding 与 RAG</a><a href="transformer-long-context.html">长上下文</a><a href="runtime-cache.html">运行时缓存</a><a href="interview-playbook.html">表达模板</a></aside>
+			<article class="doc">
+				<p class="kicker">Module Charter</p>
+				<h1>LLM 与 Agent：把术语组织成一个可推导的系统</h1>
+				<p class="lead">本模块以系统理解为目标。每个概念都要回答输入是什么、中间表示是什么、计算发生在哪里、输出如何验证，以及它与相邻组件如何协作。</p>
+				<h2>学习目标</h2>
+				<ul><li>解释 embedding、检索、重排、上下文构造和生成之间的边界。</li><li>区分参数记忆、上下文、KV Cache、外部记忆和业务状态。</li><li>面对长上下文、RAG、微调和工具调用时，能根据问题选择方案。</li><li>用“定义、机制、例子、取舍、验证”完整回答一道系统题。</li></ul>
+				<h2>模块边界</h2>
+				<p>这里训练 LLM 应用系统的通用心智模型与技术表达，不背厂商接口清单。Pi 源码进入 Pi Agent 模块，最小实现进入 Mini Agent，GPU 推理瓶颈进入推理加速模块。</p>
+				<h2>核心链路</h2>
+				<pre><code>user problem
+  -> task and risk definition
+  -> choose context / retrieval / tools / memory
+  -> construct model input
+  -> inference and tool loop
+  -> grounded output
+  -> offline evaluation + online feedback
+  -> improve data, policy or system</code></pre>
+				<h2>必须深挖的一个点</h2>
+				<p><strong>Embedding 为什么能用于检索，却不等于“模型理解了事实”？</strong>亲手比较三个句子的向量相似度，再构造一个语义相近但事实错误的反例，理解召回只是在候选空间中找近邻。</p>
+				<h2>实践产物</h2>
+				<ul><li>运行 Mini RAG，并记录一次召回错误如何传播到最终答案。</li><li>画出一种记忆系统的写入、检索、更新和遗忘策略。</li><li>完成三道两分钟口述题，每道都包含机制、取舍与评估。</li></ul>
+				<h2>完成标准</h2>
+				<p>遇到一个 LLM 应用问题时，能够先建立评估标准，再拆出模型、数据、检索、工具、记忆和运行时，而不是直接用某个热门名词回答。</p>
+			</article>
+		</main>
+		<script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script>
+		<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

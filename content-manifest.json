@@ -38,6 +38,7 @@
       "purpose": "Understand the Pi open-source agent architecture and key source code.",
       "pages": [
         "index.html",
+        "charter.html",
         "architecture.html",
         "lifecycle.html",
         "prompt-processing.html",
@@ -65,10 +66,12 @@
       "purpose": "Build a minimal agent from scratch, learn model API compatibility, and follow a hands-on path from CLI MVP to a usable web agent.",
       "pages": [
         "index.html",
+        "charter.html",
         "while-loop-machine.html",
         "agent-loop-deep-dive.html",
         "model-api.html",
         "practical-path.html",
+        "labs.html",
         "roadmap.html"
       ]
     },
@@ -81,6 +84,7 @@
       "purpose": "Understand the 3D rendering path from Viewer to GPU.",
       "pages": [
         "index.html",
+        "charter.html",
         "render-path.html",
         "custom-shader.html",
         "debugging.html",
@@ -96,6 +100,7 @@
       "purpose": "Understand the 2D map rendering path from Map/View/Layer/Source to Canvas/WebGL.",
       "pages": [
         "index.html",
+        "charter.html",
         "render-path.html",
         "debugging.html"
       ]
@@ -104,10 +109,12 @@
       "slug": "mapbox",
       "name": "Mapbox",
       "root": "modules/mapbox/",
+      "charter": "modules/mapbox/charter.html",
       "entry": "modules/mapbox/index.html",
       "purpose": "Understand Mapbox GL JS sources, layers, styles, vector tiles, rendering architecture, API debugging, and comparison with Cesium.",
       "pages": [
         "index.html",
+        "charter.html",
         "architecture.html",
         "vs-cesium.html",
         "api-debugging.html"
@@ -117,10 +124,12 @@
       "slug": "digital-twin-city",
       "name": "Digital Twin City",
       "root": "modules/digital-twin-city/",
+      "charter": "modules/digital-twin-city/charter.html",
       "entry": "modules/digital-twin-city/index.html",
       "purpose": "Understand how city-scale digital twin systems combine Mapbox, Cesium, 3D Tiles, real-time data, AI agents, backend services, frontend interaction, performance, and MVP planning.",
       "pages": [
         "index.html",
+        "charter.html",
         "map-stack.html",
         "assets-data.html",
         "realtime-agent.html",
@@ -133,10 +142,12 @@
       "slug": "llm-agent-interview",
       "name": "LLM Agent Interview",
       "root": "modules/llm-agent-interview/",
+      "charter": "modules/llm-agent-interview/charter.html",
       "entry": "modules/llm-agent-interview/index.html",
       "purpose": "Use a course-style path to understand how LLM and Agent systems connect embedding, RAG, memory, long context, tool calling, evaluation, and interview explanation.",
       "pages": [
         "index.html",
+        "charter.html",
         "memory.html",
         "embedding-rag-multimodal.html",
         "embedding-rag-deep-dive.html",
@@ -158,7 +169,8 @@
         "index.html",
         "charter.html",
         "speculative-decoding.html",
-        "mimo-ultraspeed.html"
+        "mimo-ultraspeed.html",
+        "labs.html"
       ]
     },
     {
@@ -170,6 +182,7 @@
       "purpose": "Understand 3D Gaussian Splatting training and realtime rendering from images to pixels.",
       "pages": [
         "index.html",
+        "charter.html",
         "render-path.html",
         "debugging.html"
       ]
@@ -196,10 +209,12 @@
       "slug": "econ-finance",
       "name": "Economics and Finance",
       "root": "modules/econ-finance/",
+      "charter": "modules/econ-finance/charter.html",
       "entry": "modules/econ-finance/index.html",
       "purpose": "Build a foundational framework for economics and finance, covering scarcity, incentives, markets, cash flows, interest rates, risk, macro cycles, and learning roadmap.",
       "pages": [
         "index.html",
+        "charter.html",
         "course-system.html",
         "social-system.html",
         "money-flow.html",
@@ -220,10 +235,12 @@
       "slug": "quant-trading",
       "name": "Quant Trading",
       "root": "modules/quant-trading/",
+      "charter": "modules/quant-trading/charter.html",
       "entry": "modules/quant-trading/index.html",
       "purpose": "Understand quantitative trading research, backtesting, live architecture, common strategies, infrastructure, and risk controls.",
       "pages": [
         "index.html",
+        "charter.html",
         "architecture.html",
         "strategies.html",
         "resources.html"
@@ -233,10 +250,12 @@
       "slug": "nuclear-battery",
       "name": "Nuclear Battery",
       "root": "modules/nuclear-battery/",
+      "charter": "modules/nuclear-battery/charter.html",
       "entry": "modules/nuclear-battery/index.html",
       "purpose": "Understand RTGs, radioisotope power systems, betavoltaic batteries, and the difference between satellite atomic clocks and power sources.",
       "pages": [
         "index.html",
+        "charter.html",
         "principles.html",
         "space-atomic-clock.html"
       ]

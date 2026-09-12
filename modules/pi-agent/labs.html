@@ -27,7 +27,19 @@
 				<p>例如在 bash 工具展示里显示 timeout。这样你会同时读工具定义、工具事件和 interactive component。</p>
 				<h2>练习 6：写一篇自己的架构解释</h2>
 				<p>用这句话开头：Pi Agent 运行一次任务时，模型只负责决定下一步，真正的执行和状态管理由 Pi 负责。然后自己补全 500 字。</p>
+				<h2>自测</h2>
+				<details><summary>1. Agent、AgentSession 和 runLoop 分别负责什么？</summary><p>Agent 保存核心状态并发出事件；AgentSession 组合会话、配置、扩展和产品能力；runLoop 驱动模型调用、工具执行与结果回填。</p></details>
+				<details><summary>2. 模型为什么不能直接修改文件？</summary><p>模型只生成工具调用意图。Pi 运行时验证参数和权限、执行真实 I/O，再把可审计的 toolResult 返回给模型。</p></details>
+				<details><summary>3. 上下文压缩为什么不能简单删除最老消息？</summary><p>工具调用与结果存在配对关系，任务状态和近期行动也需要保留；压缩必须维持对话结构和继续完成任务所需的信息。</p></details>
+				<h2>验收记录</h2>
+				<pre><code>我画出的核心链路：
+我读过的源码入口：
+我完成的最小改动：
+我观察到的事件或消息：
+一次失败及其原因：
+我还不能解释的问题：</code></pre>
 				<div class="next-card"><span>完成标准</span><a href="architecture.html">你能不看源码说清楚四层架构和一次 toolCall 流程</a></div>
+				<div class="next-card"><span>记录掌握程度</span><a href="../../pages/progress.html">进入学习进度打卡</a></div>
 			</article>
 		</main>
 		<script src="../../theme.js?v=6"></script>

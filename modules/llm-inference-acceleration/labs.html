@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>大模型推理加速实验与自测 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css?v=6" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>推理加速实验</strong><span>Latency, Acceptance, Cache, Runtime</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">推理加速</a><a href="../../pages/progress.html">学习进度</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="speculative-decoding.html">投机解码</a><a href="mimo-ultraspeed.html">UltraSpeed 案例</a><a class="active" href="labs.html">实验与自测</a><a href="../llm-agent-interview/runtime-cache.html">缓存机制</a></aside>
+			<article class="doc">
+				<p class="kicker">Labs</p>
+				<h1>推理加速实验：从宣传数字回到时间预算</h1>
+				<p class="lead">这些实验不要求昂贵 GPU。先用计算和模拟建立可检验的性能模型，再学习看到吞吐数字时应该追问哪些条件。</p>
+
+				<h2>实验 1：拆开一次生成的时间</h2>
+				<p>假设首 token 前处理需要 120 ms，之后每个 token 需要 20 ms。生成 100 个 token：</p>
+				<pre><code>total latency = prefill + decode steps
+              = 120 ms + 100 * 20 ms
+              = 2120 ms
+
+decode throughput = 1000 / 20 = 50 tokens/s</code></pre>
+				<p>分别把 prefill 降一半、decode 降一半，比较短回答和长回答的收益。你会看到 TTFT 与每 token 延迟优化的受益场景不同。</p>
+				<p><strong>验收：</strong>能区分 TTFT、TPOT、单请求延迟、并发吞吐和 batch size。</p>
+
+				<h2>实验 2：模拟投机解码接受前缀</h2>
+				<p>drafter 一次猜 4 个 token，verifier 从左到右验收。只有拒绝位置之前的连续前缀能直接保留。</p>
+				<pre><code>draft:    [A, B, C, D]
+verifier: [A, B, X, ...]
+accepted: [A, B]
+
+不是“4 个里对了 3 个就保留 3 个”，
+因为第一个错误会改变后续自回归条件。</code></pre>
+				<p>分别模拟平均接受 1、2、3.5 个 token，并把 drafter 时间加入总成本。观察“小模型更准确”为什么不自动等于“系统更快”。</p>
+				<p><strong>验收：</strong>能说明加速比同时受草稿成本、接受长度、验证成本和调度开销影响。</p>
+
+				<h2>实验 3：估算 KV Cache</h2>
+				<p>用一个简化公式比较上下文长度翻倍、并发翻倍和 GQA 减少 KV heads 的影响：</p>
+				<pre><code>KV bytes ~= 2
+  * layers
+  * sequence_length
+  * kv_heads
+  * head_dim
+  * bytes_per_element
+  * concurrent_sequences</code></pre>
+				<p>代入 `32 layers, 8192 tokens, 8 kv heads, head_dim 128, FP16, concurrency 16`，然后一次只改变一个变量。记录显存为何近似线性变化。</p>
+				<p><strong>验收：</strong>能解释量化模型权重与量化 KV Cache不是同一件事，以及 GQA 为什么能降低 KV 占用。</p>
+
+				<h2>实验 4：给“1000 tokens/s”补齐条件</h2>
+				<p>看到性能结果时，制作一张测量卡，至少记录：</p>
+				<ul><li>硬件型号、数量、互联方式和数值精度。</li><li>模型总参数、激活参数、上下文长度和输出长度。</li><li>单请求还是聚合吞吐，batch 和并发是多少。</li><li>是否包含 tokenizer、网络、排队、prefill 和 speculative drafter 成本。</li><li>输出质量、接受率以及使用的数据集。</li></ul>
+				<p><strong>验收：</strong>面对两个速度数字时，先判断测量口径能否比较，再讨论算法优劣。</p>
+
+				<h2>自测</h2>
+				<details><summary>1. GPU 已经并行，为什么自回归生成仍然串行？</summary><p>一次 forward 内部有大量并行，但第 n+1 个 token 的分布依赖第 n 个已确定 token，token 之间仍有数据依赖。</p></details>
+				<details><summary>2. 投机解码为什么可以保持目标模型分布？</summary><p>草稿只提出候选，目标模型按校正规则验证和采样；正确实现不会直接用小模型替代目标模型的分布。</p></details>
+				<details><summary>3. 算法减少 forward 次数后为什么还需要 runtime 优化？</summary><p>kernel 启动、同步、访存、通信和负载不均仍会留下执行空隙。算法收益只有被运行时有效调度，才会变成端到端速度。</p></details>
+
+				<div class="next-card"><span>记录掌握程度</span><a href="../../pages/progress.html">在进度页完成推理系统打卡</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script>
+		<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

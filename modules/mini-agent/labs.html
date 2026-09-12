@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Mini Agent 实验与自测 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css?v=6" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Mini Agent 实验</strong><span>观察、修改、失败、解释</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">Mini Agent</a><a href="../../pages/progress.html">学习进度</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="charter.html">模块宪章</a><a href="index.html">MVP</a><a href="while-loop-machine.html">while 底层</a><a href="agent-loop-deep-dive.html">Loop 深挖</a><a href="model-api.html">模型接口</a><a href="practical-path.html">实战路线</a><a class="active" href="labs.html">实验与自测</a><a href="roadmap.html">产品化路线</a></aside>
+			<article class="doc">
+				<p class="kicker">Labs</p>
+				<h1>Mini Agent 实验：把循环真正跑进脑子里</h1>
+				<p class="lead">每个实验都要求保留输入、关键中间消息、输出和解释。重点不是“运行成功”，而是能指出模型、运行时和工具分别做了什么。</p>
+
+				<h2>实验 1：手工追踪两轮 Agent Loop</h2>
+				<p><strong>任务：</strong>让 Agent 读取 `README.md` 后总结。先不要运行，手工写出消息数组在每一步的变化。</p>
+				<pre><code>step 0: [system, user]
+step 1: [system, user, assistant(toolCall: readFile)]
+step 2: [system, user, assistant(toolCall), tool(toolResult)]
+step 3: [system, user, assistant(toolCall), tool(toolResult), assistant(final)]</code></pre>
+				<p><strong>观察：</strong>最终答案之前为什么必须再次调用模型？如果省掉 `tool_call_id`，运行时会失去什么对应关系？</p>
+				<p><strong>验收：</strong>能逐项标出哪条消息由用户、模型、工具执行器和 Agent 运行时产生。</p>
+
+				<h2>实验 2：验证 OpenAI-compatible 最小契约</h2>
+				<p>对同一个服务依次验证模型列表、普通对话和工具调用。不要只验证返回 HTTP 200，还要检查响应字段。</p>
+				<pre><code>GET  /v1/models
+POST /v1/chat/completions
+
+request must carry:
+  model, messages, tools, tool_choice
+
+response must carry:
+  choices[0].message
+  choices[0].message.tool_calls[] when a tool is selected</code></pre>
+				<p><strong>故障注入：</strong>分别删除 `tool_calls[].id`、把 `function.arguments` 改成对象而不是 JSON 字符串、返回未知工具名。记录错误应该由 adapter 还是 Agent 层处理。</p>
+				<p><strong>验收：</strong>能解释“模型会调用工具”和“接口格式兼容”是两件不同的事。</p>
+
+				<h2>实验 3：攻击路径边界</h2>
+				<p>检查示例中的 `resolveInsideProject()`，然后设计这些输入：正常相对路径、`../` 越界、与项目目录同前缀的兄弟目录、符号链接。仅在临时测试目录操作。</p>
+				<pre><code>project: C:\work\demo
+allowed: README.md
+reject:  ..\secret.txt
+reject:  C:\work\demo-backup\secret.txt
+inspect: link-inside-project -> target-outside-project</code></pre>
+				<p><strong>观察：</strong>字符串 `startsWith(cwd)` 为什么可能把同前缀兄弟目录误判为安全？真实系统还需要规范化路径、路径分隔符边界和符号链接检查。</p>
+				<p><strong>验收：</strong>列出至少三层保护：路径约束、工具权限、执行前确认或沙箱。</p>
+
+				<h2>实验 4：让失败也进入上下文</h2>
+				<p>让 `readFile` 读取不存在的文件，观察异常如何被转换成 `role: "tool"` 的结果。再让模型根据错误改用正确路径。</p>
+				<p><strong>比较：</strong>直接让进程崩溃、把错误回填模型、由运行时自动重试，三种做法分别适合什么错误？</p>
+				<p><strong>验收：</strong>能设计最大步数、超时、重试次数和不可重试错误，避免 Agent 无限循环。</p>
+
+				<h2>自测</h2>
+				<details><summary>1. 为什么 Agent Loop 不能只写成一次模型调用？</summary><p>因为模型只能请求工具，运行时执行后还要把结果回填，再让模型根据真实结果继续决策或形成最终回答。</p></details>
+				<details><summary>2. 谁应该负责验证工具参数？</summary><p>模型可以生成参数，但运行时必须根据 schema 和权限策略再次验证，不能把自然语言模型当作安全边界。</p></details>
+				<details><summary>3. 接口返回 JSON 是否意味着模型内部也在处理 JSON？</summary><p>不是。JSON 是服务协议；模型内部处理 token 和张量，服务层负责模板化输入并把生成结果解析、封装为协议对象。</p></details>
+
+				<h2>实验记录模板</h2>
+				<pre><code>实验：
+假设：
+输入：
+关键中间状态：
+实际输出：
+失败现象：
+原因解释：
+下一次修改：</code></pre>
+				<div class="next-card"><span>记录掌握程度</span><a href="../../pages/progress.html">在学习进度页标记“看过、说清、画出、做成”</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script>
+		<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

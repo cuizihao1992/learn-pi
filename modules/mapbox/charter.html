@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Mapbox 模块宪章 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css?v=6" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Mapbox 模块宪章</strong><span>Vector Tile, Style, Worker, WebGL</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/charter.html">总宪章</a><a href="index.html">Mapbox</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a class="active" href="charter.html">模块宪章</a><a href="architecture.html">渲染架构</a><a href="vs-cesium.html">与 Cesium 对比</a><a href="api-debugging.html">接口与调试</a></aside>
+			<article class="doc">
+				<p class="kicker">Module Charter</p>
+				<h1>Mapbox：打穿一块矢量瓦片如何变成屏幕像素</h1>
+				<p class="lead">本模块围绕一个具体问题组织：浏览器拿到一块 vector tile 后，Mapbox GL JS 如何结合 style、source、layer、worker 和 WebGL 把它画出来。学习重点是运行链路，不是罗列地图 API。</p>
+				<h2>学习目标</h2>
+				<ul><li>区分 source、source layer、style layer 和实际绘制数据。</li><li>解释瓦片请求、后台解析、bucket 构建和主线程渲染之间的分工。</li><li>根据现象判断问题位于数据、样式、坐标、网络还是 GPU 渲染层。</li></ul>
+				<h2>模块边界</h2>
+				<p>这里研究 Mapbox GL JS 的矢量地图机制和工程调试。影像级三维地球进入 Cesium 模块，通用二维 GIS 数据处理进入 OpenLayers 模块，城市级系统集成进入数字孪生城市模块。</p>
+				<h2>核心链路</h2>
+				<pre><code>Style JSON
+ Source definition
+ camera state
+  -> request visible tiles
+  -> worker parses vector tile
+  -> features are grouped into buckets
+  -> style layers select and order buckets
+  -> painter submits WebGL draw calls
+  -> fragments become screen pixels</code></pre>
+				<h2>必须深挖的一个点</h2>
+				<p><strong>为什么 source 里明明有数据，地图却可能什么都不显示？</strong>用同一个最小 GeoJSON 分别制造 source id、layer type、zoom、filter 和坐标顺序错误，观察它们在链路中的不同失败位置。</p>
+				<h2>实践产物</h2>
+				<ul><li>画一张“样式声明到 WebGL 绘制”的调用链。</li><li>完成一份最小图层调试记录，包含现象、假设、验证方法和结论。</li><li>写出 Mapbox、OpenLayers、Cesium 的选择依据，而不是只比较功能数量。</li></ul>
+				<h2>完成标准</h2>
+				<p>不看页面也能说清一块矢量瓦片从网络响应到像素的关键中间结构，并能用分层排查法定位“有数据但不显示”的问题。</p>
+			</article>
+		</main>
+		<script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script>
+		<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

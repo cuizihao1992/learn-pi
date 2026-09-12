@@ -24,6 +24,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Validate course content
+        run: |
+          node scripts/validate-content-structure.mjs
+          node scripts/check-links.mjs
+
+      - name: Build and verify search index
+        run: |
+          node scripts/build-search-index.mjs
+          git diff --exit-code -- search-index.json
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check theme.js
+          node --check enhance.js
+          node --check app.js
+          node --check site-search.js
+          node --check scripts/build-search-index.mjs
+          node --check scripts/validate-content-structure.mjs
+          node --check scripts/check-links.mjs
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:

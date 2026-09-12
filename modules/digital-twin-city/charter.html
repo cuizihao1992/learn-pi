@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>数字孪生城市模块宪章 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css?v=6" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>数字孪生城市模块宪章</strong><span>空间、状态、时间与行动</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/charter.html">总宪章</a><a href="index.html">数字孪生城市</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a class="active" href="charter.html">模块宪章</a><a href="map-stack.html">地图底座</a><a href="assets-data.html">资产与数据</a><a href="realtime-agent.html">实时与 Agent</a><a href="backend-frontend.html">前后端架构</a><a href="performance.html">性能</a><a href="mvp.html">MVP</a></aside>
+			<article class="doc">
+				<p class="kicker">Module Charter</p>
+				<h1>数字孪生城市：让现实对象在数字系统里持续有状态</h1>
+				<p class="lead">本模块不把“有一张三维地图”称为数字孪生。课程研究的是现实对象如何被标识、定位、更新、查询、可视化和驱动行动，以及这些能力如何组成一个可验证的最小系统。</p>
+				<h2>学习目标</h2>
+				<ul><li>区分地图底座、三维资产、业务对象、实时事件和控制动作。</li><li>为一个城市对象设计静态属性、实时状态、历史序列和空间关系。</li><li>解释前端、后端、消息系统、时空数据库和 Agent 的职责边界。</li></ul>
+				<h2>模块边界</h2>
+				<p>课程聚焦系统架构与 MVP，不追求一次覆盖所有城市行业。单独的渲染原理回到 Mapbox、Cesium 和 OpenLayers；Agent 的模型与工具循环回到 Pi Agent。</p>
+				<h2>核心链路</h2>
+				<pre><code>现实对象 / 传感器 / 业务系统
+  -> identity + position + timestamp
+  -> ingestion and validation
+  -> current state + history + spatial relation
+  -> API / event stream
+  -> 2D or 3D rendering
+  -> human or agent decision
+  -> command, ticket or alert
+  -> result returns to the state model</code></pre>
+				<h2>必须深挖的一个点</h2>
+				<p><strong>对象状态为什么不能只存在前端图层里？</strong>以一辆公交车为例，设计乱序消息、重复上报、断线重连和历史回放，理解时间戳、对象版本与幂等更新的作用。</p>
+				<h2>实践产物</h2>
+				<ul><li>完成一个“设备告警到处置闭环”的时序图。</li><li>定义一个对象状态 JSON，并解释每个字段由谁生产、在哪里保存。</li><li>给出 4 周 MVP 的范围、验收指标和明确不做的内容。</li></ul>
+				<h2>完成标准</h2>
+				<p>能够从一个真实业务问题出发，画出数据进入、状态更新、地图表达、决策和反馈闭环，而不是只展示一张漂亮的三维场景。</p>
+			</article>
+		</main>
+		<script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script>
+		<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

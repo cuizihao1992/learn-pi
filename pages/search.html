@@ -33,20 +33,22 @@
 			<article class="doc search-doc">
 				<p class="kicker">Search</p>
 				<h1>搜索本项目</h1>
-				<p class="lead">输入关键词，可以跨四个模块搜索页面、宪章和示例代码。英文、路径和代码符号使用开源 Lunr.js；中文内容同时使用本地子串匹配。</p>
+				<p class="lead">输入关键词，可以跨全部课程模块、公共页面和交互实验检索。英文、路径和代码符号使用开源 Lunr.js；中文内容同时使用本地子串匹配。</p>
 
 				<div class="site-search-panel" data-site-search>
 					<label class="site-search-box">
 						<span>关键词</span>
 						<input type="search" placeholder="例如：toolCall、DrawCommand、VectorLayer、模型接口" autocomplete="off" data-search-input />
 					</label>
-					<div class="search-filter-row" aria-label="模块过滤">
-						<button type="button" class="active" data-module-filter="all">全部</button>
-						<button type="button" data-module-filter="pi-agent">Pi Agent</button>
-						<button type="button" data-module-filter="mini-agent">Mini Agent</button>
-						<button type="button" data-module-filter="cesium">Cesium</button>
-						<button type="button" data-module-filter="openlayers">OpenLayers</button>
-						<button type="button" data-module-filter="common">公共页</button>
+					<label class="site-search-box">
+						<span>模块</span>
+						<select class="select" aria-label="模块过滤" data-module-select><option value="all">全部模块</option></select>
+					</label>
+					<div class="search-filter-row" aria-label="内容类型过滤">
+						<button type="button" class="active" data-type-filter="all">全部类型</button>
+						<button type="button" data-type-filter="page">课程页面</button>
+						<button type="button" data-type-filter="example">交互实验</button>
+						<button type="button" data-type-filter="code">示例代码</button>
 					</div>
 					<p class="site-search-status" data-search-status>正在加载索引...</p>
 					<div class="site-search-results" data-search-results></div>

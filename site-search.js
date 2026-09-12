@@ -1,16 +1,10 @@
 (function () {
-	const moduleLabels = {
-		"pi-agent": "Pi Agent",
-		"mini-agent": "Mini Agent",
-		cesium: "Cesium",
-		openlayers: "OpenLayers",
-		common: "公共页",
-	};
-
 	const state = {
 		docs: [],
 		index: null,
-		filter: "all",
+		moduleFilter: "all",
+		typeFilter: "all",
+		moduleLabels: {},
 	};
 
 	function normalize(value) {
@@ -32,6 +26,13 @@
 		const start = pos >= 0 ? Math.max(0, pos - 80) : 0;
 		const part = clean.slice(start, start + 210);
 		return `${start > 0 ? "..." : ""}${part}${start + part.length < clean.length ? "..." : ""}`;
+	}
+
+	function matchReason(doc, query) {
+		const q = normalize(query);
+		if (normalize(doc.title).includes(q)) return "标题命中";
+		if (normalize(doc.url).includes(q)) return "路径命中";
+		return "正文命中";
 	}
 
 	function buildLunr(docs) {
@@ -69,9 +70,18 @@
 		});
 		return Array.from(byId.entries())
 			.map(([id, score]) => ({ doc: state.docs.find((item) => item.id === id), score }))
-			.filter((item) => item.doc && (state.filter === "all" || item.doc.module === state.filter))
+			.filter((item) => item.doc && (state.moduleFilter === "all" || item.doc.module === state.moduleFilter))
+			.filter((item) => item.doc && (state.typeFilter === "all" || item.doc.type === state.typeFilter))
 			.sort((a, b) => b.score - a.score)
 			.slice(0, 30);
+	}
+
+	function renderFilters(panel, modules) {
+		const moduleSelect = panel.querySelector("[data-module-select]");
+		moduleSelect.innerHTML = [
+			'<option value="all">全部模块</option>',
+			...modules.map(({ slug, name }) => `<option value="${escapeHtml(slug)}">${escapeHtml(name)}</option>`),
+		].join("");
 	}
 
 	function render(query) {
@@ -88,9 +98,9 @@
 		statusEl.textContent = `找到 ${results.length} 条结果。`;
 		resultsEl.innerHTML = results
 			.map(({ doc }) => {
-				const label = moduleLabels[doc.module] || doc.module;
+				const label = state.moduleLabels[doc.module] || doc.module;
 				return `<a class="search-result-card" href="../${escapeHtml(doc.url)}">
-					<span>${escapeHtml(label)} · ${escapeHtml(doc.type)}</span>
+					<span>${escapeHtml(label)} · ${escapeHtml(doc.type)} · ${matchReason(doc, query)}</span>
 					<strong>${escapeHtml(doc.title)}</strong>
 					<small>${escapeHtml(doc.url)}</small>
 					<p>${escapeHtml(snippet(doc.text, query))}</p>
@@ -108,15 +118,21 @@
 			const response = await fetch("../search-index.json", { cache: "no-cache" });
 			const payload = await response.json();
 			state.docs = payload.docs || [];
+			state.moduleLabels = Object.fromEntries((payload.modules || []).map(({ slug, name }) => [slug, name]));
+			renderFilters(panel, payload.modules || []);
 			state.index = buildLunr(state.docs);
 			render("");
 		} catch (error) {
 			statusEl.textContent = `索引加载失败：${error.message}`;
 		}
-		panel.querySelectorAll("[data-module-filter]").forEach((button) => {
+		panel.querySelector("[data-module-select]").addEventListener("change", (event) => {
+			state.moduleFilter = event.target.value;
+			render(input.value);
+		});
+		panel.querySelectorAll("[data-type-filter]").forEach((button) => {
 			button.addEventListener("click", () => {
-				state.filter = button.dataset.moduleFilter;
-				panel.querySelectorAll("[data-module-filter]").forEach((item) => {
+				state.typeFilter = button.dataset.typeFilter;
+				panel.querySelectorAll("[data-type-filter]").forEach((item) => {
 					item.classList.toggle("active", item === button);
 				});
 				render(input.value);
