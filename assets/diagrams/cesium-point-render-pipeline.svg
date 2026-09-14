@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">Cesium 红色点从 Entity 到屏幕像素</title>
+  <desc id="desc">链路分为业务状态同步、渲染命令生成和 GPU 输出三段。</desc>
+  <rect width="1200" height="620" fill="#f7f8fa"/>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,7 L9,3.5 z" fill="#66727a"/>
+    </marker>
+  </defs>
+  <g font-family="Microsoft YaHei, Segoe UI, sans-serif">
+    <text x="600" y="48" text-anchor="middle" font-size="29" font-weight="700" fill="#1f2930">一个 Point Entity 如何成为屏幕像素</text>
+    <text x="600" y="80" text-anchor="middle" font-size="16" fill="#66727a">添加对象只改变状态；Visualizer 同步对象；Primitive 产生命令；GPU 才真正绘制</text>
+
+    <text x="55" y="132" font-size="16" font-weight="700" fill="#28645d">状态同步</text>
+    <rect x="55" y="150" width="200" height="82" rx="8" fill="#e3f1ee" stroke="#6a9c94"/>
+    <text x="155" y="182" text-anchor="middle" font-size="18" font-weight="700" fill="#244944">EntityCollection</text>
+    <text x="155" y="208" text-anchor="middle" font-size="14" fill="#43545a">保存 position 与 point</text>
+    <rect x="295" y="150" width="200" height="82" rx="8" fill="#e3f1ee" stroke="#6a9c94"/>
+    <text x="395" y="182" text-anchor="middle" font-size="18" font-weight="700" fill="#244944">DataSourceDisplay</text>
+    <text x="395" y="208" text-anchor="middle" font-size="14" fill="#43545a">逐个更新 Visualizer</text>
+    <rect x="535" y="150" width="200" height="82" rx="8" fill="#e3f1ee" stroke="#6a9c94"/>
+    <text x="635" y="182" text-anchor="middle" font-size="18" font-weight="700" fill="#244944">PointVisualizer</text>
+    <text x="635" y="208" text-anchor="middle" font-size="14" fill="#43545a">写入 PointPrimitive</text>
+    <path d="M255 191 H289" stroke="#66727a" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <path d="M495 191 H529" stroke="#66727a" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+    <text x="55" y="302" font-size="16" font-weight="700" fill="#315d80">命令生成与调度</text>
+    <rect x="55" y="320" width="250" height="86" rx="8" fill="#e7f0f7" stroke="#7d9db5"/>
+    <text x="180" y="353" text-anchor="middle" font-size="18" font-weight="700" fill="#294b63">PointPrimitiveCollection</text>
+    <text x="180" y="380" text-anchor="middle" font-size="14" fill="#43545a">更新 buffer、shader、render state</text>
+    <rect x="345" y="320" width="210" height="86" rx="8" fill="#e7f0f7" stroke="#7d9db5"/>
+    <text x="450" y="353" text-anchor="middle" font-size="18" font-weight="700" fill="#294b63">DrawCommand</text>
+    <text x="450" y="380" text-anchor="middle" font-size="14" fill="#43545a">一次 draw call 的说明书</text>
+    <rect x="595" y="320" width="210" height="86" rx="8" fill="#e7f0f7" stroke="#7d9db5"/>
+    <text x="700" y="353" text-anchor="middle" font-size="18" font-weight="700" fill="#294b63">Scene / View</text>
+    <text x="700" y="380" text-anchor="middle" font-size="14" fill="#43545a">裁剪、分 pass、排序</text>
+    <path d="M635 232 V270 H180 V314" stroke="#66727a" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+    <path d="M305 363 H339" stroke="#66727a" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <path d="M555 363 H589" stroke="#66727a" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+    <text x="55" y="478" font-size="16" font-weight="700" fill="#8a5d25">GPU 输出</text>
+    <rect x="55" y="496" width="210" height="82" rx="8" fill="#fff2dc" stroke="#c7a56d"/>
+    <text x="160" y="528" text-anchor="middle" font-size="18" font-weight="700" fill="#6c4a20">Context.draw</text>
+    <text x="160" y="554" text-anchor="middle" font-size="14" fill="#43545a">绑定资源与提交 draw</text>
+    <rect x="305" y="496" width="210" height="82" rx="8" fill="#fff2dc" stroke="#c7a56d"/>
+    <text x="410" y="528" text-anchor="middle" font-size="18" font-weight="700" fill="#6c4a20">WebGL / GPU</text>
+    <text x="410" y="554" text-anchor="middle" font-size="14" fill="#43545a">shader、光栅化、深度与混合</text>
+    <rect x="555" y="496" width="210" height="82" rx="8" fill="#fff2dc" stroke="#c7a56d"/>
+    <text x="660" y="528" text-anchor="middle" font-size="18" font-weight="700" fill="#6c4a20">Framebuffer</text>
+    <text x="660" y="554" text-anchor="middle" font-size="14" fill="#43545a">得到红色片元</text>
+    <rect x="805" y="496" width="210" height="82" rx="8" fill="#f3e9e8" stroke="#bb8b87"/>
+    <text x="910" y="528" text-anchor="middle" font-size="18" font-weight="700" fill="#713f3b">Canvas / 页面</text>
+    <text x="910" y="554" text-anchor="middle" font-size="14" fill="#43545a">浏览器合成后显示</text>
+    <path d="M700 406 V448 H160 V490" stroke="#66727a" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+    <path d="M265 537 H299" stroke="#66727a" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <path d="M515 537 H549" stroke="#66727a" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <path d="M765 537 H799" stroke="#66727a" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+    <rect x="830" y="150" width="315" height="256" rx="8" fill="#ffffff" stroke="#d4d9dd"/>
+    <text x="858" y="184" font-size="17" font-weight="700" fill="#1f2930">关键分界</text>
+    <text x="858" y="218" font-size="14" fill="#43545a">1. Entity 存在，不等于已经绘制</text>
+    <text x="858" y="250" font-size="14" fill="#43545a">2. Visualizer 同步，不等于已有像素</text>
+    <text x="858" y="282" font-size="14" fill="#43545a">3. DrawCommand 是可调度的绘制描述</text>
+    <text x="858" y="314" font-size="14" fill="#43545a">4. gl.draw* 才把工作提交给 GPU</text>
+    <text x="858" y="346" font-size="14" fill="#43545a">5. 深度、混合仍可能让片元不可见</text>
+    <text x="858" y="378" font-size="14" fill="#43545a">6. 浏览器最后合成 canvas 与 DOM</text>
+  </g>
+</svg>

@@ -8,9 +8,9 @@
   <link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
 </head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Cesium 模块宪章</strong><span>三维渲染链路</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/charter.html">总宪章</a><a href="../cesium/index.html">Cesium 课程</a><a href="custom-shader.html">自定义着色器</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Cesium 模块宪章</strong><span>三维渲染链路</span></div></div><nav><a href="../../index.html">首页</a><a href="../../pages/charter.html">总宪章</a><a href="index.html">Cesium 课程</a><a href="labs.html">实验</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="../../pages/charter.html">总宪章</a><a class="active" href="charter.html">Cesium 宪章</a><a href="../cesium/index.html">Cesium 总览</a><a href="../cesium/render-path.html">渲染路径</a><a href="../cesium/custom-shader.html">自定义着色器</a><a href="../cesium/debugging.html">调试手册</a></aside>
+			<aside class="doc-sidebar"><a href="../../pages/charter.html">总宪章</a><a class="active" href="charter.html">Cesium 宪章</a><a href="index.html">Cesium 总览</a><a href="render-path.html">渲染路径</a><a href="custom-shader.html">自定义着色器</a><a href="labs.html">实验与自测</a><a href="debugging.html">调试手册</a><a href="glossary.html">术语表</a></aside>
 			<article class="doc">
 				<p class="kicker">Module Charter</p>
 				<h1>Cesium 模块宪章</h1>
@@ -28,7 +28,7 @@
   -> WebGL
   -> GPU pixels</code></pre>
 				<h2>源码入口</h2>
-				<ul><li>`packages/engine/Source/Widgets/Viewer/Viewer.js`</li><li>`packages/engine/Source/Scene/Scene.js`</li><li>`packages/engine/Source/Scene/Primitive.js`</li><li>`packages/engine/Source/Renderer/DrawCommand.js`</li><li>`packages/engine/Source/Renderer/Context.js`</li><li>`packages/engine/Source/Scene/Globe.js`</li><li>`packages/engine/Source/Scene/Cesium3DTileset.js`</li></ul>
+				<ul><li>`packages/widgets/Source/Viewer/Viewer.js`</li><li>`packages/engine/Source/Widget/CesiumWidget.js`</li><li>`packages/engine/Source/DataSources/DataSourceDisplay.js`</li><li>`packages/engine/Source/Scene/Scene.js`</li><li>`packages/engine/Source/Scene/Primitive.js`</li><li>`packages/engine/Source/Renderer/DrawCommand.js`</li><li>`packages/engine/Source/Renderer/Context.js`</li><li>`packages/engine/Source/Scene/Globe.js`</li><li>`packages/engine/Source/Scene/Cesium3DTileset.js`</li></ul>
 				<h2>模块内容标准</h2>
 				<ul><li>任何渲染章节都必须说明对象如何进入 commandList。</li><li>必须区分 Entity 和 Primitive。</li><li>必须解释 pass、RenderState、ShaderProgram、VertexArray。</li><li>自定义 shader 内容必须说明它最后如何影响 DrawCommand 或后处理命令。</li><li>调试内容必须沿 Viewer -> Scene -> Command -> Renderer 查。</li></ul>
 				<h2>后续可补内容</h2>

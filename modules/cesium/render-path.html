@@ -8,26 +8,24 @@
   <link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
 </head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Cesium 学习路径</strong><span>完整渲染路径</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">Cesium 总览</a><a href="custom-shader.html">自定义着色器</a><a href="../pi-agent/architecture.html">Pi 路径</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Cesium 学习路径</strong><span>完整渲染路径</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">Cesium 总览</a><a href="labs.html">实验</a><a href="custom-shader.html">着色器</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="index.html">Cesium 总览</a><a class="active" href="render-path.html">完整渲染路径</a><a href="custom-shader.html">自定义着色器</a><a href="debugging.html">调试手册</a><a href="../pi-agent/architecture.html">返回 Pi 路径</a></aside>
+			<aside class="doc-sidebar"><a href="index.html">Cesium 总览</a><a href="charter.html">模块宪章</a><a class="active" href="render-path.html">完整渲染路径</a><a href="custom-shader.html">自定义着色器</a><a href="labs.html">实验与自测</a><a href="debugging.html">调试手册</a><a href="glossary.html">术语表</a></aside>
 			<article class="doc">
 				<p class="kicker">Rendering Pipeline</p>
 				<h1>Cesium 完整渲染路径：从 Viewer 到 GPU</h1>
 				<p class="lead">这一章回答一个核心问题：你在 Cesium 里添加一个对象后，它到底如何一步步变成屏幕上的像素？</p>
 
 				<h2>一句话总览</h2>
-				<pre><code>Viewer
-  -> CesiumWidget
-  -> Scene
-  -> frameState
-  -> PrimitiveCollection / Globe / 3D Tiles
-  -> Primitive.update()
-  -> DrawCommand / ComputeCommand
-  -> Scene command execution
-  -> Renderer
-  -> WebGL
-  -> GPU pixels</code></pre>
+				<pre><code>业务描述：Viewer / Entity / Primitive / 3D Tiles
+  -> 状态同步：clock.tick -> DataSourceDisplay -> Visualizer
+  -> 帧调度：requestAnimationFrame -> CesiumWidget.render -> Scene.render
+  -> 命令生成：PrimitiveCollection.update -> DrawCommand
+  -> 命令调度：culling -> pass 分类与排序 -> executeCommand
+  -> 底层绘制：DrawCommand.execute -> Context.draw -> WebGL
+  -> GPU 管线：顶点着色 -> 光栅化 -> 片元着色 -> 深度/混合
+  -> 输出：framebuffer -> canvas -> 浏览器页面</code></pre>
+				<p><img src="../../assets/diagrams/cesium-point-render-pipeline.svg" alt="Cesium 红色点从 Entity 经 Visualizer、PointPrimitiveCollection、DrawCommand、WebGL 到屏幕像素的调用链" /></p>
 
 				<h2>1. Viewer：应用入口</h2>
 				<p>`Viewer` 是最常用的入口。它帮你创建 canvas、CesiumWidget、Scene、Camera、Clock、DataSourceDisplay、EntityCollection、ImageryLayerCollection 等。业务代码通常写：</p>
@@ -38,24 +36,70 @@ viewer.entities.add({
 });</code></pre>
 				<p>这时你添加的是 Entity。Entity 还不是 WebGL 绘制命令，它只是业务描述。</p>
 
-				<h2>2. Entity 到 Primitive</h2>
-				<p>Entity API 是高级抽象。Cesium 内部会通过 DataSourceDisplay 和各种 Visualizer，把 Entity 转成更底层的 Primitive 或相关渲染对象。</p>
-				<pre><code>Entity
-  -> DataSourceDisplay.update()
-  -> Visualizer.update()
-  -> Primitive / Billboard / Label / Geometry updater</code></pre>
+				<h2>2. Entity 到可渲染对象</h2>
+				<p>Entity API 是高级抽象。`viewer.entities` 实际指向 `dataSourceDisplay.defaultDataSource.entities`。添加 Entity 主要是改变业务状态，并不会在这一行代码里直接调用 WebGL。随后 `clock.tick()` 触发 CesiumWidget 的时钟更新，`DataSourceDisplay.update(time)` 再调用与图形类型对应的 Visualizer。</p>
+				<pre><code>viewer.entities.add(entity)
+  -> defaultDataSource.entities
+  -> clock.tick() / onTick
+  -> CesiumWidget._onTick()
+  -> DataSourceDisplay.update(time)
+  -> PointVisualizer / BillboardVisualizer / GeometryVisualizer / ModelVisualizer
+  -> 更新对应的底层渲染对象</code></pre>
+				<p>这里不能把所有 Entity 简化为同一种 Primitive：普通点走 `PointVisualizer -> PointPrimitive`；贴地的点可能改用 Billboard；多边形通常经 `GeometryVisualizer` 和 GeometryUpdater；模型则进入 Model 管线。高级 API 最终汇入同一个命令系统，但中间转换器不同。</p>
 				<p>如果你直接用 `scene.primitives.add(new Primitive(...))`，则跳过 Entity 层，直接进入底层渲染对象。</p>
 
-				<h2>3. Scene 每帧更新</h2>
-				<p>`Scene` 是渲染调度中心。每一帧，它会准备 frameState，更新相机、时间、视锥、pass、环境状态，然后让场景里的对象产生命令。</p>
-				<pre><code>Scene.render()
-  -> initializeFrame()
-  -> updateAndExecuteCommands()
-  -> render()
-  -> postRender events</code></pre>
-				<p>官方架构文档也把 Scene 描述为和 canvas 一一对应的图形对象与状态容器，并说明 Primitive 是添加到 Scene 中、会被绘制的对象。</p>
+				<h2>3. 一帧是谁启动的</h2>
+				<p>默认渲染循环由浏览器的 `requestAnimationFrame` 驱动。`CesiumWidget.render()` 先初始化帧，再推进 Clock；Clock 的 onTick 监听器会更新 DataSourceDisplay；完成业务状态同步后才调用 `Scene.render(time)`。这比简单写成“Scene.render 调用 initializeFrame”更准确。</p>
+				<pre><code>requestAnimationFrame(render)
+  -> CesiumWidget.resize()
+  -> CesiumWidget.render()
+     -> scene.initializeFrame()
+     -> clock.tick()
+        -> CesiumWidget._onTick()
+        -> dataSourceDisplay.update(time)
+     -> scene.render(currentTime)
+        -> preUpdate
+        -> 判断 requestRenderMode 下是否需要新帧
+        -> preRender
+        -> private render(scene)
+           -> updateFrameState()
+           -> context.beginFrame()
+           -> updateAndExecuteCommands()
+           -> resolveFramebuffers()
+           -> context.endFrame()
+        -> postRender</code></pre>
+				<p>`Scene` 是渲染调度中心，而 `CesiumWidget` 是默认帧循环的宿主。启用 `requestRenderMode` 后，`Scene.render()` 仍可能被调用来更新状态，但只有检测到相机、时间、资源或显式 render request 变化时才真正提交新帧。</p>
 
-				<h2>4. Primitive.update 产生命令</h2>
+				<h2>4. 把一个红色点追到底</h2>
+				<p>现在沿着前面的北京红点追踪具体类。以下链路针对 `heightReference: NONE` 的普通 Point；贴地 Point 会因高度贴合需求使用 Billboard 路径。</p>
+				<pre><code>viewer.entities.add({ point, position })
+  -> EntityCollection 保存 Entity
+  -> DataSourceDisplay.update(time)
+  -> PointVisualizer.update(time)
+  -> EntityCluster.getPoint(entity)
+  -> PointPrimitiveCollection 中新增/复用 PointPrimitive
+  -> PointVisualizer 写入 position / color / pixelSize
+
+Scene 开始绘制
+  -> executeCommandsInViewport()
+  -> updateAndRenderPrimitives()
+  -> scene.primitives.update(frameState)
+  -> EntityCluster.update(frameState)
+  -> PointPrimitiveCollection.update(frameState)
+     -> 写入或更新 GPU vertex buffer
+     -> 准备 ShaderProgram、RenderState、VertexArray
+     -> new DrawCommand()
+     -> command.primitiveType = POINTS
+     -> frameState.commandList.push(command)</code></pre>
+				<p>需要抓住两个时间点：`PointVisualizer.update()` 负责把 Entity 属性同步到 PointPrimitive；`PointPrimitiveCollection.update(frameState)` 才负责把这些状态整理成 GPU 数据和 DrawCommand。因此“对象已经存在”和“本帧已经有可执行命令”是两件事。</p>
+				<table class="compare-table"><thead><tr><th>源码位置</th><th>这一层回答什么</th></tr></thead><tbody>
+					<tr><td><a href="https://github.com/CesiumGS/cesium/blob/main/packages/engine/Source/Widget/CesiumWidget.js">CesiumWidget.js</a></td><td>默认帧循环、Clock、DataSourceDisplay 和 Scene 如何连接。</td></tr>
+					<tr><td><a href="https://github.com/CesiumGS/cesium/blob/main/packages/engine/Source/DataSources/DataSourceDisplay.js">DataSourceDisplay.js</a></td><td>每次 update 如何遍历各 DataSource 的 Visualizer。</td></tr>
+					<tr><td><a href="https://github.com/CesiumGS/cesium/blob/main/packages/engine/Source/DataSources/PointVisualizer.js">PointVisualizer.js</a></td><td>Entity.point 如何映射为 PointPrimitive 或 Billboard。</td></tr>
+					<tr><td><a href="https://github.com/CesiumGS/cesium/blob/main/packages/engine/Source/Scene/PointPrimitiveCollection.js">PointPrimitiveCollection.js</a></td><td>点数据如何进入 vertex buffer 并形成 DrawCommand。</td></tr>
+				</tbody></table>
+
+				<h2>5. Primitive.update 产生命令</h2>
 				<p>Primitive 的职责不是马上调用 WebGL，而是在 update 阶段把自己转换成渲染命令，放入 `frameState.commandList`。</p>
 				<pre><code>Primitive.update(frameState)
   -> 准备 geometry / vertex array
@@ -65,7 +109,7 @@ viewer.entities.add({
   -> frameState.commandList.push(drawCommand)</code></pre>
 				<p>这就是 Cesium 很重要的设计：对象先产生命令，Scene 再统一排序、分 pass、执行命令。</p>
 
-				<h2>5. DrawCommand 封装一次绘制</h2>
+				<h2>6. DrawCommand 封装一次绘制</h2>
 				<p>`DrawCommand` 可以理解为“一次 WebGL draw call 的完整说明书”。它通常包含：</p>
 				<ul>
 					<li>vertexArray：顶点数据。</li>
@@ -84,24 +128,35 @@ viewer.entities.add({
   boundingVolume
 }</code></pre>
 
-				<h2>6. Scene 统一执行命令</h2>
+				<h2>7. Scene 统一执行命令</h2>
 				<p>Scene 会对 commandList 做裁剪、排序、按 pass 执行。opaque 和 translucent 通常不能随便混着画，因为透明物体需要特殊排序和混合。</p>
-				<pre><code>commandList
-  -> culling
-  -> pass sorting
+				<pre><code>frameState.commandList
+  -> View.createPotentiallyVisibleSet(scene)
+  -> 按视锥、boundingVolume 和遮挡条件筛选
+  -> 按 GLOBE / CESIUM_3D_TILE / OPAQUE / TRANSLUCENT / OVERLAY 等 pass 组织
+  -> executeCommands()
   -> executeCommand()
   -> command.execute(context, passState)</code></pre>
 
-				<h2>7. Renderer 封装 WebGL</h2>
+				<h2>8. Renderer、GPU 与浏览器合成</h2>
 				<p>Renderer 层把 WebGL 对象包装成 Cesium 内部对象：`Context`、`ShaderProgram`、`VertexArray`、`Texture`、`Framebuffer`、`RenderState`。这样上层不需要到处直接操作 WebGL API。</p>
-				<pre><code>DrawCommand.execute()
-  -> bind shaderProgram
-  -> bind vertexArray
-  -> apply renderState
-  -> set uniforms
-  -> gl.drawElements / gl.drawArrays</code></pre>
+				<pre><code>DrawCommand.execute(context, passState)
+  -> Context.draw(drawCommand, passState)
+  -> bind ShaderProgram / VertexArray
+  -> apply RenderState
+  -> upload automatic + custom uniforms
+  -> gl.drawElements(...) 或 gl.drawArrays(...)
+  -> GPU 执行 vertex shader
+  -> 图元装配与光栅化
+  -> GPU 执行 fragment shader
+  -> scissor / depth / stencil / blend
+  -> 写入 framebuffer
+  -> WebGL canvas
+  -> 浏览器 compositor 与 DOM 控件合成
+  -> 屏幕像素</code></pre>
+				<p>对这个红点而言，命令的 `primitiveType` 是 `POINTS`，通常落到 `gl.drawArrays`。draw call 只是向 GPU 提交绘制工作；真正决定最终像素的还有 shader、深度测试、混合、framebuffer 以及浏览器最后的页面合成。</p>
 
-				<h2>8. Globe / Terrain / Imagery 的特殊路径</h2>
+				<h2>9. Globe / Terrain / Imagery 的特殊路径</h2>
 				<p>地球不是一个普通三角形。Globe 会管理地形瓦片、影像图层、瓦片加载、LOD、裁剪、shader 混合。逻辑上仍然会走“对象产生 command，Scene 执行 command”的路径，只是它内部的 tile pipeline 更复杂。</p>
 				<pre><code>Scene.globe
   -> Globe.update()
@@ -110,7 +165,7 @@ viewer.entities.add({
   -> imagery layer texture
   -> terrain/imagery draw commands</code></pre>
 
-				<h2>9. 3D Tiles 的特殊路径</h2>
+				<h2>10. 3D Tiles 的特殊路径</h2>
 				<p>3D Tiles 会先做 tileset traversal，根据相机选择可见 tile，再加载 glTF/mesh/metadata，最后生成 draw commands。</p>
 				<pre><code>Cesium3DTileset.update()
   -> traversal / screen space error
@@ -118,7 +173,7 @@ viewer.entities.add({
   -> prepare tile content
   -> push draw commands</code></pre>
 
-				<h2>10. 为什么这样设计</h2>
+				<h2>11. 为什么这样设计</h2>
 				<ul>
 					<li><strong>Entity 友好：</strong>业务代码容易写。</li>
 					<li><strong>Primitive 高效：</strong>性能敏感场景可以跳过高级抽象。</li>
@@ -126,7 +181,7 @@ viewer.entities.add({
 					<li><strong>Renderer 可复用：</strong>WebGL 状态管理集中，不污染高层对象。</li>
 					<li><strong>适合海量数据：</strong>Terrain、Imagery、3D Tiles 都可以用各自的 tile pipeline 产生命令。</li>
 				</ul>
-				<h2>11. 自定义 shader 插在哪里</h2>
+				<h2>12. 自定义 shader 插在哪里</h2>
 				<p>自定义 shader 不是绕开这条路径，而是插入到路径中的某个层级：`CustomShader` 插入 Model/3D Tiles 的 shader pipeline；`Material/Fabric` 插入 Appearance 的材质片段；`PostProcessStage` 插入 Scene 渲染完成后的屏幕空间 pass；底层自定义 Primitive 则直接创建 `DrawCommand`。</p>
 				<pre><code>CustomShader / Material / Appearance / PostProcessStage
   -> 影响 ShaderProgram 或后处理 shader
@@ -148,7 +203,11 @@ viewer.entities.add({
 
 				<h2>源码阅读入口</h2>
 				<ul>
-					<li>`packages/engine/Source/Widgets/Viewer/Viewer.js`：应用入口。</li>
+					<li>`packages/widgets/Source/Viewer/Viewer.js`：带完整 UI 的应用入口。</li>
+					<li>`packages/engine/Source/Widget/CesiumWidget.js`：canvas、默认帧循环、Clock 与 DataSourceDisplay。</li>
+					<li>`packages/engine/Source/DataSources/DataSourceDisplay.js`：DataSource 与 Visualizer 的更新入口。</li>
+					<li>`packages/engine/Source/DataSources/PointVisualizer.js`：Point Entity 的具体转换器。</li>
+					<li>`packages/engine/Source/Scene/PointPrimitiveCollection.js`：点的 GPU buffer 与命令生成。</li>
 					<li>`packages/engine/Source/Scene/Scene.js`：渲染调度中心。</li>
 					<li>`packages/engine/Source/Scene/Primitive.js`：Primitive 如何产生命令。</li>
 					<li>`packages/engine/Source/Renderer/DrawCommand.js`：绘制命令。</li>
@@ -163,6 +222,8 @@ viewer.entities.add({
 					<li><a href="https://github.com/CesiumGS/cesium/wiki/Geometry-and-Appearances">Geometry and Appearances</a></li>
 					<li><a href="https://cesium.com/learn/cesiumjs/ref-doc/">CesiumJS API Reference</a></li>
 				</ul>
+				<p>源码复核：CesiumJS `main` 分支｜最后复核：2026-09-14。内部私有函数不是稳定 API，升级版本后应重新核对函数名和调用顺序。</p>
+				<div class="next-card"><span>亲手验证</span><a href="labs.html">做 Point 到 DrawCommand 实验与自测</a></div>
 			</article>
 		</main>
 		<script src="../../theme.js?v=6"></script>

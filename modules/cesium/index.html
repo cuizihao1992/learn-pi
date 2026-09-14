@@ -8,9 +8,9 @@
   <link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
 </head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Cesium 学习路径</strong><span>完整渲染路径</span></div></div><nav><a href="../../index.html">首页</a><a href="render-path.html">渲染路径</a><a href="custom-shader.html">自定义着色器</a><a href="../mini-agent/index.html">Mini Agent</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Pi logo" /><div><strong>Cesium 学习路径</strong><span>完整渲染路径</span></div></div><nav><a href="../../index.html">首页</a><a href="render-path.html">渲染路径</a><a href="labs.html">实验</a><a href="custom-shader.html">着色器</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a class="active" href="index.html">Cesium 总览</a><a href="charter.html">模块宪章</a><a href="render-path.html">完整渲染路径</a><a href="custom-shader.html">自定义着色器</a><a href="debugging.html">调试手册</a><a href="glossary.html">术语表</a><a href="../pi-agent/architecture.html">返回 Pi 路径</a></aside>
+			<aside class="doc-sidebar"><a class="active" href="index.html">Cesium 总览</a><a href="charter.html">模块宪章</a><a href="render-path.html">完整渲染路径</a><a href="custom-shader.html">自定义着色器</a><a href="labs.html">实验与自测</a><a href="debugging.html">调试手册</a><a href="glossary.html">术语表</a></aside>
 			<article class="doc">
 				<p class="kicker">Cesium Path</p>
 				<h1>Cesium 学习路径：从 Viewer 到 GPU</h1>
@@ -39,9 +39,8 @@
 					<li>理解自定义 shader 如何进入 `ShaderProgram` 和 `DrawCommand`。</li>
 					<li>最后读 Globe、Terrain、Imagery、3D Tiles 的专用渲染管线。</li>
 				</ol>
-				<h2>新增重点章节</h2>
-				<p>如果你想知道 Cesium 里写的 GLSL 最后变成什么，可以直接读自定义着色器章节。它按 `CustomShader`、`Material/Fabric`、`Appearance`、`PostProcessStage` 和底层 `DrawCommand` 分类说明。</p>
-				<div class="next-card"><span>Shader 专章</span><a href="custom-shader.html">看自定义着色器到 DrawCommand 的完整链路</a></div>
+				<h2>本模块的深挖点</h2>
+				<div class="lesson-grid"><section><h3>一个 Point 到像素</h3><p>沿 EntityCollection、PointVisualizer、PointPrimitiveCollection、DrawCommand、Context 和 GPU 追踪具体对象。</p><a href="render-path.html">阅读精确调用链</a></section><section><h3>亲手截住 DrawCommand</h3><p>观察更新事件、按需渲染和命令过滤，验证“对象存在不等于已有像素”。</p><a href="labs.html">进入实验与自测</a></section><section><h3>Shader 插入点</h3><p>区分 CustomShader、Material、Appearance、PostProcessStage 和底层 DrawCommand。</p><a href="custom-shader.html">阅读着色器专章</a></section></div>
 
 				<h2>官方参考</h2>
 				<ul>

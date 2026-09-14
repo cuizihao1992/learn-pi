@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Cesium 渲染实验与自测 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Cesium 渲染实验</strong><span>观察一次 Point 如何成为 draw call</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">Cesium</a><a href="render-path.html">渲染路径</a><a href="debugging.html">调试</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">Cesium 总览</a><a href="charter.html">模块宪章</a><a href="render-path.html">完整渲染路径</a><a href="custom-shader.html">自定义着色器</a><a class="active" href="labs.html">实验与自测</a><a href="debugging.html">调试手册</a><a href="glossary.html">术语表</a></aside>
+			<article class="doc">
+				<p class="kicker">Labs</p>
+				<h1>不要背调用链，亲手截住它</h1>
+				<p class="lead">在 Cesium Sandcastle 或自己的 Cesium 页面运行这些实验。每次只观察一层：Entity 状态、Visualizer 同步、Scene 帧事件、DrawCommand，最后把现象和源码对应起来。</p>
+
+				<h2>准备：只创建一个红点</h2>
+				<pre><code>const viewer = new Cesium.Viewer("cesiumContainer", {
+  requestRenderMode: true,
+  maximumRenderTimeChange: Infinity
+});
+
+const pointEntity = viewer.entities.add({
+  id: "beijing-point",
+  position: Cesium.Cartesian3.fromDegrees(116.39, 39.9, 1000),
+  point: {
+    pixelSize: 14,
+    color: Cesium.Color.RED,
+    outlineColor: Cesium.Color.WHITE,
+    outlineWidth: 2
+  }
+});
+
+viewer.zoomTo(pointEntity);</code></pre>
+				<p><strong>先预测：</strong>`viewer.entities.add()` 返回时，GPU 是否已经执行 draw call？答案是否定的。这一行完成的是 EntityCollection 状态变更，转换和绘制发生在后续更新与渲染阶段。</p>
+
+				<h2>实验 1：记录一帧的先后顺序</h2>
+				<p>在创建 Viewer 后、添加 Entity 前运行下面代码。包装 `DataSourceDisplay.update` 只用于学习和调试，不应放进生产代码。</p>
+				<pre><code>const display = viewer.dataSourceDisplay;
+const originalUpdate = display.update.bind(display);
+
+display.update = function (time) {
+  console.log("1 DataSourceDisplay.update", Cesium.JulianDate.toIso8601(time));
+  return originalUpdate(time);
+};
+
+viewer.scene.preUpdate.addEventListener(() => console.log("2 Scene.preUpdate"));
+viewer.scene.preRender.addEventListener(() => console.log("3 Scene.preRender"));
+viewer.scene.postRender.addEventListener(() => console.log("4 Scene.postRender"));</code></pre>
+				<p><strong>观察：</strong>默认循环里 `clock.tick()` 先触发 CesiumWidget 的 onTick 更新 DataSourceDisplay，然后 `Scene.render()` 才触发 Scene 的 preUpdate、preRender 和 postRender。日志证明状态同步和画面提交不是同一层。</p>
+				<p><strong>验收：</strong>你能解释为什么文章不能写成 `Scene.render -> initializeFrame -> DataSourceDisplay.update`。</p>
+
+				<h2>实验 2：截获这个点的 DrawCommand</h2>
+				<p>`debugCommandFilter` 是 Scene 提供的调试入口。它在命令执行前被调用，返回 false 会阻止该命令执行。</p>
+				<pre><code>let printed = false;
+
+viewer.scene.debugCommandFilter = function (command) {
+  const ownerName = command.owner?.constructor?.name;
+  if (!printed && ownerName === "PointPrimitiveCollection") {
+    printed = true;
+    console.table({
+      owner: ownerName,
+      primitiveType: command.primitiveType,
+      pass: command.pass,
+      hasVertexArray: Boolean(command.vertexArray),
+      hasShaderProgram: Boolean(command.shaderProgram),
+      hasRenderState: Boolean(command.renderState),
+      hasBoundingVolume: Boolean(command.boundingVolume)
+    });
+    console.log("Point DrawCommand", command);
+  }
+  return true;
+};
+
+viewer.scene.requestRender();</code></pre>
+				<p><strong>观察：</strong>PointPrimitiveCollection 生成的命令包含 vertexArray、shaderProgram、uniformMap、renderState、pass 和 boundingVolume。它的 `primitiveType` 是 POINTS，之后由 `DrawCommand.execute()` 交给 `Context.draw()`。</p>
+				<p><strong>继续破坏：</strong>把匹配分支中的 `return true` 改成 `return false`。Entity 仍在 Collection 中，PointPrimitive 也可能存在，但红点消失，因为命令在 GPU 执行前被过滤。</p>
+
+				<h2>实验 3：理解 requestRenderMode</h2>
+				<pre><code>// 修改业务状态
+pointEntity.point.pixelSize = 28;
+
+// 明确请求下一帧；异步资源或属性事件也可能自动请求渲染
+viewer.scene.requestRender();</code></pre>
+				<p>在按需渲染模式下，浏览器的 requestAnimationFrame 循环可以继续运行，但 Cesium 不必每次都提交新画面。`Scene.render()` 会综合 `_renderRequested`、相机变化、时间变化和资源状态判断是否真正渲染。</p>
+				<p><strong>验收：</strong>能区分“浏览器帧循环还在运行”“Scene 正在更新状态”和“本次产生了新 framebuffer”三个概念。</p>
+
+				<h2>实验 4：一次只破坏一层</h2>
+				<table class="compare-table"><thead><tr><th>改动</th><th>仍然存在什么</th><th>在哪一层失败</th></tr></thead><tbody>
+					<tr><td>`pointEntity.show = false`</td><td>Entity 仍在集合</td><td>Visualizer 不再让底层对象参与显示。</td></tr>
+					<tr><td>把位置改到地球另一侧</td><td>PointPrimitive 与命令可能存在</td><td>视锥或地球遮挡裁剪。</td></tr>
+					<tr><td>`color = Color.RED.withAlpha(0)`</td><td>命令仍可能执行</td><td>片元经过混合后不可见。</td></tr>
+					<tr><td>`debugCommandFilter` 返回 false</td><td>Entity、Primitive、DrawCommand 都存在</td><td>Scene 命令执行阶段。</td></tr>
+				</tbody></table>
+
+				<h2>自测</h2>
+				<details><summary>为什么 Entity 不能直接调用 gl.drawArrays？</summary><p>Entity 描述位置、时间属性和业务图形；WebGL 需要确定的顶点缓冲、shader、uniform、渲染状态和图元类型。Visualizer、Primitive 和 DrawCommand 负责把前者逐步编译成后者。</p></details>
+				<details><summary>PointVisualizer 和 PointPrimitiveCollection 各负责什么？</summary><p>PointVisualizer 读取 Entity 在当前时间的属性并同步到 PointPrimitive；PointPrimitiveCollection 把一组点整理进 GPU buffer，准备 shader 和 render state，并向 frameState.commandList 提交 DrawCommand。</p></details>
+				<details><summary>DrawCommand 已进入 commandList，为什么仍可能没有像素？</summary><p>命令可能被视锥、遮挡或 debugCommandFilter 排除；也可能在执行后因深度测试、透明混合、裁剪区域、shader discard 或错误 framebuffer 而不产生可见颜色。</p></details>
+				<details><summary>gl.drawArrays 返回后，为什么还不能把它等同于屏幕已经显示？</summary><p>draw call 提交 GPU 工作；GPU 还要执行着色、光栅化、深度和混合并写入 framebuffer，浏览器还要把 WebGL canvas 与 DOM 合成后呈现。</p></details>
+
+				<h2>源码复核</h2>
+				<ul>
+					<li><a href="https://github.com/CesiumGS/cesium/blob/main/packages/engine/Source/Widget/CesiumWidget.js">CesiumWidget.js</a>：requestAnimationFrame、Clock 与 Scene。</li>
+					<li><a href="https://github.com/CesiumGS/cesium/blob/main/packages/engine/Source/DataSources/DataSourceDisplay.js">DataSourceDisplay.js</a>：Visualizer 更新循环。</li>
+					<li><a href="https://github.com/CesiumGS/cesium/blob/main/packages/engine/Source/DataSources/PointVisualizer.js">PointVisualizer.js</a>：Point Entity 的属性同步。</li>
+					<li><a href="https://github.com/CesiumGS/cesium/blob/main/packages/engine/Source/Scene/PointPrimitiveCollection.js">PointPrimitiveCollection.js</a>：buffer 和 DrawCommand。</li>
+					<li><a href="https://github.com/CesiumGS/cesium/blob/main/packages/engine/Source/Scene/Scene.js">Scene.js</a>：命令裁剪、分 pass 与执行。</li>
+					<li><a href="https://github.com/CesiumGS/cesium/blob/main/packages/engine/Source/Renderer/DrawCommand.js">DrawCommand.js</a> 与 <a href="https://github.com/CesiumGS/cesium/blob/main/packages/engine/Source/Renderer/Context.js">Context.js</a>：落到 WebGL draw call。</li>
+				</ul>
+				<p>资料等级：A｜最后复核：2026-09-14｜实验面向当前 CesiumJS `main` 分支思路，内部私有字段和函数会随版本变化。</p>
+				<div class="next-card"><span>回到原理</span><a href="render-path.html">对照完整调用链解释实验现象</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>
