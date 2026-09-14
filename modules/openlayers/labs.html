@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>OpenLayers 渲染实验与自测 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>OpenLayers 渲染实验</strong><span>截住 frameState 与 Canvas stroke</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">OpenLayers</a><a href="render-path.html">渲染路径</a><a href="debugging.html">调试</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">OpenLayers 总览</a><a href="charter.html">模块宪章</a><a href="render-path.html">Feature 到像素</a><a class="active" href="labs.html">实验与自测</a><a href="debugging.html">调试手册</a><a href="../cesium/labs.html">Cesium 实验</a></aside>
+			<article class="doc">
+				<p class="kicker">Labs</p>
+				<h1>沿渲染链一次只破坏一层</h1>
+				<p class="lead">在 OpenLayers 10.10.x 项目或官方示例环境运行。实验围绕同一条红线，不追求复杂地图，只观察 Feature 是否被选中、是否生成指令、是否真正调用 Canvas。</p>
+
+				<h2>准备：一个没有底图的最小地图</h2>
+				<pre><code>import Map from "ol/Map.js";
+import View from "ol/View.js";
+import Feature from "ol/Feature.js";
+import LineString from "ol/geom/LineString.js";
+import VectorLayer from "ol/layer/Vector.js";
+import VectorSource from "ol/source/Vector.js";
+import Style from "ol/style/Style.js";
+import Stroke from "ol/style/Stroke.js";
+import {fromLonLat} from "ol/proj.js";
+
+const road = new Feature(new LineString([
+  fromLonLat([116.30, 39.86]),
+  fromLonLat([116.48, 39.95])
+]));
+const source = new VectorSource({features: [road]});
+const layer = new VectorLayer({
+  source,
+  style: new Style({stroke: new Stroke({color: "#e23b35", width: 4})})
+});
+const map = new Map({
+  target: "map",
+  layers: [layer],
+  view: new View({center: fromLonLat([116.39, 39.90]), zoom: 10})
+});</code></pre>
+				<p><strong>验收：</strong>页面只需要一个有明确宽高的 `#map`。没有 TileLayer 可以排除网络、瓦片和 token 对实验的干扰。</p>
+
+				<h2>实验 1：证明 render 是合帧请求</h2>
+				<pre><code>let postRenderCount = 0;
+map.on("postrender", (event) => {
+  postRenderCount += 1;
+  console.log("postrender", postRenderCount, event.frameState.index);
+});
+
+map.render();
+map.render();
+map.render();
+// 同一轮事件循环中，通常只预约一个 requestAnimationFrame</code></pre>
+				<p>再调用一次 `map.renderSync()`，观察它立即触发 postrender。解释为什么连续的 Feature 变更不应该每次都同步绘制。</p>
+
+				<h2>实验 2：手算地图坐标到像素</h2>
+				<pre><code>map.getView().setCenter([100, 200]);
+map.getView().setResolution(2);
+map.getView().setRotation(0);
+map.setSize([800, 600]);
+map.renderSync();
+
+console.log(map.getPixelFromCoordinate([120, 180]));
+// 预期接近 [410, 310]</code></pre>
+				<p>然后把 rotation 设为 `Math.PI / 2` 再观察。坐标没有改变，但 `coordinateToPixelTransform` 改变。这个实验能区分地图坐标、CSS 像素和高分屏 backing-store 物理像素。</p>
+
+				<h2>实验 3：Feature 存在，但 Style 不产生命令</h2>
+				<pre><code>console.log(source.hasFeature(road)); // true
+
+layer.setStyle(() => undefined);
+map.renderSync();                    // 红线消失
+
+layer.setStyle(new Style({
+  stroke: new Stroke({color: "#e23b35", width: 4})
+}));
+map.renderSync();                    // 红线恢复</code></pre>
+				<p><strong>结论：</strong>Source 查询命中 Feature 只是数据阶段成功；Style function 返回空时，CanvasBuilderGroup 不会得到 LineString 指令。</p>
+
+				<h2>实验 4：截获最终 Canvas stroke</h2>
+				<p>先完成一次渲染以创建 LayerRenderer，再临时包装该 renderer 的 Canvas context。下面使用内部对象，只能作为版本相关的学习探针。</p>
+				<pre><code>map.renderSync();
+
+const renderer = layer.getRenderer();
+const context = renderer.context;
+const originalStroke = context.stroke.bind(context);
+let strokeCount = 0;
+
+context.stroke = function () {
+  strokeCount += 1;
+  console.log("Canvas stroke", strokeCount, {
+    strokeStyle: context.strokeStyle,
+    lineWidth: context.lineWidth
+  });
+  return originalStroke();
+};
+
+map.renderSync();
+context.stroke = originalStroke;</code></pre>
+				<p><strong>观察：</strong>Builder 生成的是数据化指令；Executor 解释到 STROKE 指令时才调用 Canvas API。一次 stroke 可能批量绘制多条相同状态的路径，因此 stroke 次数不等于 Feature 数量。</p>
+
+				<h2>实验 5：区分图层淘汰与要素淘汰</h2>
+				<table class="compare-table"><thead><tr><th>改动</th><th>停止在哪一层</th><th>检查方法</th></tr></thead><tbody>
+					<tr><td>`layer.setVisible(false)`</td><td>Composite renderer 的 Layer 可见性检查</td><td>Feature 仍在 Source。</td></tr>
+					<tr><td>把 View 移到另一个城市</td><td>`getFeaturesInExtent()` 不再选中</td><td>比较 frameState.extent 与 geometry extent。</td></tr>
+					<tr><td>Style function 返回空</td><td>Geometry 到 Builder 指令</td><td>Feature 查询仍然命中。</td></tr>
+					<tr><td>Stroke alpha 为 0</td><td>Canvas 已执行但合成结果透明</td><td>仍可观察到 `context.stroke()`。</td></tr>
+				</tbody></table>
+
+				<h2>自测</h2>
+				<details><summary>标准 VectorLayer 会根据 Feature 数量自动切换 WebGL 吗？</summary><p>不会。当前 `VectorLayer.createRenderer()` 明确创建 CanvasVectorLayerRenderer；使用 GPU 矢量管线通常要显式采用 WebGLVectorLayer 等对应类型。</p></details>
+				<details><summary>prepareFrame 和 renderFrame 的边界是什么？</summary><p>prepareFrame 读取当前 frameState、加载并筛选 Feature、执行 Style function，必要时构建 ExecutorGroup；renderFrame 准备 Canvas 容器和变换，并重放已有指令。</p></details>
+				<details><summary>为什么改变 resolution 通常需要重建指令？</summary><p>resolution 会影响范围查询、geometry 简化容差、Style function 结果和像素尺寸，旧指令不一定仍然正确。</p></details>
+				<details><summary>Feature 在 Source 中且 context.stroke 被调用，为什么仍可能看不到线？</summary><p>线可能在视口外或被裁剪，也可能颜色透明、被上层 canvas 遮住、Canvas transform 错误，或者浏览器最终合成时不可见。</p></details>
+
+				<h2>源码复核</h2>
+				<ul>
+					<li><a href="https://github.com/openlayers/openlayers/blob/main/src/ol/Map.js">Map.js</a>：render、renderSync 和 frameState。</li>
+					<li><a href="https://github.com/openlayers/openlayers/blob/main/src/ol/renderer/Composite.js">Composite.js</a>：Layer 筛选与排序。</li>
+					<li><a href="https://github.com/openlayers/openlayers/blob/main/src/ol/renderer/canvas/VectorLayer.js">Canvas VectorLayer renderer</a>：prepareFrame 与 renderFrame。</li>
+					<li><a href="https://github.com/openlayers/openlayers/blob/main/src/ol/render/canvas/BuilderGroup.js">BuilderGroup.js</a>：指令编译。</li>
+					<li><a href="https://github.com/openlayers/openlayers/blob/main/src/ol/render/canvas/Executor.js">Executor.js</a>：Canvas 指令解释执行。</li>
+				</ul>
+				<p>资料等级：A｜最后复核：2026-09-14｜实验面向 OpenLayers 10.10.x；访问 renderer 内部字段的探针不属于稳定生产 API。</p>
+				<div class="next-card"><span>回到原理</span><a href="render-path.html">对照 Feature 到像素的完整链路</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

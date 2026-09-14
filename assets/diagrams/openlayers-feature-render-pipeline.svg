@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">OpenLayers Feature 到 Canvas 像素</title>
+  <desc id="desc">红色 LineString 经过 Source 和 Layer、帧调度、Canvas 指令编译和执行，最终成为屏幕像素。</desc>
+  <rect width="1200" height="650" fill="#f7f8fa"/>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,7 L9,3.5 z" fill="#66727a"/></marker></defs>
+  <g font-family="Microsoft YaHei, Segoe UI, sans-serif">
+    <text x="600" y="48" text-anchor="middle" font-size="29" font-weight="700" fill="#1f2930">一条 LineString 如何成为 Canvas 像素</text>
+    <text x="600" y="80" text-anchor="middle" font-size="16" fill="#66727a">数据对象、帧调度、指令编译和浏览器光栅化是四个不同阶段</text>
+
+    <text x="55" y="126" font-size="16" font-weight="700" fill="#28645d">业务与数据</text>
+    <rect x="55" y="145" width="205" height="82" rx="8" fill="#e3f1ee" stroke="#6a9c94"/><text x="158" y="178" text-anchor="middle" font-size="18" font-weight="700" fill="#244944">Feature</text><text x="158" y="204" text-anchor="middle" font-size="14" fill="#43545a">LineString + 属性</text>
+    <rect x="300" y="145" width="205" height="82" rx="8" fill="#e3f1ee" stroke="#6a9c94"/><text x="403" y="178" text-anchor="middle" font-size="18" font-weight="700" fill="#244944">VectorSource</text><text x="403" y="204" text-anchor="middle" font-size="14" fill="#43545a">索引与范围查询</text>
+    <rect x="545" y="145" width="205" height="82" rx="8" fill="#e3f1ee" stroke="#6a9c94"/><text x="648" y="178" text-anchor="middle" font-size="18" font-weight="700" fill="#244944">VectorLayer</text><text x="648" y="204" text-anchor="middle" font-size="14" fill="#43545a">Source + Style + 状态</text>
+    <path d="M260 186 H294" stroke="#66727a" stroke-width="2.5" marker-end="url(#arrow)"/><path d="M505 186 H539" stroke="#66727a" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+    <text x="55" y="294" font-size="16" font-weight="700" fill="#315d80">帧调度</text>
+    <rect x="55" y="313" width="205" height="82" rx="8" fill="#e7f0f7" stroke="#7d9db5"/><text x="158" y="346" text-anchor="middle" font-size="18" font-weight="700" fill="#294b63">Map.render</text><text x="158" y="372" text-anchor="middle" font-size="14" fill="#43545a">预约 animation frame</text>
+    <rect x="300" y="313" width="205" height="82" rx="8" fill="#e7f0f7" stroke="#7d9db5"/><text x="403" y="346" text-anchor="middle" font-size="18" font-weight="700" fill="#294b63">frameState</text><text x="403" y="372" text-anchor="middle" font-size="14" fill="#43545a">View、extent、pixelRatio</text>
+    <rect x="545" y="313" width="205" height="82" rx="8" fill="#e7f0f7" stroke="#7d9db5"/><text x="648" y="346" text-anchor="middle" font-size="18" font-weight="700" fill="#294b63">Composite renderer</text><text x="648" y="372" text-anchor="middle" font-size="14" fill="#43545a">筛 Layer、按 zIndex 排序</text>
+    <path d="M648 227 V265 H158 V307" stroke="#66727a" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/><path d="M260 354 H294" stroke="#66727a" stroke-width="2.5" marker-end="url(#arrow)"/><path d="M505 354 H539" stroke="#66727a" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+    <text x="55" y="462" font-size="16" font-weight="700" fill="#8a5d25">编译与执行</text>
+    <rect x="55" y="481" width="230" height="86" rx="8" fill="#fff2dc" stroke="#c7a56d"/><text x="170" y="514" text-anchor="middle" font-size="17" font-weight="700" fill="#6c4a20">CanvasVectorRenderer</text><text x="170" y="541" text-anchor="middle" font-size="14" fill="#43545a">选 Feature、求 Style</text>
+    <rect x="325" y="481" width="230" height="86" rx="8" fill="#fff2dc" stroke="#c7a56d"/><text x="440" y="514" text-anchor="middle" font-size="17" font-weight="700" fill="#6c4a20">CanvasBuilderGroup</text><text x="440" y="541" text-anchor="middle" font-size="14" fill="#43545a">Geometry + Style → 指令</text>
+    <rect x="595" y="481" width="210" height="86" rx="8" fill="#fff2dc" stroke="#c7a56d"/><text x="700" y="514" text-anchor="middle" font-size="17" font-weight="700" fill="#6c4a20">ExecutorGroup</text><text x="700" y="541" text-anchor="middle" font-size="14" fill="#43545a">按 zIndex 重放</text>
+    <rect x="845" y="481" width="210" height="86" rx="8" fill="#f3e9e8" stroke="#bb8b87"/><text x="950" y="514" text-anchor="middle" font-size="17" font-weight="700" fill="#713f3b">Canvas 像素</text><text x="950" y="541" text-anchor="middle" font-size="14" fill="#43545a">moveTo / lineTo / stroke</text>
+    <path d="M648 395 V438 H170 V475" stroke="#66727a" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/><path d="M285 524 H319" stroke="#66727a" stroke-width="2.5" marker-end="url(#arrow)"/><path d="M555 524 H589" stroke="#66727a" stroke-width="2.5" marker-end="url(#arrow)"/><path d="M805 524 H839" stroke="#66727a" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+    <rect x="815" y="145" width="330" height="250" rx="8" fill="#ffffff" stroke="#d4d9dd"/>
+    <text x="845" y="181" font-size="17" font-weight="700" fill="#1f2930">三个关键分界</text>
+    <text x="845" y="222" font-size="14" fill="#43545a">Feature 在 Source 中，不等于进入当前 extent</text>
+    <text x="845" y="258" font-size="14" fill="#43545a">进入 extent，不等于 Style 生成绘制指令</text>
+    <text x="845" y="294" font-size="14" fill="#43545a">生成指令，不等于本帧一定可见</text>
+    <line x1="845" y1="321" x2="1115" y2="321" stroke="#d4d9dd"/>
+    <text x="845" y="351" font-size="14" font-weight="700" fill="#315d80">标准 VectorLayer 明确使用 Canvas</text>
+    <text x="845" y="377" font-size="14" fill="#43545a">WebGLVectorLayer 是另一条 renderer 管线</text>
+
+    <text x="600" y="614" text-anchor="middle" font-size="14" fill="#66727a">浏览器最终把各 Layer canvas、叠加元素和控件合成为页面</text>
+  </g>
+</svg>

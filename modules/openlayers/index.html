@@ -8,9 +8,9 @@
   <link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
 </head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>OpenLayers 学习路径</strong><span>二维地图渲染路径</span></div></div><nav><a href="../../index.html">首页</a><a href="render-path.html">渲染路径</a><a href="debugging.html">调试</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>OpenLayers 学习路径</strong><span>二维地图渲染路径</span></div></div><nav><a href="../../index.html">首页</a><a href="render-path.html">渲染路径</a><a href="labs.html">实验</a><a href="debugging.html">调试</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="../../pages/charter.html">内容宪章</a><a class="active" href="index.html">OpenLayers 总览</a><a href="charter.html">模块宪章</a><a href="render-path.html">完整渲染路径</a><a href="debugging.html">调试手册</a><a href="../pi-agent/architecture.html">Pi Agent</a><a href="../cesium/index.html">Cesium</a></aside>
+			<aside class="doc-sidebar"><a href="../../pages/charter.html">内容宪章</a><a class="active" href="index.html">OpenLayers 总览</a><a href="charter.html">模块宪章</a><a href="render-path.html">Feature 到像素</a><a href="labs.html">实验与自测</a><a href="debugging.html">调试手册</a><a href="../cesium/index.html">Cesium 对照</a></aside>
 			<article class="doc">
 				<p class="kicker">OpenLayers Path</p>
 				<h1>OpenLayers 学习路径：从 Map 到像素</h1>
@@ -40,7 +40,7 @@ const map = new Map({
 					<section><h3>View</h3><p>描述“怎么看地图”：中心点、分辨率/zoom、旋转、投影、约束。</p></section>
 					<section><h3>Layer</h3><p>数据的视觉表达。OpenLayers 官方概念里常见 Layer 类型包括 Tile、Image、Vector、VectorTile。</p></section>
 					<section><h3>Source</h3><p>数据来源。Source 负责加载瓦片、影像、矢量要素、WMS/WMTS/XYZ/OSM 等。</p></section>
-					<section><h3>Renderer</h3><p>把 Layer 的数据转成 Canvas 或 WebGL 绘制动作。不同 Layer 类型有不同 renderer。</p></section>
+					<section><h3>Renderer</h3><p>把 Layer 的数据转成底层绘制动作。标准 VectorLayer 明确使用 Canvas；WebGLVectorLayer 使用独立 GPU 管线。</p></section>
 					<section><h3>Interaction / Control</h3><p>交互和控件层，处理拖拽、缩放、选择、绘制、比例尺等用户行为。</p></section>
 				</div>
 
@@ -58,9 +58,12 @@ const map = new Map({
 					<li>TileLayer + OSM/XYZ 的瓦片加载路径。</li>
 					<li>VectorLayer + VectorSource + Feature + Style 的矢量渲染。</li>
 					<li>VectorTileLayer 的切片矢量数据路径。</li>
-					<li>Renderer 如何选择 Canvas 或 WebGL。</li>
+					<li>理解 Layer 类型如何明确选择 Canvas 或 WebGL renderer。</li>
 					<li>交互和事件：pointer、select、modify、draw。</li>
 				</ol>
+
+				<h2>本模块的深挖点</h2>
+				<div class="lesson-grid"><section><h3>一条线到像素</h3><p>沿 Feature、Source、frameState、Builder、Executor 一直追到 `context.stroke()`。</p><a href="render-path.html">阅读完整调用链</a></section><section><h3>一次只破坏一层</h3><p>观察 render 合帧、坐标变换、空 Style 和最终 Canvas stroke。</p><a href="labs.html">进入实验与自测</a></section><section><h3>问题定位</h3><p>从容器尺寸、投影、范围、样式和 renderer 逐层排查地图空白。</p><a href="debugging.html">打开调试手册</a></section></div>
 
 				<h2>官方参考</h2>
 				<ul>

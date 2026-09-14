@@ -1,126 +1,205 @@
 <!doctype html>
 <html lang="zh-CN">
-	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>OpenLayers 完整渲染路径 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" />  <link rel="manifest" href="/learn-pi/manifest.json" />
-  <meta name="theme-color" content="#6366f1" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="源码学吧" />
-  <link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
-</head>
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>OpenLayers Feature 到像素 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>OpenLayers 学习路径</strong><span>完整渲染路径</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">OpenLayers</a><a href="../cesium/render-path.html">Cesium 对照</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>OpenLayers 学习路径</strong><span>Feature 到 Canvas 像素</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">OpenLayers</a><a href="labs.html">实验</a><a href="../cesium/render-path.html">Cesium 对照</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="index.html">OpenLayers 总览</a><a class="active" href="render-path.html">完整渲染路径</a><a href="debugging.html">调试手册</a><a href="../cesium/render-path.html">Cesium 渲染路径</a></aside>
+			<aside class="doc-sidebar"><a href="index.html">OpenLayers 总览</a><a href="charter.html">模块宪章</a><a class="active" href="render-path.html">Feature 到像素</a><a href="labs.html">实验与自测</a><a href="debugging.html">调试手册</a><a href="../cesium/render-path.html">Cesium 渲染路径</a></aside>
 			<article class="doc">
 				<p class="kicker">Rendering Pipeline</p>
-				<h1>OpenLayers 完整渲染路径：从 Map 到 Canvas/WebGL</h1>
-				<p class="lead">这一章回答：你创建一个 TileLayer 或 VectorLayer 后，OpenLayers 如何加载数据、计算视图、选择 renderer，并最终画到屏幕上。</p>
+				<h1>一个 OpenLayers Feature 如何成为屏幕像素</h1>
+				<p class="lead">不再停在 Map、View、Layer、Source 四个名词。这一章沿一条红色 LineString，追踪它如何被 Source 选中、被 Style 编译成 Canvas 指令，再由浏览器光栅化成像素。</p>
 
 				<h2>一句话总览</h2>
-				<pre><code>new Map({ target, view, layers })
-  -> MapBrowserEventHandler / interactions
-  -> View state: center / resolution / rotation / projection
-  -> layerGroup
-  -> LayerRenderer
-  -> Source loads tiles/features/images
-  -> frameState / layerState
-  -> Canvas or WebGL renderer
-  -> browser paints pixels</code></pre>
+				<pre><code>Feature(LineString) + VectorSource + VectorLayer + Style
+  -> 变更事件请求 Map.render()
+  -> requestAnimationFrame
+  -> Map.renderFrame_() 构造 frameState
+  -> CompositeMapRenderer.renderFrame()
+  -> VectorLayer.render()
+  -> CanvasVectorLayerRenderer.prepareFrame()
+  -> getFeaturesInExtent() + styleFunction()
+  -> CanvasBuilderGroup 生成绘制指令
+  -> ExecutorGroup / Executor 重放指令
+  -> CanvasRenderingContext2D.moveTo / lineTo / stroke
+  -> Canvas backing store
+  -> 浏览器合成地图图层与控件
+  -> 屏幕像素</code></pre>
+				<p><img src="../../assets/diagrams/openlayers-feature-render-pipeline.svg" alt="OpenLayers 红色 LineString 从 Feature 经 Source、Canvas renderer、绘制指令到浏览器像素的调用链" /></p>
 
-				<h2>1. Map 是调度中心</h2>
-				<p>`Map` 持有目标 DOM、View、LayerGroup、交互、控件。它监听 View 和 Layer 的变化，然后安排下一帧渲染。</p>
-				<pre><code>Map
-  -> target HTMLElement
-  -> View
-  -> LayerGroup
-  -> interactions
-  -> controls
-  -> renderer</code></pre>
+				<h2>1. 输入不是一条线，而是四类对象</h2>
+				<pre><code>const road = new Feature({
+  geometry: new LineString([
+    fromLonLat([116.30, 39.86]),
+    fromLonLat([116.48, 39.95])
+  ])
+});
 
-				<h2>2. View 决定地图怎么看</h2>
-				<p>View 不是图层，也不是数据。它描述当前视角：center、resolution/zoom、rotation、projection。Layer renderer 会根据 View state 计算需要加载哪些瓦片或哪些要素落在当前视口内。</p>
-				<pre><code>View state
-  center: 当前中心
-  resolution: 当前地图分辨率
-  zoom: resolution 的离散表达
-  rotation: 旋转角
-  projection: 坐标系</code></pre>
+const source = new VectorSource({ features: [road] });
+const layer = new VectorLayer({
+  source,
+  style: new Style({
+    stroke: new Stroke({ color: "#e23b35", width: 4 })
+  })
+});
 
-				<h2>3. Layer 是视觉表达，Source 是数据来源</h2>
-				<p>官方 Basic Concepts 里把 Layer 定义为 Source 数据的视觉表示，并列出 Tile、Image、Vector、VectorTile 四类基本 Layer。这个分离非常重要：Source 管数据，Layer 管怎么展示。</p>
-				<pre><code>TileLayer
-  -> TileSource(OSM/XYZ/WMTS)
-  -> tile grid
-  -> image tiles
+const map = new Map({
+  target: "map",
+  layers: [layer],
+  view: new View({ center: fromLonLat([116.39, 39.90]), zoom: 10 })
+});</code></pre>
+				<table class="compare-table"><thead><tr><th>对象</th><th>只负责什么</th><th>不负责什么</th></tr></thead><tbody>
+					<tr><td>`Feature`</td><td>保存 Geometry 和业务属性。</td><td>不决定何时重绘，也不调用 Canvas。</td></tr>
+					<tr><td>`VectorSource`</td><td>索引、查询、加载和管理 Feature。</td><td>不决定线宽和颜色。</td></tr>
+					<tr><td>`VectorLayer`</td><td>连接 Source、Style、可见范围、zIndex 和 renderer。</td><td>标准 VectorLayer 不自动切换成 WebGL。</td></tr>
+					<tr><td>`View`</td><td>给出 center、resolution、rotation、projection。</td><td>不保存业务要素。</td></tr>
+				</tbody></table>
 
-VectorLayer
-  -> VectorSource
-  -> Feature collection
-  -> Style function
+				<h2>2. 改了 Feature，为什么不会立即执行 stroke</h2>
+				<p>OpenLayers 的 Observable 对象通过 revision 和 change 事件传播失效状态。地图、视图、图层、数据源或要素变化后，最终会请求 `Map.render()`。这个方法只在尚未预约下一帧时调用一次 `requestAnimationFrame`，把同一轮中的多次变化合并到下一帧。</p>
+				<pre><code>road.getGeometry().setCoordinates(newCoordinates)
+  -> Geometry.changed()
+  -> Feature change
+  -> VectorSource changefeature
+  -> Layer / Map 收到变化
+  -> map.render()
+  -> requestAnimationFrame(map.animationDelay_)
+  -> map.renderFrame_(Date.now())</code></pre>
+				<p>`map.renderSync()` 会取消已经预约的动画帧并立即进入 `renderFrame_()`，适合导出图片和调试，但频繁在业务代码中强制同步渲染会破坏合帧优化。</p>
 
-VectorTileLayer
-  -> VectorTileSource
-  -> tile features
-  -> renderer draws tiled vectors</code></pre>
+				<h2>3. frameState 是这一帧的共同输入</h2>
+				<p>`Map.renderFrame_()` 从 View、容器尺寸和设备像素比构造 `frameState`。它不是图层数据，而是所有 LayerRenderer 共享的帧上下文。</p>
+				<pre><code>frameState = {
+  size,
+  pixelRatio,
+  extent,
+  viewState: { center, resolution, rotation, projection },
+  layerStatesArray,
+  coordinateToPixelTransform,
+  pixelToCoordinateTransform,
+  tileQueue,
+  time,
+  animate
+}</code></pre>
+				<p>Composite renderer 随后计算地图坐标到 CSS 像素的二维仿射变换。忽略旋转时，可以先用下面的简化公式理解：</p>
+				<pre><code>xPixel = width / 2  + (x - centerX) / resolution
+yPixel = height / 2 - (y - centerY) / resolution</code></pre>
+				<p>例如视口是 800 × 600，中心 `[100, 200]`，resolution 是每像素 2 个地图单位。坐标 `[120, 180]` 会落到 `[410, 310]`：向东 20 个地图单位就是向右 10 像素；向南 20 个地图单位就是向下 10 像素。实际矩阵还会处理 rotation，LayerRenderer 的 Canvas 变换还会乘以 pixelRatio。</p>
 
-				<h2>4. TileLayer 的渲染路径</h2>
-				<pre><code>Map render frame
-  -> TileLayerRenderer.prepareFrame()
-  -> Source.getTile(z, x, y)
-  -> tile cache / network loading
-  -> draw loaded tile images to canvas
-  -> handle opacity / extent / zIndex</code></pre>
-				<p>瓦片图层的关键是：根据当前 View resolution 选择 z/x/y 瓦片，加载图片，按瓦片网格贴到 canvas 上。</p>
+				<h2>4. Composite renderer 决定哪些 Layer 参加</h2>
+				<pre><code>Map.renderFrame_(time)
+  -> renderer_.renderFrame(frameState)
+  -> CompositeMapRenderer.calculateMatrices2D(frameState)
+  -> layerStatesArray 按 zIndex 排序
+  -> 检查 visible / resolution / zoom / extent / source state
+  -> layer.render(frameState, previousElement)</code></pre>
+				<p>这一层解决的是“整个图层能否进入本帧”。即使 Feature、Source 和 Style 都正确，只要 Layer 超出 min/max resolution、被隐藏或 Source 尚未 ready，后面的 Feature 筛选就不会发生。</p>
 
-				<h2>5. VectorLayer 的渲染路径</h2>
-				<pre><code>Map render frame
-  -> VectorLayerRenderer.prepareFrame()
-  -> Source.getFeaturesInExtent()
+				<h2>5. 标准 VectorLayer 明确走 Canvas</h2>
+				<p>当前源码中 `VectorLayer.createRenderer()` 直接返回 `CanvasVectorLayerRenderer`。因此“OpenLayers 根据数据量自动选择 Canvas 或 WebGL”是不准确的。应用选择的 Layer 类基本决定了渲染器：</p>
+				<pre><code>new VectorLayer(...)
+  -> VectorLayer.createRenderer()
+  -> new CanvasVectorLayerRenderer(this)
+
+new WebGLVectorLayer(...)
+  -> WebGLVectorLayer.createRenderer()
+  -> new WebGLVectorLayerRenderer(this, options)</code></pre>
+				<p>后面先追踪最常见的 Canvas VectorLayer；WebGL 分支在第 10 节单独说明。</p>
+
+				<h2>6. prepareFrame：先选数据，再编译样式</h2>
+				<p>`Layer.render()` 先调用 renderer 的 `prepareFrame(frameState)`；返回 true 才调用 `renderFrame()`。CanvasVectorLayerRenderer 在准备阶段完成大部分 CPU 工作：</p>
+				<pre><code>CanvasVectorLayerRenderer.prepareFrame(frameState)
+  -> 读取 resolution / pixelRatio / projection / renderBuffer
+  -> 用 viewport extent + renderBuffer 得到查询范围
+  -> vectorSource.loadFeatures(extent, resolution, projection)
+  -> vectorSource.getFeaturesInExtent(extent)
+  -> 按 renderOrder 排序
+  -> feature.getStyleFunction() || layer.getStyleFunction()
   -> styleFunction(feature, resolution)
-  -> build replay/instruction groups
-  -> draw geometries/text/images to canvas</code></pre>
-				<p>矢量图层的关键是：要素在客户端渲染。样式函数会把 Feature 转成绘制指令。</p>
+  -> renderFeature(feature, style, CanvasBuilderGroup)</code></pre>
+				<p>Style function 返回 `undefined` 或空值时，Feature 仍在 Source 中，但不会生成任何绘制指令。`renderBuffer` 则把查询范围扩展到视口外，避免大图标、粗线和文字刚到边缘时被截断。</p>
 
-				<h2>6. VectorTileLayer 的路径</h2>
-				<p>VectorTile 结合了瓦片加载和客户端矢量渲染：数据按瓦片切分，但每个瓦片内是矢量要素，而不是图片。</p>
-				<pre><code>VectorTileLayer
-  -> choose visible vector tile coords
-  -> load MVT/GeoJSON vector tiles
-  -> parse features
-  -> apply styles
-  -> render tile-local vectors</code></pre>
+				<h2>7. Style 被编译成可重放指令</h2>
+				<p>对红色 LineString，`renderFeatureInternal()` 先获取 geometry，并按当前分辨率做简化，然后通过 Geometry 类型找到 LineString renderer：</p>
+				<pre><code>renderFeatureInternal(...)
+  -> style.getGeometryFunction()(feature)
+  -> geometry.simplifyTransformed(tolerance, transform)
+  -> GEOMETRY_RENDERERS["LineString"]
+  -> builderGroup.getBuilder(zIndex, "LineString")
+  -> CanvasLineStringBuilder.setFillStrokeStyle(null, stroke)
+  -> CanvasLineStringBuilder.drawLineString(...)
+  -> 生成指令：
+     BEGIN_GEOMETRY
+     SET_STROKE_STYLE
+     BEGIN_PATH
+     MOVE_TO_LINE_TO
+     STROKE
+     END_GEOMETRY</code></pre>
+				<p>这里的 Builder 类似一个小型编译器：输入是 Geometry + Style，输出是按 zIndex 和图形类型分组的紧凑指令及坐标数组。源码中仍常用 `replayGroup` 这个历史变量名，但当前具体类型是 `CanvasBuilderGroup`。</p>
+				<pre><code>CanvasBuilderGroup.finish()
+  -> serializable instruction groups
+  -> new ExecutorGroup(extent, resolution, pixelRatio, instructions)
+  -> 为每种 zIndex / BuilderType 创建 Executor</code></pre>
 
-				<h2>7. Canvas 和 WebGL 的差别</h2>
-				<table class="compare-table"><thead><tr><th>渲染器</th><th>适合</th><th>特点</th></tr></thead><tbody>
-					<tr><td>Canvas</td><td>普通瓦片、普通矢量、小中等数据量</td><td>实现直观，调试容易，性能有限。</td></tr>
-					<tr><td>WebGL</td><td>大量点线面、矢量瓦片、图像处理</td><td>把更多工作交给 GPU，性能更好，但 shader 和状态更复杂。</td></tr>
+				<h2>8. renderFrame：重放指令到 Canvas</h2>
+				<pre><code>CanvasVectorLayerRenderer.renderFrame(frameState)
+  -> prepareContainer()
+  -> preRender()
+  -> renderWorlds(executorGroup, frameState)
+  -> getRenderTransform(center, resolution, rotation, pixelRatio, size)
+  -> executorGroup.execute(context, size, transform, rotation, ...)
+  -> Executor.execute_()
+  -> transform2D(mapCoordinates, canvasCoordinates)
+  -> context.strokeStyle / lineWidth
+  -> context.beginPath()
+  -> context.moveTo()
+  -> context.lineTo()
+  -> context.stroke()
+  -> postRender()</code></pre>
+				<p>`context.stroke()` 才让浏览器 Canvas 2D 实现把路径光栅化到 canvas backing store。高分屏上 backing store 通常按 devicePixelRatio 放大，CSS 再把它显示为布局尺寸，因此 4 CSS 像素宽的线可能占 8 个物理像素。</p>
+
+				<h2>9. 为什么平移时不一定重建全部指令</h2>
+				<p>prepareFrame 会比较 resolution、pixelRatio、Layer revision、renderOrder、declutter 状态和已渲染 extent。条件未变且旧范围覆盖新范围时，可以复用 ExecutorGroup，只改变 Canvas transform 来平移已有指令。</p>
+				<table class="compare-table"><thead><tr><th>变化</th><th>通常结果</th><th>原因</th></tr></thead><tbody>
+					<tr><td>视口在已准备 extent 内小幅平移</td><td>可能复用指令</td><td>坐标和样式没变，只需改变变换。</td></tr>
+					<tr><td>resolution 改变</td><td>重建</td><td>简化容差、样式函数和像素宽度可能变化。</td></tr>
+					<tr><td>Feature geometry 或属性改变</td><td>重建</td><td>Source/Layer revision 改变。</td></tr>
+					<tr><td>Style 或 renderOrder 改变</td><td>重建</td><td>绘制指令或顺序已经不同。</td></tr>
 				</tbody></table>
 
-				<h2>8. OpenLayers 和 Cesium 的渲染链路类比</h2>
-				<table class="compare-table"><thead><tr><th>OpenLayers</th><th>Cesium</th><th>共同点</th></tr></thead><tbody>
-					<tr><td>Map</td><td>Viewer / Scene</td><td>运行时入口和调度中心。</td></tr>
-					<tr><td>View</td><td>Camera</td><td>决定当前看哪里、怎么看。</td></tr>
-					<tr><td>Layer</td><td>Primitive / Globe / Tileset</td><td>可渲染对象。</td></tr>
-					<tr><td>Source</td><td>TerrainProvider / ImageryProvider / Tile content</td><td>数据来源和加载。</td></tr>
-					<tr><td>LayerRenderer</td><td>DrawCommand / Renderer</td><td>把对象转成底层绘制动作。</td></tr>
+				<h2>10. WebGL 路径不是把 Canvas 指令交给 GPU</h2>
+				<p>`WebGLVectorLayer` 使用独立的 `WebGLVectorLayerRenderer`。它会维护几何批次，把属性和坐标组织成顶点/索引 buffer，使用 shader program、uniform 和 WebGL draw call。它不是把 Canvas 的 `MOVE_TO_LINE_TO` 指令翻译一次后继续复用。</p>
+				<table class="compare-table"><thead><tr><th>标准 VectorLayer</th><th>WebGLVectorLayer</th></tr></thead><tbody>
+					<tr><td>CanvasVectorLayerRenderer</td><td>WebGLVectorLayerRenderer</td></tr>
+					<tr><td>Style 对象/函数，支持面广</td><td>面向 GPU 的 flat style 与表达式，支持范围不同</td></tr>
+					<tr><td>Builder 指令 → Canvas Executor</td><td>Geometry batch → GPU buffer → shader/draw call</td></tr>
+					<tr><td>最终 `context.stroke/fill/drawImage`</td><td>最终 WebGL draw call</td></tr>
 				</tbody></table>
 
-				<h2>9. 源码阅读入口</h2>
+				<h2>11. 和 Cesium 的真正对应关系</h2>
+				<table class="compare-table"><thead><tr><th>OpenLayers Canvas</th><th>Cesium</th><th>共同抽象</th></tr></thead><tbody>
+					<tr><td>Feature + Style</td><td>Entity / Primitive + Appearance</td><td>业务对象及视觉规则。</td></tr>
+					<tr><td>frameState</td><td>frameState</td><td>当前视图、时间和渲染环境。</td></tr>
+					<tr><td>CanvasBuilderGroup</td><td>Primitive.update()</td><td>把高层对象编译成低层工作描述。</td></tr>
+					<tr><td>ExecutorGroup / Canvas instructions</td><td>commandList / DrawCommand</td><td>统一组织、排序和执行绘制工作。</td></tr>
+					<tr><td>CanvasRenderingContext2D</td><td>Context / WebGL</td><td>浏览器底层图形接口。</td></tr>
+				</tbody></table>
+
+				<h2>源码阅读入口</h2>
 				<ul>
-					<li>`src/ol/Map.js`：地图入口和渲染调度。</li>
-					<li>`src/ol/View.js`：视图状态和约束。</li>
-					<li>`src/ol/layer/Base.js`、`Layer.js`：图层基础类。</li>
-					<li>`src/ol/source/Source.js`：Source 基础类。</li>
-					<li>`src/ol/renderer/`：Canvas/WebGL renderer。</li>
-					<li>`src/ol/layer/Tile.js`、`Vector.js`、`VectorTile.js`：典型 Layer。</li>
+					<li><a href="https://github.com/openlayers/openlayers/blob/main/src/ol/Map.js">`src/ol/Map.js`</a>：requestAnimationFrame、frameState 和总渲染入口。</li>
+					<li><a href="https://github.com/openlayers/openlayers/blob/main/src/ol/renderer/Map.js">`src/ol/renderer/Map.js`</a>：坐标与像素矩阵。</li>
+					<li><a href="https://github.com/openlayers/openlayers/blob/main/src/ol/renderer/Composite.js">`src/ol/renderer/Composite.js`</a>：Layer 排序、可见性筛选和组合。</li>
+					<li><a href="https://github.com/openlayers/openlayers/blob/main/src/ol/layer/Vector.js">`src/ol/layer/Vector.js`</a>：标准 VectorLayer 选择 Canvas renderer。</li>
+					<li><a href="https://github.com/openlayers/openlayers/blob/main/src/ol/renderer/canvas/VectorLayer.js">`src/ol/renderer/canvas/VectorLayer.js`</a>：Feature 查询、Style 编译和指令执行入口。</li>
+					<li><a href="https://github.com/openlayers/openlayers/blob/main/src/ol/renderer/vector.js">`src/ol/renderer/vector.js`</a>：按 Geometry 类型选择 Builder。</li>
+					<li><a href="https://github.com/openlayers/openlayers/blob/main/src/ol/render/canvas/LineStringBuilder.js">`LineStringBuilder.js`</a> 与 <a href="https://github.com/openlayers/openlayers/blob/main/src/ol/render/canvas/Executor.js">`Executor.js`</a>：从线到 Canvas API。</li>
+					<li><a href="https://github.com/openlayers/openlayers/blob/main/src/ol/layer/WebGLVector.js">`src/ol/layer/WebGLVector.js`</a>：显式 WebGL VectorLayer 入口。</li>
 				</ul>
+				<p>源码复核：OpenLayers `main` 10.10.1-dev｜最后复核：2026-09-14。带下划线的私有方法和 renderer 内部结构不是稳定公共 API，升级后应重新核对。</p>
+				<div class="next-card"><span>亲手验证</span><a href="labs.html">做 Feature、frameState 与 Canvas 指令实验</a></div>
 			</article>
 		</main>
-		<script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script>
-	  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
-    }
-  </script>
-</body>
+		<script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
 </html>
