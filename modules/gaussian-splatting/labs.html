@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Gaussian Splatting 实验与自测 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Gaussian Splatting 实验</strong><span>一次只改变一个参数</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">总览</a><a href="render-path.html">原理</a><a href="debugging.html">调试</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="render-path.html">Gaussian 到像素</a><a class="active" href="labs.html">实验与自测</a><a href="glossary.html">术语表</a><a href="debugging.html">调试手册</a></aside>
+			<article class="doc">
+				<p class="kicker">Labs</p>
+				<h1>把投影、conic 和 alpha 变成可观察现象</h1>
+				<p class="lead">每个实验只改变一层。目标不是训练照片级场景，而是建立因果感：哪个参数改变了椭圆，哪个参数只改变颜色，tile 排序又为什么影响遮挡。</p>
+
+				<h2>实验 1：单个屏幕 Gaussian</h2>
+				<p>打开交互实验，分别移动主轴标准差、次轴标准差、旋转、不透明度和采样像素。画布中的亮度是该高斯对每个像素的最终 alpha 贡献。</p>
+				<p><a class="primary-link" href="../../examples/gaussian-splatting/single-splat.html">打开单 Gaussian 像素实验</a></p>
+				<table class="compare-table">
+					<thead><tr><th>只改变</th><th>预期现象</th><th>对应源码层</th></tr></thead>
+					<tbody>
+						<tr><td>σx / σy</td><td>覆盖范围和二维协方差改变。</td><td>`computeCov3D()` / `computeCov2D()`</td></tr>
+						<tr><td>rotation</td><td>椭圆朝向改变，中心 weight 不变。</td><td>四元数到旋转矩阵。</td></tr>
+						<tr><td>opacity</td><td>形状不变，全部像素 alpha 同比例变化，直到 0.99 上限。</td><td>`alpha = min(0.99, opacity * exp(power))`</td></tr>
+						<tr><td>采样像素</td><td>沿长轴移动时，weight 比沿短轴衰减慢。</td><td>`dᵀΣ⁻¹d`</td></tr>
+					</tbody>
+				</table>
+
+				<h2>实验 2：手算投影中心</h2>
+				<pre><code>fx = fy = 800
+cx = 400, cy = 300
+X = 0.2, Y = -0.1, Z = 2.0
+
+u = fx * X/Z + cx
+v = fy * Y/Z + cy</code></pre>
+				<p>答案是 `(480, 260)`。再把 `Z` 改成 `4.0`：中心变成 `(440, 280)`，同一物体也会投影得更小，因为 Jacobian 中的 `fx/Z` 和 `fy/Z` 减半。</p>
+
+				<h2>实验 3：证明 radius 不是椭圆本身</h2>
+				<pre><code>σx = 40 px, σy = 8 px
+radius = ceil(3 * max(σx, σy)) = 120 px</code></pre>
+				<p>这个 `120 px` 圆只负责快速找可能相交的 tile。位于短轴方向 `40 px` 的像素虽然仍在包围圆里，但已经距离短轴 `5σ`，高斯权重约为 `exp(-12.5)`，几乎没有贡献。若把 radius 当真实形状，就无法解释这一点。</p>
+
+				<h2>实验 4：两层透明高斯为什么必须排序</h2>
+				<p>设前景是红色、`α = 0.6`，后景是蓝色、`α = 0.5`，背景为黑。按前到后累积：</p>
+				<pre><code>先红：C = 1.0 × 0.6 × red，T = 0.4
+再蓝：C += 0.4 × 0.5 × blue，T = 0.2
+结果 = (0.6, 0.0, 0.2)
+
+若错误地先蓝后红：
+结果 = (0.3, 0.0, 0.5)</code></pre>
+				<p>两种结果不同，说明普通 alpha 合成不满足交换律。`duplicateWithKeys()` 把 depth 写入键中，不只是为了性能，也是为了正确的遮挡顺序。</p>
+
+				<h2>实验 5：提前终止节省什么</h2>
+				<p>连续十个高斯都给出 `α = 0.6` 时，透射率依次为 `0.4, 0.16, 0.064...`。到第十个时约为 `0.000105`，后景贡献已经很小。官方 CUDA 在下一步 `T < 0.0001` 时停止该像素的循环，减少无意义的内存读取与乘加。</p>
+
+				<h2>实验 6：读一次真实调用链</h2>
+				<ol>
+					<li>在 `gaussian_renderer/__init__.py` 找 `GaussianRasterizer`，记录传入的相机与 Gaussian 参数。</li>
+					<li>在 Python 扩展的 `__init__.py` 找 `_C.rasterize_gaussians`，确认 forward 保存了哪些 backward 缓冲。</li>
+					<li>在 `rasterizer_impl.cu` 找 preprocess、prefix sum、duplicate、radix sort、ranges 和 render。</li>
+					<li>在 `forward.cu` 找 `power`、`alpha`、`T`、`C` 和提前终止条件。</li>
+				</ol>
+
+				<h2>自测</h2>
+				<details><summary>为什么同一高斯离相机更远时通常更小？</summary><p>透视投影 Jacobian 的主项包含 `f/Z`。Z 增大时，三维协方差映射到像素空间的尺度下降。</p></details>
+				<details><summary>为什么不能只存一个 radius？</summary><p>radius 无法表达椭圆的长短轴和旋转方向。真正权重需要二维协方差的逆矩阵 conic。</p></details>
+				<details><summary>为什么一个 Gaussian 会在排序列表中出现多次？</summary><p>它可能覆盖多个 tile。实现为每个“Gaussian 与 tile 的相交”生成一个条目，使每个 tile 能独立并行处理。</p></details>
+				<details><summary>训练为什么需要保存 forward 的辅助缓冲？</summary><p>backward 需要知道像素处理过哪些贡献者、最终透射率以及几何和 binning 中间量，才能高效重建梯度路径。</p></details>
+
+				<h2>来源</h2>
+				<ul>
+					<li><a href="https://github.com/graphdeco-inria/diff-gaussian-rasterization/blob/59f5f77e3ddbac3ed9db93ec2cfe99ed6c5d121d/cuda_rasterizer/forward.cu">GraphDECO forward.cu</a>：投影、conic、半径与像素循环。</li>
+					<li><a href="https://github.com/graphdeco-inria/diff-gaussian-rasterization/blob/59f5f77e3ddbac3ed9db93ec2cfe99ed6c5d121d/cuda_rasterizer/rasterizer_impl.cu">GraphDECO rasterizer_impl.cu</a>：tile 复制、排序与范围识别。</li>
+				</ul>
+				<div class="next-card"><span>建立词汇边界</span><a href="glossary.html">区分 covariance、conic、splat 和 transmittance</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

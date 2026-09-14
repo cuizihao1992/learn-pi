@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 430" role="img" aria-labelledby="title desc">
+  <title id="title">MapLibre 一条线从 Style 和 Vector Tile 到 GPU 像素的调用链</title>
+  <desc id="desc">展示主线程样式、Worker Tile 解析、LineBucket 缓冲和 Painter WebGL 绘制的关系。</desc>
+  <style>
+    text { font-family: Arial, "Microsoft YaHei", sans-serif; fill: #17212b; }
+    .title { font-size: 27px; font-weight: 700; }
+    .stage { font-size: 18px; font-weight: 700; }
+    .body { font-size: 15px; }
+    .code { font-family: Consolas, monospace; font-size: 13px; }
+    .line { stroke: #6b7885; stroke-width: 2.5; fill: none; }
+  </style>
+  <rect width="1200" height="430" rx="8" fill="#f7f9fb" />
+  <text x="52" y="54" class="title">MapLibre：一条线如何成为 GPU 像素</text>
+
+  <rect x="45" y="92" width="245" height="255" rx="7" fill="#e8f4f1" stroke="#91bbb2" />
+  <text x="68" y="126" class="stage">1. 主线程意图</text>
+  <text x="68" y="162" class="body">Style JSON</text>
+  <text x="68" y="190" class="body">source + line layer</text>
+  <text x="68" y="218" class="body">camera / projection</text>
+  <text x="68" y="264" class="code">Map._render()</text>
+  <text x="68" y="292" class="code">Style._updateSources()</text>
+  <text x="68" y="320" class="body">确定可见瓦片</text>
+
+  <path class="line" d="M290 220 H330" />
+  <path d="M330 220 l-12 -7 v14 z" fill="#6b7885" />
+
+  <rect x="335" y="92" width="245" height="255" rx="7" fill="#edf1f7" stroke="#a6b3c3" />
+  <text x="358" y="126" class="stage">2. Worker 布局</text>
+  <text x="358" y="162" class="body">解析 PBF / GeoJSON tile</text>
+  <text x="358" y="190" class="body">执行 filter 与 layout</text>
+  <text x="358" y="218" class="code">WorkerTile.parse()</text>
+  <text x="358" y="246" class="code">LineBucket.populate()</text>
+  <text x="358" y="292" class="body">线扩展为三角形网格</text>
+  <text x="358" y="320" class="body">建立 FeatureIndex</text>
+
+  <path class="line" d="M580 220 H620" />
+  <path d="M620 220 l-12 -7 v14 z" fill="#6b7885" />
+
+  <rect x="625" y="92" width="245" height="255" rx="7" fill="#fff3df" stroke="#d4b783" />
+  <text x="648" y="126" class="stage">3. GPU 资源</text>
+  <text x="648" y="162" class="body">layoutVertexArray</text>
+  <text x="648" y="190" class="body">indexArray</text>
+  <text x="648" y="218" class="body">paint attributes</text>
+  <text x="648" y="264" class="code">bucket.upload()</text>
+  <text x="648" y="292" class="body">VertexBuffer / IndexBuffer</text>
+  <text x="648" y="320" class="body">ProgramConfiguration</text>
+
+  <path class="line" d="M870 220 H910" />
+  <path d="M910 220 l-12 -7 v14 z" fill="#6b7885" />
+
+  <rect x="915" y="92" width="240" height="255" rx="7" fill="#f8e9e8" stroke="#cba3a0" />
+  <text x="938" y="126" class="stage">4. 每帧绘制</text>
+  <text x="938" y="162" class="code">Painter.render()</text>
+  <text x="938" y="190" class="code">draw.line()</text>
+  <text x="938" y="218" class="body">设置 projection / uniforms</text>
+  <text x="938" y="264" class="code">Program.draw()</text>
+  <text x="938" y="292" class="code">gl.drawElements(TRIANGLES)</text>
+  <text x="938" y="320" class="body">顶点/片元着色器输出像素</text>
+
+  <text x="52" y="393" class="body">交互查询走另一条读路径：FeatureIndex 空间索引 -> 图层命中测试 -> queryRenderedFeatures()。</text>
+</svg>

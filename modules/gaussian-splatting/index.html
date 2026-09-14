@@ -8,9 +8,9 @@
   <link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
 </head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>高斯泼溅学习路径</strong><span>3D Gaussian Splatting</span></div></div><nav><a href="../../index.html">首页</a><a href="../index.html">全部模块</a><a href="render-path.html">渲染路径</a><a href="debugging.html">调试</a><a href="../../pages/search.html">检索</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>高斯泼溅学习路径</strong><span>3D Gaussian Splatting</span></div></div><nav><a href="../../index.html">首页</a><a href="render-path.html">渲染路径</a><a href="labs.html">实验</a><a href="debugging.html">调试</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a class="active" href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="render-path.html">完整渲染路径</a><a href="debugging.html">调试手册</a><a href="../cesium/index.html">对照 Cesium</a></aside>
+			<aside class="doc-sidebar"><a class="active" href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="render-path.html">Gaussian 到像素</a><a href="labs.html">实验与自测</a><a href="glossary.html">术语表</a><a href="debugging.html">调试手册</a><a href="../cesium/index.html">Cesium 对照</a></aside>
 			<article class="doc">
 				<p class="kicker">Gaussian Splatting</p>
 				<h1>高斯泼溅：从照片到实时新视角渲染</h1>
@@ -49,6 +49,13 @@
 					<li>理解 densification 和 pruning 为什么影响质量与显存。</li>
 					<li>理解实时渲染：projection、tile/binning、depth sort、alpha blend。</li>
 				</ol>
+
+				<h2>本模块的深挖闭环</h2>
+				<div class="lesson-grid">
+					<section><h3>一个 Gaussian 到像素</h3><p>用具体矩阵和源码追踪投影、tile-depth 排序、conic 权重与透明合成。</p><a href="render-path.html">阅读源码调用链</a></section>
+					<section><h3>可调像素实验</h3><p>改变椭圆尺度、方向、opacity 和采样位置，观察 weight 与 RGB 如何改变。</p><a href="labs.html">开始实验</a></section>
+					<section><h3>概念边界</h3><p>区分 covariance、conic、radius、splat、opacity 和 transmittance。</p><a href="glossary.html">打开术语表</a></section>
+				</div>
 
 				<h2>官方参考</h2>
 				<ul>

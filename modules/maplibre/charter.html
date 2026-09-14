@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>MapLibre 模块宪章 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>MapLibre 模块宪章</strong><span>独立开源地图渲染课程</span></div></div><nav><a href="../../index.html">首页</a><a href="../index.html">全部模块</a><a href="index.html">MapLibre</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="../../pages/charter.html">总宪章</a><a class="active" href="charter.html">模块宪章</a><a href="index.html">模块总览</a><a href="style-and-data.html">样式与数据</a><a href="architecture.html">一条线到像素</a><a href="labs.html">实验与自测</a><a href="comparison.html">三引擎对比</a><a href="debugging.html">调试手册</a><a href="glossary.html">术语表</a></aside>
+			<article class="doc">
+				<p class="kicker">Module Charter</p><h1>MapLibre 模块宪章</h1>
+				<p class="lead">这个模块研究 MapLibre GL JS 如何把 Style、瓦片和要素变成 GPU 绘制，以及它在真实项目中为什么会空白、卡顿或选择错误。</p>
+				<h2>学习目标</h2>
+				<ul><li>能解释 MapLibre 与 Mapbox GL JS 的历史关系，但不把两者当前 API 和生态混为一谈。</li><li>能区分 Source、Source Layer、Style Layer、layout、paint、expression 和 feature-state。</li><li>能从 `Map._render()` 追踪到 `WorkerTile.parse()`、`LineBucket`、`Painter`、`Program.draw()` 与 `gl.drawElements()`。</li><li>能解释为什么一条粗线最终用三角形而不是 `gl.LINES` 绘制。</li><li>能在需求阶段判断应该选择 MapLibre、OpenLayers、Cesium，还是分层组合。</li></ul>
+				<h2>模块边界</h2>
+				<p>这里主要研究 MapLibre GL JS 浏览器端渲染，不展开 MapLibre Native、瓦片生产平台或完整 GIS 后端。地图数据版权、服务 SLA、缓存和鉴权属于部署方案，不能因为渲染库开源就省略。</p>
+				<h2>完成标准</h2>
+				<ul><li>有一条从 Style 到 GPU 的真实源码调用链。</li><li>有一个无需 token 的最小 GeoJSON line 示例和可观察故障实验。</li><li>有 worker 与主线程分工、渲染 pass、样式表达式和拾取读路径说明。</li><li>有 MapLibre、OpenLayers、Cesium 的同维度比较和决策树。</li><li>关键事实链接到官方文档或固定提交源码。</li></ul>
+				<h2>源码基线</h2>
+				<p>课程复核 MapLibre GL JS `6.9.0`、提交 `ae328866133a3188814b2a7b46b640b264d00ee9`。版本变化后优先复查 `src/ui/map.ts`、`src/source/worker_tile.ts`、`src/data/bucket/`、`src/render/painter.ts`、`src/webgl/draw/` 和 `src/webgl/program.ts`。</p>
+				<div class="next-card"><span>进入课程</span><a href="index.html">从模块总览开始</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

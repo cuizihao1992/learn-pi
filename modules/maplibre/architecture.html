@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>MapLibre 一条线到像素 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>MapLibre 源码渲染链</strong><span>LineString to gl.drawElements</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">总览</a><a href="labs.html">实验</a><a href="comparison.html">对比</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="style-and-data.html">样式与数据</a><a class="active" href="architecture.html">一条线到像素</a><a href="labs.html">实验与自测</a><a href="comparison.html">三引擎对比</a><a href="debugging.html">调试手册</a><a href="glossary.html">术语表</a></aside>
+			<article class="doc">
+				<p class="kicker">Architecture</p><h1>一条 MapLibre LineString 如何成为像素</h1>
+				<p class="lead">以一条 `line` style layer 为例，完整链路横跨主线程、Web Worker 和 GPU。真正需要建立的不是函数清单，而是三个时间尺度：Style 变化时做什么、tile 到达时做什么、每一帧又复用什么。</p>
+				<p><img src="../../assets/diagrams/maplibre-line-render-pipeline.svg" alt="MapLibre 一条线从 Style、WorkerTile、LineBucket 到 WebGL 像素的调用链" /></p>
+
+				<h2>一页调用链</h2>
+				<pre><code>new Map({style})
+  -> Map.setStyle()
+  -> Style.loadJSON() / Style._load()
+  -> create Source + StyleLayer
+  -> Map.triggerRepaint() -> browser.frame() -> Map._render()
+  -> Style._updateSources(transform)
+  -> VectorTileSource.loadTile()
+  -> actor.sendAsync(loadTile) 到 Web Worker
+  -> WorkerTile.parse()
+  -> layer.createBucket() -> LineBucket.populate() -> addLine()
+  -> 回主线程 Tile.loadVectorData() -> bucket.upload()
+  -> Painter.render() -> renderLayer() -> draw.line()
+  -> Program.draw() -> gl.drawElements(gl.TRIANGLES, ...)
+  -> vertex shader -> fragment shader -> framebuffer 像素</code></pre>
+
+				<h2>1. 帧不是每次 API 调用立即画</h2>
+				<p>`Map._update()` 标记 style/source dirty 并调用 `triggerRepaint()`。后者只在当前没有 frame request 时请求一次浏览器帧，因此同一帧前多次修改会被合并。`Map._render()` 批量更新样式表达式、source、terrain 和 symbol placement，随后调用 `painter.render()`（<a href="https://github.com/maplibre/maplibre-gl-js/blob/ae328866133a3188814b2a7b46b640b264d00ee9/src/ui/map.ts#L4321-L4477">Map._render</a>）。</p>
+				<pre><code>setPaintProperty(...)
+setFeatureState(...)
+setCenter(...)
+  -> 标记不同 dirty 状态
+  -> 同一个 requestAnimationFrame
+  -> 一次 _render()</code></pre>
+
+				<h2>2. Transform 决定本帧需要哪些 tile</h2>
+				<p>相机中心、zoom、bearing、pitch、projection 和 viewport 共同决定可见瓦片。`Style._updateSources(transform)` 更新每个 TileManager。VectorTileSource 为 tile 生成 URL 和 WorkerTileParameters，再通过 actor 发给可用 worker（<a href="https://github.com/maplibre/maplibre-gl-js/blob/ae328866133a3188814b2a7b46b640b264d00ee9/src/source/vector_tile_source.ts#L206-L258">VectorTileSource.loadTile</a>）。</p>
+				<p>网络请求与 worker layout 是异步的，所以一次帧可能先画已有低级别 tile；新 tile 到达后 source 再次 dirty 并触发下一帧。这是地图缩放时先模糊后清晰的基础机制之一。</p>
+
+				<h2>3. WorkerTile 把要素变成 Bucket</h2>
+				<p>`WorkerTile.parse()` 遍历 StyleLayerIndex 中按 source/source-layer 分组的 layer family。它读取 PBF feature，执行 filter 和 zoom 判断，然后调用 `layer.createBucket()` 与 `bucket.populate()`。同时把几何写入 FeatureIndex，供后续 `queryRenderedFeatures()` 使用（<a href="https://github.com/maplibre/maplibre-gl-js/blob/ae328866133a3188814b2a7b46b640b264d00ee9/src/source/worker_tile.ts#L62-L201">WorkerTile.parse</a>）。</p>
+				<table class="compare-table">
+					<thead><tr><th>Worker 产物</th><th>用途</th><th>为什么不放每帧做</th></tr></thead>
+					<tbody><tr><td>layout vertex array</td><td>位置、法线化挤出方向、线距离等。</td><td>几何展开成本高，可跨帧复用。</td></tr><tr><td>index array</td><td>哪些顶点组成三角形。</td><td>拓扑不随普通相机移动改变。</td></tr><tr><td>paint arrays</td><td>数据驱动颜色、宽度等属性。</td><td>提前编码后 GPU 可直接读取。</td></tr><tr><td>FeatureIndex</td><td>屏幕拾取和要素查询。</td><td>避免查询时扫描整张 tile。</td></tr><tr><td>glyph/image dependencies</td><td>文字和图标 atlas。</td><td>symbol layout 必须等待外部资源。</td></tr></tbody>
+				</table>
+
+				<h2>4. 为什么一条线会变成三角形</h2>
+				<p>WebGL 的原生 `gl.LINES` 很难稳定表达可变宽度、端帽、连接、虚线、抗锯齿和数据驱动样式。`LineBucket.populate()` 筛选 feature 后进入 `addFeature()` / `addLine()`，把中心线沿法线方向扩展成三角形条带，并生成 layout vertex array 与 triangle index array（<a href="https://github.com/maplibre/maplibre-gl-js/blob/ae328866133a3188814b2a7b46b640b264d00ee9/src/data/bucket/line_bucket.ts#L139-L274">LineBucket</a>）。</p>
+				<pre><code>中心线 A -------- B
+
+扩展后： A_left  -------- B_left
+           |   triangle   |
+         A_right -------- B_right
+
+圆角、斜接、端帽还会增加额外顶点。</code></pre>
+				<p>因此 line layer 的最终 draw mode 是 `gl.TRIANGLES`，不是 `gl.LINES`。这是理解地图线宽、连接样式和 GPU 成本的关键。</p>
+
+				<h2>5. 回主线程后上传 GPU</h2>
+				<p>worker 返回可序列化 bucket 数据。主线程 `Tile.loadVectorData()` 接收它；Painter 每帧先让使用中的 TileManager `prepare(context)`，未上传的 bucket 创建 VertexBuffer 和 IndexBuffer。静态 tile 不需要每帧重新解析 PBF 或重建线网格，只需复用 GPU 资源。</p>
+				<pre><code>Worker typed arrays
+  -> transferable message
+  -> Bucket on main thread
+  -> context.createVertexBuffer(...)
+  -> context.createIndexBuffer(...)
+  -> VAO + shader program</code></pre>
+
+				<h2>6. Painter 为什么分三个 pass</h2>
+				<p>`Painter.render()` 先处理需要 framebuffer 的 offscreen pass，再以从上到下的顺序画可进入 opaque pass 的层，最后从下到上画 translucent pass。这样既利用深度测试减少过绘制，又保持透明图层和 style 顺序的语义（<a href="https://github.com/maplibre/maplibre-gl-js/blob/ae328866133a3188814b2a7b46b640b264d00ee9/src/render/painter.ts#L509-L655">Painter.render</a>）。</p>
+				<table class="compare-table"><thead><tr><th>Pass</th><th>典型任务</th><th>顺序直觉</th></tr></thead><tbody><tr><td>offscreen</td><td>heatmap、hillshade、render-to-texture 等中间结果。</td><td>先准备后续要采样的纹理。</td></tr><tr><td>opaque</td><td>允许不透明优化的层。</td><td>从上到下，借助深度减少无效片元。</td></tr><tr><td>translucent</td><td>透明和其余 style layer。</td><td>从下到上，尊重样式叠放顺序。</td></tr></tbody></table>
+
+				<h2>7. draw.line 到最终 WebGL 调用</h2>
+				<p>`Painter.renderLayer()` 根据 layer 类型选择 `draw.line()`。它逐 tile 取得 `LineBucket`，选择普通线、图案、虚线或渐变 shader，准备 projection data、uniform、纹理和 stencil，然后调用 `Program.draw()`（<a href="https://github.com/maplibre/maplibre-gl-js/blob/ae328866133a3188814b2a7b46b640b264d00ee9/src/webgl/draw/draw_line.ts#L180-L260">draw_line.ts</a>）。</p>
+				<pre><code>program.draw(
+  context,
+  gl.TRIANGLES,
+  depthMode, stencilMode, colorMode,
+  uniforms, terrainData, projectionData,
+  vertexBuffer, indexBuffer, segments,
+  paintProperties, programConfiguration
+)</code></pre>
+				<p>`Program.draw()` 绑定 VAO、layout buffer、数据驱动 paint buffer 与 index buffer，对每个 segment 调用 `gl.drawElements()`。顶点着色器把 tile 坐标和挤出量转换为 clip space，片元着色器决定最终颜色和边缘抗锯齿（<a href="https://github.com/maplibre/maplibre-gl-js/blob/ae328866133a3188814b2a7b46b640b264d00ee9/src/webgl/program.ts#L225-L275">Program.draw</a>）。</p>
+
+				<h2>8. 拾取不是从 framebuffer 猜对象</h2>
+				<p>`queryRenderedFeatures()` 会把屏幕查询几何转换到 tile 空间，先查询 FeatureIndex 网格，再调用具体 StyleLayer 的 `queryIntersectsFeature()` 做几何命中。它返回的是渲染语义下的 feature，不是简单读取鼠标下像素颜色（<a href="https://github.com/maplibre/maplibre-gl-js/blob/ae328866133a3188814b2a7b46b640b264d00ee9/src/data/feature_index.ts#L130-L200">FeatureIndex.query</a>）。</p>
+
+				<h2>9. 什么变化会重做哪一层</h2>
+				<table class="compare-table"><thead><tr><th>变化</th><th>通常保留</th><th>需要更新</th></tr></thead><tbody><tr><td>pan / zoom</td><td>已加载 tile 的 bucket 和 buffer</td><td>可见 tile、投影 uniform、帧绘制。</td></tr><tr><td>常量 line-color</td><td>几何 bucket</td><td>样式值和 draw。</td></tr><tr><td>line-join / filter</td><td>原始 tile 缓存可能保留</td><td>worker layout / bucket。</td></tr><tr><td>GeoJSON setData</td><td>StyleLayer 配置</td><td>GeoJSON 切片、解析、bucket、buffer。</td></tr><tr><td>仅 DOM Marker 移动</td><td>地图 GPU layer</td><td>DOM 定位；它不进入同一 bucket。</td></tr></tbody></table>
+
+				<h2>源码基线与限制</h2>
+				<p>本章基于 MapLibre GL JS 6.9.0、提交 `ae328866`。官方 `ARCHITECTURE.md` 的总体模型仍有效，但当前源码的具体 draw 文件位于 `src/webgl/draw/`，而不是旧说明中的 `src/render/draw_*.js`；学习源码时应以固定提交为准。</p>
+				<ul><li><a href="https://maplibre.org/maplibre-gl-js/docs/">官方文档</a></li><li><a href="https://github.com/maplibre/maplibre-gl-js/blob/ae328866133a3188814b2a7b46b640b264d00ee9/ARCHITECTURE.md">官方架构说明</a></li><li><a href="https://github.com/maplibre/maplibre-gl-js/tree/ae328866133a3188814b2a7b46b640b264d00ee9/src">本章源码快照</a></li></ul>
+				<div class="next-card"><span>动手验证</span><a href="labs.html">逐层破坏 Style、Source、Worker 和 Layer</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

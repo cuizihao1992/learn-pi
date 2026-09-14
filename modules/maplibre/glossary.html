@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>MapLibre 术语表 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>MapLibre 术语表</strong><span>分清数据、样式与渲染对象</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">总览</a><a href="architecture.html">渲染链</a><a href="comparison.html">对比</a></nav></header>
+		<main class="doc-layout"><aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="style-and-data.html">样式与数据</a><a href="architecture.html">一条线到像素</a><a href="labs.html">实验与自测</a><a href="comparison.html">三引擎对比</a><a href="debugging.html">调试手册</a><a class="active" href="glossary.html">术语表</a></aside>
+			<article class="doc"><p class="kicker">Glossary</p><h1>MapLibre 核心术语表</h1>
+				<table class="compare-table"><thead><tr><th>术语</th><th>含义</th><th>常见误解</th></tr></thead><tbody>
+					<tr><td>Style</td><td>描述 sources、layers、sprite、glyphs、projection 等的渲染合同。</td><td>只是一组 CSS 颜色。</td></tr>
+					<tr><td>Source</td><td>GeoJSON、vector、raster、raster-dem、image、video、canvas 等数据入口。</td><td>已经画在屏幕上的图层。</td></tr>
+					<tr><td>Source Layer</td><td>矢量瓦片内部的命名数据层。</td><td>Style Layer 的 id。</td></tr>
+					<tr><td>Style Layer</td><td>引用 source 并定义渲染类型与规则的样式层。</td><td>独立复制的一份数据。</td></tr>
+					<tr><td>Layout</td><td>影响几何组织、符号放置或可见性的属性。</td><td>网页 CSS layout。</td></tr>
+					<tr><td>Paint</td><td>颜色、宽度、透明度等绘制属性。</td><td>全部只在 CPU 上执行。</td></tr>
+					<tr><td>Expression</td><td>由 zoom、feature 属性、feature-state 等输入计算样式值的表达式。</td><td>任意 JavaScript 回调。</td></tr>
+					<tr><td>Tile</td><td>瓦片金字塔中某个 z/x/y 的数据和渲染资源单元。</td><td>必然是一张 PNG。</td></tr>
+					<tr><td>Bucket</td><td>某 tile 中一组相容 Style Layer 的 GPU-ready 几何与样式数组。</td><td>网络缓存目录。</td></tr>
+					<tr><td>WorkerTile</td><td>在 worker 中解析 tile、筛选 feature、创建 bucket 和 FeatureIndex 的对象。</td><td>负责最终 WebGL 绘制的线程。</td></tr>
+					<tr><td>Painter</td><td>主线程上按 pass、layer、tile 组织 GPU 绘制的核心调度器。</td><td>绘制每个 feature 的 Canvas API。</td></tr>
+					<tr><td>ProgramConfiguration</td><td>连接 Style paint 属性与 shader uniform/attribute 的配置层。</td><td>应用构建配置。</td></tr>
+					<tr><td>FeatureIndex</td><td>tile 内供 `queryRenderedFeatures` 候选筛选和命中测试使用的空间索引。</td><td>GPU framebuffer 的颜色拾取。</td></tr>
+					<tr><td>Feature State</td><td>不改原始数据即可按 feature id 注入的临时状态。</td><td>会自动持久化回服务端。</td></tr>
+					<tr><td>Custom Layer</td><td>共享 MapLibre WebGL context 和相机的自定义绘制接口。</td><td>普通 Style Layer 的任意新 type 字符串。</td></tr>
+				</tbody></table>
+				<div class="next-card"><span>把术语连起来</span><a href="architecture.html">沿一条线的真实调用链复盘</a></div>
+			</article>
+		</main><script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

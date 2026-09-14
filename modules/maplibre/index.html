@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>MapLibre GL JS 系统课程 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>MapLibre GL JS</strong><span>Style, tiles, workers and WebGL</span></div></div><nav><a href="../../index.html">首页</a><a href="architecture.html">渲染链</a><a href="labs.html">实验</a><a href="comparison.html">对比</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a class="active" href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="style-and-data.html">样式与数据</a><a href="architecture.html">一条线到像素</a><a href="labs.html">实验与自测</a><a href="comparison.html">三引擎对比</a><a href="debugging.html">调试手册</a><a href="glossary.html">术语表</a></aside>
+			<article class="doc">
+				<p class="kicker">MapLibre Path</p>
+				<h1>MapLibre GL JS：把地图样式编译成 GPU 绘制</h1>
+				<p class="lead">MapLibre GL JS 是社区维护、BSD-3-Clause 许可的浏览器地图渲染引擎。它读取 Style 文档和地理数据，在 Web Worker 中把要素布局成 GPU 可用的 bucket，再由 WebGL 按图层和 render pass 绘制。当前课程以 6.9.0 与源码提交 `ae328866` 为基准。</p>
+
+				<h2>先回答：它和 Mapbox 是什么关系</h2>
+				<p>MapLibre GL JS 起源于 Mapbox GL JS 1.13 的开源分支，背景是 Mapbox 在 2020 年 12 月转向非开源许可。最初的 MapLibre 1.x 追求兼容开源版 Mapbox API，但此后已经持续独立演进。今天应把它当作自己的社区项目和技术栈，而不是假设所有新 Mapbox GL JS API 都能直接替换（<a href="https://github.com/maplibre/maplibre-gl-js/blob/ae328866133a3188814b2a7b46b640b264d00ee9/README.md">官方 README</a>）。</p>
+				<p>MapLibre 是渲染库，不是底图数据。你仍需要 Style JSON、矢量/栅格瓦片、字体 glyph、sprite 或自己的 GeoJSON 服务。代码开源不等于所有地图数据免费，也不等于可以忽略数据许可。</p>
+
+				<h2>它解决什么问题</h2>
+				<div class="lesson-grid">
+					<section><h3>声明地图外观</h3><p>用 Style Specification 描述 sources、layers、paint、layout、filter、sprite、glyphs、projection 和 terrain。</p></section>
+					<section><h3>高效处理瓦片</h3><p>只调度当前视口需要的 tile，并在 worker 中解析 PBF、筛选要素、生成渲染缓冲。</p></section>
+					<section><h3>GPU 批量绘制</h3><p>固定 layer 类型映射到专门 shader 和 draw 路径，线、面、符号都按 bucket 批量提交。</p></section>
+					<section><h3>地图交互</h3><p>相机、事件、控件和 FeatureIndex 让业务代码能缩放、旋转、拾取和更新 feature-state。</p></section>
+				</div>
+
+				<h2>不要再只记 `new Map()`</h2>
+				<pre><code>Map + Style JSON
+  -> Style 创建 Source 与 StyleLayer
+  -> Transform / camera 确定可见 tile
+  -> WorkerTile 解析与 layout
+  -> Bucket 生成顶点、索引和样式属性
+  -> 主线程上传 GPU buffer
+  -> Painter 按 pass 和 layer 顺序调度
+  -> Program.draw() -> gl.drawElements()
+  -> 像素</code></pre>
+
+				<h2>当前能力边界</h2>
+				<ul>
+					<li><strong>核心强项：</strong>矢量瓦片、样式表达式、标签避让、平滑交互和 GPU 地图渲染。</li>
+					<li><strong>不再只是平面：</strong>当前版本支持 globe projection、terrain、fill extrusion 和 custom 3D layer。</li>
+					<li><strong>仍不同于 Cesium：</strong>Cesium 把椭球地球、全球地形、3D Tiles 和三维场景调度作为一等核心；MapLibre 的核心数据组织仍围绕地图 style layer 与 tile。</li>
+					<li><strong>仍不同于 OpenLayers：</strong>OpenLayers 更强调多投影、OGC 服务、Feature/Geometry 对象和可选择的 Canvas/WebGL renderer；MapLibre 更强调统一 Style Spec 和 GPU-first 瓦片管线。</li>
+				</ul>
+
+				<h2>课程顺序</h2>
+				<ol>
+					<li><a href="style-and-data.html">样式与数据</a>：先分清 Style、Source、Source Layer、Style Layer、layout 和 paint。</li>
+					<li><a href="architecture.html">一条线到像素</a>：追踪 worker、LineBucket、Painter、Program 与 WebGL。</li>
+					<li><a href="labs.html">实验与自测</a>：运行无 token 的最小地图，逐层破坏 source 和 layer。</li>
+					<li><a href="comparison.html">三引擎对比</a>：在同一组问题下比较 MapLibre、OpenLayers 和 Cesium。</li>
+					<li><a href="debugging.html">调试手册</a>：从容器、Style、网络、worker、bucket 一直查到 GPU。</li>
+				</ol>
+
+				<h2>官方来源</h2>
+				<ul><li><a href="https://maplibre.org/maplibre-gl-js/docs/">MapLibre GL JS 文档</a></li><li><a href="https://maplibre.org/maplibre-style-spec/">MapLibre Style Specification</a></li><li><a href="https://github.com/maplibre/maplibre-gl-js/blob/ae328866133a3188814b2a7b46b640b264d00ee9/ARCHITECTURE.md">官方架构说明</a></li><li><a href="https://github.com/maplibre/maplibre-gl-js/tree/ae328866133a3188814b2a7b46b640b264d00ee9">本课复核的源码快照</a></li></ul>
+				<p>资料等级：A | 最后复核：2026-09-15 | 当前发行版：6.9.0。</p>
+				<div class="next-card"><span>第一课</span><a href="style-and-data.html">为什么 Source 有数据，Layer 仍可能没有像素</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

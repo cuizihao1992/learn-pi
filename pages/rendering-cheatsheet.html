@@ -1,52 +1,41 @@
 <!doctype html>
 <html lang="zh-CN">
-	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>地图渲染速查 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css?v=6" />  <link rel="manifest" href="/learn-pi/manifest.json" />
-  <meta name="theme-color" content="#6366f1" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="源码学吧" />
-  <link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
-</head>
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>地图渲染速查 | 源码学习实验室</title><link rel="stylesheet" href="../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>地图渲染速查</strong><span>OpenLayers / Mapbox / Cesium</span></div></div><nav><a href="../index.html">首页</a><a href="learning-paths.html">学习路线</a><a href="../modules/cesium/index.html">Cesium</a><a href="../modules/mapbox/index.html">Mapbox</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>地图渲染速查</strong><span>OpenLayers / MapLibre / Cesium</span></div></div><nav><a href="../index.html">首页</a><a href="learning-paths.html">学习路线</a><a href="../modules/openlayers/index.html">OpenLayers</a><a href="../modules/maplibre/index.html">MapLibre</a><a href="../modules/cesium/index.html">Cesium</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="learning-paths.html">学习路线</a><a class="active" href="rendering-cheatsheet.html">渲染速查</a><a href="../modules/openlayers/index.html">OpenLayers</a><a href="../modules/mapbox/index.html">Mapbox</a><a href="../modules/cesium/index.html">Cesium</a><a href="../modules/digital-twin-city/index.html">数字孪生</a></aside>
+			<aside class="doc-sidebar"><a href="learning-paths.html">学习路线</a><a class="active" href="rendering-cheatsheet.html">渲染速查</a><a href="../modules/openlayers/index.html">OpenLayers</a><a href="../modules/maplibre/index.html">MapLibre</a><a href="../modules/mapbox/index.html">Mapbox</a><a href="../modules/cesium/index.html">Cesium</a><a href="../modules/gaussian-splatting/index.html">Gaussian Splatting</a><a href="../modules/digital-twin-city/index.html">数字孪生</a></aside>
 			<article class="doc">
-				<p class="kicker">Rendering Cheatsheet</p>
-				<h1>地图和三维渲染速查表</h1>
-				<p class="lead">如果你经常混淆 OpenLayers、Mapbox 和 Cesium，先记住一句：OpenLayers 偏传统 GIS，Mapbox 偏高性能二维矢量地图，Cesium 偏三维地球和大规模空间场景。</p>
-				<table class="compare-table">
-					<thead><tr><th>问题</th><th>OpenLayers</th><th>Mapbox</th><th>Cesium</th></tr></thead>
-					<tbody>
-						<tr><td>核心对象</td><td>Map / View / Layer / Source</td><td>Map / Style / Source / Layer</td><td>Viewer / Scene / Primitive / DrawCommand</td></tr>
-						<tr><td>主要场景</td><td>GIS 管理、投影、WMS/WFS、测绘</td><td>城市二维地图、矢量瓦片、业务图层</td><td>三维地球、3D Tiles、地形、卫星轨道</td></tr>
-						<tr><td>性能优势</td><td>GIS 能力全面，适配传统服务</td><td>矢量瓦片和 WebGL 管线高度优化</td><td>大规模三维空间裁剪和 LOD</td></tr>
-						<tr><td>学习入口</td><td><a href="../modules/openlayers/render-path.html">渲染路径</a></td><td><a href="../modules/mapbox/architecture.html">渲染架构</a></td><td><a href="../modules/cesium/render-path.html">渲染路径</a></td></tr>
-					</tbody>
-				</table>
-				<h2>从数据到像素</h2>
-				<pre><code>OpenLayers:
-Source 加载数据 -> Layer 定义展示 -> Renderer 生成 Canvas/WebGL 绘制
+				<p class="kicker">Rendering Cheatsheet</p><h1>地图和三维渲染速查表</h1>
+				<p class="lead">先看主要中间表示：OpenLayers 是 Feature/Layer/Source，MapLibre 是 Style/Tile/Bucket，Cesium 是 Scene/Primitive/DrawCommand。选型首先看哪一种更接近业务本身。</p>
+				<table class="compare-table"><thead><tr><th>问题</th><th>OpenLayers</th><th>MapLibre GL JS</th><th>CesiumJS</th></tr></thead><tbody>
+					<tr><td>核心目标</td><td>通用二维 GIS 集成与编辑</td><td>Style 驱动的 GPU 矢量地图</td><td>全球三维地理场景</td></tr>
+					<tr><td>核心对象</td><td>Map / View / Layer / Source / Feature</td><td>Map / Style / Source / StyleLayer / Bucket</td><td>Viewer / Scene / Primitive / DrawCommand</td></tr>
+					<tr><td>主要数据</td><td>OGC 服务、多格式矢量和瓦片</td><td>MVT、GeoJSON、raster、DEM、glyph、sprite</td><td>3D Tiles、terrain、imagery、glTF、CZML</td></tr>
+					<tr><td>主要渲染</td><td>Canvas 2D 与特定 WebGL renderer</td><td>WebGL，线面符号按 bucket 批量画</td><td>WebGL，多 pass、LOD 与三维深度</td></tr>
+					<tr><td>投影 / 空间</td><td>多二维投影，能接 proj4</td><td>Mercator 为核心，也支持 globe / terrain</td><td>WGS84 椭球、ECEF、全球地形</td></tr>
+					<tr><td>最强场景</td><td>政企 GIS、测绘、要素编辑</td><td>矢量底图、道路标签、品牌地图</td><td>三维地球、倾斜摄影、3D Tiles</td></tr>
+					<tr><td>深入入口</td><td><a href="../modules/openlayers/render-path.html">Feature 到像素</a></td><td><a href="../modules/maplibre/architecture.html">Line 到像素</a></td><td><a href="../modules/cesium/render-path.html">Point 到像素</a></td></tr>
+				</tbody></table>
 
-Mapbox:
-Style 描述图层 -> Source 加载 vector tile -> bucket/layout -> WebGL draw
+				<h2>从数据到像素</h2>
+				<pre><code>OpenLayers 标准 VectorLayer:
+Feature -> CanvasBuilderGroup -> Executor -> context.stroke()
+
+MapLibre line layer:
+Style -> WorkerTile -> LineBucket -> Painter -> gl.drawElements(TRIANGLES)
 
 Cesium:
-Entity/Primitive -> update -> DrawCommand -> commandList -> WebGL 执行</code></pre>
-				<h2>选择建议</h2>
-				<ul>
-					<li>做政企 GIS 管理系统：优先 OpenLayers。</li>
-					<li>做高性能二维城市地图：优先 Mapbox。</li>
-					<li>做三维地球、倾斜摄影、3D Tiles：优先 Cesium。</li>
-					<li>做数字孪生城市：通常 Mapbox + Cesium + 后端空间服务组合。</li>
-				</ul>
+Entity/Primitive -> update -> DrawCommand -> commandList -> WebGL</code></pre>
+
+				<h2>快速选择</h2>
+				<ul><li>复杂投影、WMS/WFS、业务要素编辑：先看 OpenLayers。</li><li>自托管矢量底图、标签排版、统一 Style：先看 MapLibre。</li><li>三维地球、地形、3D Tiles、卫星和全球高度：先看 Cesium。</li><li>二维运营与三维场景都需要：用共享业务 ID 和状态连接两个视图，不必强迫一个 renderer 承担全部任务。</li></ul>
+
+				<h2>Mapbox 放在哪里</h2>
+				<p>MapLibre 起源于 Mapbox GL JS 1.13 的开源分支，但两者已经独立演进。学习开源渲染源码、可自托管基础能力时进入 <a href="../modules/maplibre/index.html">MapLibre 模块</a>；研究 Mapbox 产品 API 和服务生态时进入 <a href="../modules/mapbox/index.html">Mapbox 模块</a>。不要默认当前新 API 可以互换。</p>
+				<div class="next-card"><span>完整选型依据</span><a href="../modules/maplibre/comparison.html">查看三引擎系统对比</a></div>
 			</article>
 		</main>
-		<script src="../theme.js?v=6"></script><script src="../enhance.js?v=6"></script>
-	  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });
-    }
-  </script>
-</body>
+		<script src="../theme.js?v=6"></script><script src="../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
 </html>

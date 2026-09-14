@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>MapLibre、OpenLayers、Cesium 对比 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>地图引擎系统对比</strong><span>MapLibre / OpenLayers / Cesium</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">MapLibre</a><a href="../openlayers/index.html">OpenLayers</a><a href="../cesium/index.html">Cesium</a></nav></header>
+		<main class="doc-layout"><aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="style-and-data.html">样式与数据</a><a href="architecture.html">一条线到像素</a><a href="labs.html">实验与自测</a><a class="active" href="comparison.html">三引擎对比</a><a href="debugging.html">调试手册</a><a href="glossary.html">术语表</a></aside>
+			<article class="doc">
+				<p class="kicker">Comparison</p><h1>MapLibre、OpenLayers、Cesium 应该怎么选</h1>
+				<p class="lead">不要先问“谁性能最好”。先问你要表达的是样式化地图、通用 GIS 数据，还是全球三维场景。三者都能显示地理信息，也都能接入 WebGL，但它们优化的中心完全不同。</p>
+
+				<h2>先记住三句话</h2>
+				<ul><li><strong>MapLibre：</strong>把 Style 和瓦片高效编译成 GPU 地图，强项是矢量底图、标签和一致的视觉系统。</li><li><strong>OpenLayers：</strong>把多来源、多格式、多投影的 GIS 数据组织成可交互二维地图，强项是兼容与业务编辑。</li><li><strong>Cesium：</strong>把椭球地球、地形、影像、3D Tiles 和时间动态对象组织成全球三维场景，强项是尺度与三维空间。</li></ul>
+
+				<h2>核心抽象对比</h2>
+				<table class="compare-table">
+					<thead><tr><th>维度</th><th>MapLibre GL JS</th><th>OpenLayers</th><th>CesiumJS</th></tr></thead>
+					<tbody>
+						<tr><td>中心问题</td><td>如何高速渲染 Style 驱动的地图</td><td>如何接入和操作广泛 GIS 数据</td><td>如何流式渲染全球三维地理场景</td></tr>
+						<tr><td>核心对象</td><td>Map / Style / Source / StyleLayer / Bucket</td><td>Map / View / Layer / Source / Feature</td><td>Viewer / Scene / Globe / Primitive / DrawCommand</td></tr>
+						<tr><td>主要渲染</td><td>WebGL，GPU-first</td><td>Canvas 2D 与明确的 WebGL layer/renderer</td><td>WebGL，多 pass 三维渲染</td></tr>
+						<tr><td>典型数据</td><td>MVT、GeoJSON、raster、DEM、sprite、glyph</td><td>WMS/WMTS/XYZ、GeoJSON、KML、GML、MVT、Feature</td><td>3D Tiles、glTF、terrain、imagery、CZML、entities</td></tr>
+						<tr><td>空间模型</td><td>Mercator tile 为核心，当前也支持 globe 与 terrain</td><td>二维投影和坐标转换能力强，可接 proj4</td><td>WGS84 椭球、ECEF、地形高度和全球相机</td></tr>
+						<tr><td>样式模型</td><td>统一 Style Spec、expression、layer order</td><td>对象式 Style / style function，按 layer renderer 执行</td><td>Appearance、Material、Entity 属性、3D Tiles styling</td></tr>
+						<tr><td>文字标注</td><td>矢量瓦片标签、glyph atlas、跨 tile 碰撞是核心强项</td><td>灵活要素样式和 declutter</td><td>Billboard / Label，重点不是道路制图排版</td></tr>
+						<tr><td>三维能力</td><td>terrain、globe、fill extrusion、custom layer</td><td>以二维为主</td><td>一等能力：地球、地形、模型、点云、3D Tiles</td></tr>
+						<tr><td>交互查询</td><td>FeatureIndex + `queryRenderedFeatures`</td><td>Feature/Geometry 与像素命中 API</td><td>scene pick、drillPick、地球/地形射线</td></tr>
+						<tr><td>开源许可</td><td>BSD-3-Clause</td><td>BSD-2-Clause</td><td>Apache-2.0</td></tr>
+					</tbody>
+				</table>
+
+				<h2>同一条线，底层路径有什么不同</h2>
+				<pre><code>MapLibre:
+Style line layer -> WorkerTile -> LineBucket 三角形
+-> Painter -> Program.draw -> gl.drawElements(TRIANGLES)
+
+OpenLayers 标准 VectorLayer:
+Feature -> VectorSource -> CanvasVectorLayerRenderer
+-> CanvasBuilderGroup 指令 -> Executor -> context.stroke()
+
+Cesium Point / Primitive:
+Entity/Geometry -> Visualizer/Primitive.update
+-> DrawCommand -> commandList -> WebGL draw</code></pre>
+				<p>MapLibre 先把地图语义编译成 tile bucket；OpenLayers 保留更直接的 Feature 与 renderer 关系；Cesium 则把三维对象变成可排序的 DrawCommand。三条路径的“中间表示”不同，所以性能调优的抓手也不同。</p>
+
+				<h2>典型需求决策表</h2>
+				<table class="compare-table"><thead><tr><th>需求</th><th>优先选择</th><th>理由与边界</th></tr></thead><tbody>
+					<tr><td>自托管矢量底图、道路标签、品牌化地图</td><td>MapLibre</td><td>Style Spec、MVT、GPU 和 symbol placement 高度匹配。</td></tr>
+					<tr><td>政企 GIS、WMS/WFS、复杂投影、要素编辑</td><td>OpenLayers</td><td>格式、投影、Feature/Geometry 与传统服务整合更自然。</td></tr>
+					<tr><td>三维地球、地形、倾斜摄影、BIM、3D Tiles</td><td>Cesium</td><td>全球坐标、LOD、地形和异构三维数据是核心设计目标。</td></tr>
+					<tr><td>二维业务地图，大量动态点线面</td><td>OpenLayers 或 MapLibre</td><td>重 GIS 编辑偏 OpenLayers；重底图样式和瓦片吞吐偏 MapLibre。</td></tr>
+					<tr><td>2.5D 建筑与地形浏览</td><td>MapLibre</td><td>fill extrusion 与 terrain 足够时，系统比完整三维场景更聚焦。</td></tr>
+					<tr><td>卫星、航空、地下、跨全球高度对象</td><td>Cesium</td><td>需要椭球、ECEF、真实三维相机和时间动态。</td></tr>
+					<tr><td>离线内网</td><td>三者均可</td><td>关键是自托管 JS、style、tile、terrain、3D Tiles、glyph 和授权，不由引擎名字自动决定。</td></tr>
+				</tbody></table>
+
+				<h2>MapLibre 有 globe，为什么还要 Cesium</h2>
+				<p>“能显示球体”不等于“拥有相同三维场景模型”。MapLibre 当前 globe projection 能把地图瓦片投影到球面，并支持 terrain、挤出和 custom layer（<a href="https://maplibre.org/maplibre-gl-js/docs/examples/display-a-globe-with-a-vector-map/">官方 globe 示例</a>）；Cesium 的 Globe、TerrainProvider 和 Cesium3DTileset 则围绕全球高程、视锥/地平线裁剪、屏幕空间误差和海量三维内容调度设计（<a href="https://cesium.com/learn/cesiumjs-learn/cesiumjs-terrain/">Cesium terrain</a>、<a href="https://cesium.com/learn/cesiumjs/ref-doc/Cesium3DTileset.html">Cesium3DTileset</a>）。</p>
+				<p>若需求只是“把矢量地图从平面切到球面”，MapLibre 很合适；若需求是“在全球尺度管理地形、模型、点云、建筑和时间动态对象”，Cesium 的抽象更匹配。</p>
+
+				<h2>MapLibre 与 OpenLayers 的关键分界</h2>
+				<p>OpenLayers 官方强调任意来源的 tile、vector、marker，以及 GeoJSON、KML、GML、Mapbox vector tiles、OGC 服务和 Canvas/WebGL（<a href="https://openlayers.org/">OpenLayers 官方概览</a>）。这让它像 GIS 应用框架。MapLibre 则要求你把视觉意图放进 Style Layer，并围绕 worker bucket 和 WebGL 批量渲染，像地图渲染引擎。</p>
+				<ul><li>需要频繁直接创建、修改、选择和编辑业务 Feature：OpenLayers 往往更自然。</li><li>需要让同一份 MVT 在多个 zoom 上形成完整制图风格和标签体系：MapLibre 往往更自然。</li><li>两者都能做很多相同页面，选择应看主要工作流，而不是列功能勾选表。</li></ul>
+
+				<h2>组合架构怎么用</h2>
+				<table class="compare-table"><thead><tr><th>组合</th><th>适合</th><th>注意</th></tr></thead><tbody><tr><td>MapLibre 2D + Cesium 3D</td><td>同一业务提供运营平面视图与三维场景视图。</td><td>共享业务状态与 ID，不要强行共享 renderer。</td></tr><tr><td>OpenLayers 编辑端 + MapLibre 展示端</td><td>后台 GIS 编辑复杂要素，前台发布品牌化矢量地图。</td><td>以服务端数据和样式发布流程作为边界。</td></tr><tr><td>MapLibre custom layer + Three.js</td><td>在地图相机中插入有限自定义三维对象。</td><td>管理共享 WebGL 状态、深度和资源释放；复杂全球场景仍应重新评估 Cesium。</td></tr></tbody></table>
+
+				<h2>三类常见误判</h2>
+				<ul><li><strong>“MapLibre 免费，所以地图免费”：</strong>库许可、数据许可和托管成本是三件事。</li><li><strong>“MapLibre 支持 globe，所以等于 Cesium”：</strong>投影形态相似，不代表数据模型和调度能力相同。</li><li><strong>“OpenLayers 用 Canvas，所以一定慢”：</strong>性能取决于 renderer、数据量、样式和更新方式；OpenLayers 也提供 WebGL 路径。</li><li><strong>“Cesium 太重，所以不好”：</strong>它承担了其他两个引擎通常不承担的三维地球复杂度。</li></ul>
+
+				<h2>结论</h2>
+				<p>选择引擎就是选择主要中间表示：选择 MapLibre 的 Style/Bucket，选择 OpenLayers 的 Feature/Layer/Source，或选择 Cesium 的 Scene/Primitive/DrawCommand。最匹配业务核心的数据模型，通常比 API 表面相似度更重要。</p>
+				<p>来源复核：<a href="https://maplibre.org/maplibre-gl-js/docs/">MapLibre GL JS</a>、<a href="https://openlayers.org/">OpenLayers</a>、<a href="https://cesium.com/learn/cesiumjs-learn/">CesiumJS</a>。资料等级：A | 最后复核：2026-09-15。</p>
+				<div class="next-card"><span>回到源码</span><a href="architecture.html">再看 MapLibre 一条线的 worker 与 GPU 边界</a></div>
+			</article>
+		</main><script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

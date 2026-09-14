@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>单个 Gaussian 像素实验 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css?v=6" />
+		<style>
+			.splat-lab { max-width: 1120px; margin: 28px auto 64px; padding: 0 20px; }
+			.splat-workspace { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(260px, .75fr); gap: 18px; align-items: start; }
+			.splat-stage { min-width: 0; }
+			.splat-stage canvas { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; background: #15202a; border: 1px solid #c9d2db; border-radius: 6px; }
+			.splat-controls { border-left: 1px solid #d8dee5; padding-left: 18px; }
+			.splat-controls label { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; margin: 0 0 18px; font-weight: 650; }
+			.splat-controls output { color: #087f72; font-variant-numeric: tabular-nums; }
+			.splat-controls input { grid-column: 1 / -1; width: 100%; accent-color: #087f72; }
+			.splat-readout { margin-top: 18px; padding: 16px; background: #f4f7f8; border: 1px solid #d8e1e4; border-radius: 6px; }
+			.splat-readout dl { display: grid; grid-template-columns: auto 1fr; gap: 8px 14px; margin: 0; }
+			.splat-readout dt { color: #56616c; }
+			.splat-readout dd { margin: 0; font-family: Consolas, monospace; overflow-wrap: anywhere; }
+			@media (max-width: 760px) { .splat-workspace { grid-template-columns: 1fr; } .splat-controls { border-left: 0; border-top: 1px solid #d8dee5; padding: 18px 0 0; } }
+		</style>
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+	</head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>单个 Gaussian 实验</strong><span>Conic weight and alpha blending</span></div></div><nav><a href="../../index.html">首页</a><a href="../../modules/gaussian-splatting/render-path.html">原理</a><a href="../../modules/gaussian-splatting/labs.html">实验清单</a></nav></header>
+		<main class="splat-lab">
+			<p class="kicker">Interactive Lab</p>
+			<h1>椭圆影响范围与一个像素的颜色</h1>
+			<p class="lead">画布展示屏幕空间 Gaussian。十字标记是被采样像素，右侧数值与官方 `renderCUDA()` 的指数权重和 alpha 合成公式对应。</p>
+			<div class="splat-workspace">
+				<section class="splat-stage">
+					<canvas id="splat-canvas" width="720" height="480" aria-label="一个椭圆高斯在像素网格上的贡献热力图"></canvas>
+					<div class="splat-readout">
+						<dl>
+							<dt>二维协方差</dt><dd id="covariance">-</dd>
+							<dt>Mahalanobis²</dt><dd id="mahalanobis">-</dd>
+							<dt>weight</dt><dd id="weight">-</dd>
+							<dt>alpha</dt><dd id="alpha">-</dd>
+							<dt>输出 RGB</dt><dd id="color">-</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="splat-controls" aria-label="Gaussian 参数">
+					<label>主轴标准差 σx <output id="sigma-x-value"></output><input id="sigma-x" type="range" min="8" max="120" value="62" /></label>
+					<label>次轴标准差 σy <output id="sigma-y-value"></output><input id="sigma-y" type="range" min="8" max="120" value="28" /></label>
+					<label>旋转角度 <output id="rotation-value"></output><input id="rotation" type="range" min="-90" max="90" value="25" /></label>
+					<label>不透明度 opacity <output id="opacity-value"></output><input id="opacity" type="range" min="1" max="99" value="70" /></label>
+					<label>采样像素 X 偏移 <output id="sample-x-value"></output><input id="sample-x" type="range" min="-170" max="170" value="58" /></label>
+					<label>采样像素 Y 偏移 <output id="sample-y-value"></output><input id="sample-y" type="range" min="-120" max="120" value="24" /></label>
+				</section>
+			</div>
+		</main>
+		<script src="single-splat.js"></script>
+		<script src="../../theme.js?v=6"></script>
+		<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

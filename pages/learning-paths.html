@@ -14,7 +14,7 @@
 			<article class="doc">
 				<p class="kicker">Learning Paths</p>
 				<h1>不要从页面开始，从目标开始</h1>
-				<p class="lead">这个网站已经有 18 个模块。小白最容易卡住的地方不是资料不够，而是不知道先学哪条线。这里把内容按目标重组：想开发 Agent、准备面试、理解大模型推理加速、学地图渲染、做数字孪生、理解经济金融与社会系统、研究哲学信仰，或者建立自己的学习系统，可以直接选路线。</p>
+				<p class="lead">这个网站已经有 19 个模块。小白最容易卡住的地方不是资料不够，而是不知道先学哪条线。这里把内容按目标重组：想开发 Agent、准备面试、理解大模型推理加速、学地图渲染、做数字孪生、理解经济金融与社会系统、研究哲学信仰，或者建立自己的学习系统，可以直接选路线。</p>
 
 				<h2>先选一个目标</h2>
 				<table class="compare-table">
@@ -23,7 +23,7 @@
 						<tr><td>自己开发 Agent</td><td>Agent 产品实战路线</td><td>能写一个带工具、模型适配、记忆、RAG、前端事件流的最小产品。</td></tr>
 						<tr><td>准备大模型 / Agent 面试</td><td>LLM 面试路线</td><td>能讲清记忆机制、RAG、长上下文、Transformer 长文本优化。</td></tr>
 						<tr><td>理解大模型为什么能更快</td><td>大模型推理加速路线</td><td>能讲清自回归瓶颈、投机解码、DFlash、FP4、MoE、TileRT 和 GPU 调度碎片。</td></tr>
-						<tr><td>理解地图和三维渲染</td><td>GIS / 渲染路线</td><td>能区分 OpenLayers、Mapbox、Cesium 的架构和适用场景。</td></tr>
+						<tr><td>理解地图和三维渲染</td><td>GIS / 渲染路线</td><td>能区分 OpenLayers、MapLibre、Mapbox、Cesium 的架构和适用场景。</td></tr>
 						<tr><td>做城市级可视化系统</td><td>数字孪生路线</td><td>能设计地图底座、三维资产、实时数据、Agent 分析和 MVP。</td></tr>
 						<tr><td>理解社会运行</td><td>经济金融与社会系统路线</td><td>能从社会运行、金钱流动、财政货币、城市经济、全球化走到金融和量化。</td></tr>
 						<tr><td>理解人生意义和信仰</td><td>哲学、世界观与基督教路线</td><td>能区分终极问题、世界观、政治思想和日常实践，并讲清基督教福音核心逻辑。</td></tr>
@@ -89,6 +89,9 @@
 				<ol>
 					<li><a href="../modules/openlayers/index.html">OpenLayers 总览</a>：先学传统二维 GIS 的 Map、View、Layer、Source。</li>
 					<li><a href="../modules/openlayers/render-path.html">OpenLayers 渲染路径</a>：看瓦片、矢量、Canvas/WebGL 如何画出来。</li>
+					<li><a href="../modules/maplibre/index.html">MapLibre 总览</a>：理解开源 Style、vector tile、worker、bucket 与 WebGL。</li>
+					<li><a href="../modules/maplibre/architecture.html">MapLibre Line 到像素</a>：追踪一条线如何扩展为三角形并提交 GPU。</li>
+					<li><a href="../modules/maplibre/comparison.html">三引擎对比</a>：用同一组问题判断 MapLibre、OpenLayers 和 Cesium。</li>
 					<li><a href="../modules/mapbox/index.html">Mapbox 总览</a>：理解 source、layer、style、vector tiles。</li>
 					<li><a href="../modules/mapbox/vs-cesium.html">Mapbox 与 Cesium 对比</a>：理解为什么 Mapbox 在二维场景通常更轻快。</li>
 					<li><a href="../modules/cesium/index.html">Cesium 总览</a>：进入三维地球和大规模 3D Tiles。</li>
@@ -134,7 +137,8 @@
 				<p>适合目标：想保持好奇心，同时理解高斯、三维重建、空间电源这些硬核主题。</p>
 				<ol>
 					<li><a href="../modules/gaussian-splatting/index.html">Gaussian Splatting 总览</a>：理解照片到 3D 场景。</li>
-					<li><a href="../modules/gaussian-splatting/render-path.html">训练与渲染路径</a>：理解相机位姿、稀疏点云、高斯参数、可微渲染。</li>
+					<li><a href="../modules/gaussian-splatting/render-path.html">一个 Gaussian 到像素</a>：用数值算例理解投影、conic、tile 排序和 alpha 合成。</li>
+					<li><a href="../modules/gaussian-splatting/labs.html">Gaussian 像素实验</a>：改变尺度、旋转、opacity 和采样位置。</li>
 					<li><a href="../modules/gaussian-splatting/debugging.html">调试手册</a>：知道训练失败时看什么。</li>
 					<li><a href="../modules/nuclear-battery/index.html">核电池总览</a>：区分 RTG、贝塔伏特电池和普通电池。</li>
 					<li><a href="../modules/nuclear-battery/principles.html">工作原理</a>：理解放射性衰变、热电转换和能量密度。</li>

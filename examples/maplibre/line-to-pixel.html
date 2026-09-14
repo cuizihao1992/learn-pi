@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>MapLibre Line 到像素实验 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../../styles.css?v=6" />
+		<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6.9.0/dist/maplibre-gl.css" />
+		<style>
+			.maplibre-lab { max-width: 1180px; margin: 28px auto 64px; padding: 0 20px; }
+			.maplibre-workspace { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(270px, .65fr); gap: 18px; }
+			#map { width: 100%; min-height: 520px; height: min(68vh, 660px); border: 1px solid #c9d2db; border-radius: 6px; overflow: hidden; }
+			.maplibre-panel { border-left: 1px solid #d8dee5; padding-left: 18px; }
+			.maplibre-panel label { display: flex; gap: 10px; align-items: center; margin: 0 0 16px; font-weight: 650; }
+			.maplibre-panel input { width: 18px; height: 18px; accent-color: #087f72; }
+			.maplibre-log { min-height: 190px; max-height: 310px; overflow: auto; margin-top: 20px; padding: 14px; background: #f4f7f8; border: 1px solid #d8e1e4; border-radius: 6px; font: 13px/1.55 Consolas, monospace; white-space: pre-wrap; }
+			@media (max-width: 760px) { .maplibre-workspace { grid-template-columns: 1fr; } #map { min-height: 430px; height: 55vh; } .maplibre-panel { border-left: 0; border-top: 1px solid #d8dee5; padding: 18px 0 0; } }
+		</style>
+		<link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" />
+	</head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>MapLibre Line 实验</strong><span>Style, worker, bucket and query</span></div></div><nav><a href="../../index.html">首页</a><a href="../../modules/maplibre/architecture.html">渲染原理</a><a href="../../modules/maplibre/labs.html">实验清单</a></nav></header>
+		<main class="maplibre-lab">
+			<p class="kicker">Interactive Lab</p><h1>同一份 Source，逐层改变渲染结果</h1>
+			<p class="lead">这个页面没有底图和 token。GeoJSON 在 worker 中处理，青色 LineString 进入 `LineBucket`，再以三角形提交 WebGL。点击线可观察 FeatureIndex 查询结果。</p>
+			<div class="maplibre-workspace">
+				<div id="map" aria-label="显示北京一条 GeoJSON 路线的 MapLibre 地图"></div>
+				<section class="maplibre-panel" aria-label="渲染状态控制">
+					<h2>渲染状态</h2>
+					<label><input id="layer-visible" type="checkbox" checked />Style Layer 可见</label>
+					<label><input id="filter-match" type="checkbox" checked />Filter 匹配 kind</label>
+					<label><input id="wide-line" type="checkbox" />使用 18 px 宽线</label>
+					<label><input id="show-tiles" type="checkbox" />显示 tile 边界</label>
+					<div id="event-log" class="maplibre-log" aria-live="polite">正在加载 MapLibre GL JS 6.9.0...</div>
+				</section>
+			</div>
+		</main>
+		<script src="line-to-pixel.js"></script><script src="../../theme.js?v=6"></script>
+		<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

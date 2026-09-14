@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Gaussian Splatting 术语表 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Gaussian Splatting 术语</strong><span>先把相近概念分开</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">总览</a><a href="render-path.html">原理</a><a href="labs.html">实验</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="render-path.html">Gaussian 到像素</a><a href="labs.html">实验与自测</a><a class="active" href="glossary.html">术语表</a><a href="debugging.html">调试手册</a></aside>
+			<article class="doc">
+				<p class="kicker">Glossary</p><h1>Gaussian Splatting 核心术语表</h1>
+				<table class="compare-table">
+					<thead><tr><th>术语</th><th>准确含义</th><th>不要误解为</th></tr></thead>
+					<tbody>
+						<tr><td>Gaussian mean / μ</td><td>三维高斯的中心位置。</td><td>完整几何形状。</td></tr>
+						<tr><td>Covariance / Σ</td><td>描述影响范围、各轴尺度及方向的对称矩阵。</td><td>训练数据的统计方差报告。</td></tr>
+						<tr><td>Scale + rotation</td><td>构造合法三维协方差的参数化方式。</td><td>屏幕 CSS transform。</td></tr>
+						<tr><td>Splat</td><td>一个三维高斯投影到屏幕后形成的二维连续贡献。</td><td>固定大小的不透明圆点。</td></tr>
+						<tr><td>Conic</td><td>二维协方差逆矩阵的紧凑表示，用于计算像素指数权重。</td><td>包围圆半径。</td></tr>
+						<tr><td>Spherical harmonics / SH</td><td>用一组基函数表达随观察方向变化的颜色。</td><td>决定高斯空间形状的参数。</td></tr>
+						<tr><td>Opacity</td><td>高斯在中心处的最大 alpha 系数，通常由 sigmoid 激活。</td><td>最终像素 alpha；后者还乘高斯权重。</td></tr>
+						<tr><td>Transmittance / T</td><td>光线在处理当前高斯之前仍未被遮挡的比例。</td><td>单个高斯的 opacity。</td></tr>
+						<tr><td>Tile binning</td><td>把高斯组织到它覆盖的屏幕瓦片中，缩小逐像素候选集合。</td><td>地理地图的网络瓦片。</td></tr>
+						<tr><td>Densification</td><td>依据屏幕梯度和尺度 clone 或 split 高斯，增加表达能力。</td><td>单纯把所有点等比例复制。</td></tr>
+						<tr><td>Pruning</td><td>删除低 opacity、过大或无效的高斯。</td><td>图像压缩。</td></tr>
+						<tr><td>Differentiable rasterizer</td><td>既计算图像，也能把损失梯度传回 Gaussian 参数的光栅器。</td><td>由神经网络替代全部渲染过程。</td></tr>
+					</tbody>
+				</table>
+				<h2>最容易混淆的三组关系</h2>
+				<ul><li>`Σ3D` 描述空间椭球，`Σ2D` 描述当前相机下的屏幕椭圆，`Σ2D⁻¹` 才是像素循环使用的 conic。</li><li>radius 是快速包围范围，weight 是某个像素的真实连续贡献，alpha 是 weight 再乘 opacity。</li><li>训练和实时展示都要前向渲染，但训练还要保存中间量并执行 backward。</li></ul>
+				<div class="next-card"><span>回到完整链路</span><a href="render-path.html">从参数重新追到一个像素</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

@@ -10,7 +10,7 @@
 	<body>
 		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>高斯泼溅模块宪章</strong><span>3D Gaussian Splatting</span></div></div><nav><a href="../../index.html">首页</a><a href="../index.html">全部模块</a><a href="../../pages/charter.html">总宪章</a><a href="index.html">模块总览</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="../../pages/charter.html">总宪章</a><a class="active" href="charter.html">高斯泼溅宪章</a><a href="index.html">模块总览</a><a href="render-path.html">渲染路径</a><a href="debugging.html">调试手册</a></aside>
+			<aside class="doc-sidebar"><a href="../../pages/charter.html">总宪章</a><a class="active" href="charter.html">高斯泼溅宪章</a><a href="index.html">模块总览</a><a href="render-path.html">Gaussian 到像素</a><a href="labs.html">实验与自测</a><a href="glossary.html">术语表</a><a href="debugging.html">调试手册</a></aside>
 			<article class="doc">
 				<p class="kicker">Module Charter</p>
 				<h1>高斯泼溅模块宪章</h1>
@@ -38,7 +38,12 @@
 					<li>必须解释 3D 协方差如何投影成屏幕空间椭圆。</li>
 					<li>必须解释为什么需要 depth sort 和 alpha blending。</li>
 					<li>必须给出和 NeRF、mesh、point cloud 的取舍对比。</li>
+					<li>必须给出一个可复算的投影与 alpha blending 数值例子。</li>
+					<li>必须把 Python、PyTorch 扩展、C++/CUDA 与像素写出对应起来。</li>
+					<li>必须提供可改变尺度、方向、opacity 和采样位置的实验。</li>
 				</ul>
+				<h2>完成证明</h2>
+				<ul><li><a href="render-path.html">源码深挖</a>：从 `render()` 到 `renderCUDA()`。</li><li><a href="../../examples/gaussian-splatting/single-splat.html">交互实验</a>：直接观察 conic 权重和像素颜色。</li><li><a href="labs.html">自测与故障实验</a>：用一次只改变一层的方法验证理解。</li><li><a href="glossary.html">术语表</a>：固定关键概念边界。</li></ul>
 			</article>
 		</main>
 		<script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script>

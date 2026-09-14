@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>MapLibre 样式与数据模型 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>MapLibre 样式与数据</strong><span>Style is a rendering contract</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">总览</a><a href="architecture.html">渲染链</a><a href="labs.html">实验</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a class="active" href="style-and-data.html">样式与数据</a><a href="architecture.html">一条线到像素</a><a href="labs.html">实验与自测</a><a href="comparison.html">三引擎对比</a><a href="debugging.html">调试手册</a><a href="glossary.html">术语表</a></aside>
+			<article class="doc">
+				<p class="kicker">Style And Data</p><h1>为什么 Source 有数据，Layer 仍可能没有像素</h1>
+				<p class="lead">MapLibre 把“数据在哪里”和“数据怎样画”明确分离。一份 source 可以被多个 style layer 重用，而每个 layer 还会通过 source-layer、filter、zoom、layout 和 paint 再筛选一次。</p>
+
+				<h2>一个最小 Style</h2>
+				<pre><code>{
+  "version": 8,
+  "sources": {
+    "route": {
+      "type": "geojson",
+      "data": {
+        "type": "FeatureCollection",
+        "features": [{
+          "type": "Feature",
+          "properties": { "kind": "primary" },
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [[116.32, 39.90], [116.46, 39.94]]
+          }
+        }]
+      }
+    }
+  },
+  "layers": [{
+    "id": "route-line",
+    "type": "line",
+    "source": "route",
+    "filter": ["==", ["get", "kind"], "primary"],
+    "paint": {
+      "line-color": "#087f72",
+      "line-width": ["interpolate", ["linear"], ["zoom"], 8, 2, 14, 8]
+    }
+  }]
+}</code></pre>
+
+				<h2>五个容易混淆的对象</h2>
+				<table class="compare-table">
+					<thead><tr><th>对象</th><th>问题</th><th>例子</th></tr></thead>
+					<tbody>
+						<tr><td>Source</td><td>数据从哪里来、按什么类型加载？</td><td>`route` GeoJSON 或一个 vector tile endpoint。</td></tr>
+						<tr><td>Source Layer</td><td>一个矢量瓦片内部选择哪张逻辑表？</td><td>PBF 中的 `road`、`building`。GeoJSON source 不填它。</td></tr>
+						<tr><td>Style Layer</td><td>选中哪些要素，以哪种渲染类型画？</td><td>`route-line`，类型为 `line`。</td></tr>
+						<tr><td>Layout</td><td>几何和放置怎样组织？</td><td>`line-cap`、`symbol-placement`、`visibility`。</td></tr>
+						<tr><td>Paint</td><td>最终外观是什么？</td><td>`line-color`、`line-width`、`fill-opacity`。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>Source Layer 为什么不是 Style Layer</h2>
+				<p>一个 vector tile 文件可以同时包含道路、建筑、水系等命名图层。`source-layer` 先从 PBF 内选中一组要素；Style Layer 再决定用 `line`、`fill` 或 `symbol` 怎样展示它。相同的 `road` source layer 可以被道路底色、描边和标签三个 style layer 重复使用。</p>
+				<pre><code>vector source "city"
+  -> PBF source-layer "road"
+     -> style layer "road-casing" 画粗描边
+     -> style layer "road-fill"   画内部颜色
+     -> style layer "road-label"  画道路名称</code></pre>
+
+				<h2>Expression 在哪里执行</h2>
+				<p>表达式不是全部在每帧逐要素解释。与 feature 数据相关、且会影响几何布局的属性通常在 worker layout 阶段参与 bucket 生成；数据驱动 paint 属性可由 `ProgramConfiguration` 准备 paint vertex array，常量属性则可以作为 uniform。官方架构文档明确把 `#pragma maplibre` 展开和 paint attribute/uniform 选择归入 ProgramConfiguration（<a href="https://github.com/maplibre/maplibre-gl-js/blob/ae328866133a3188814b2a7b46b640b264d00ee9/ARCHITECTURE.md">ARCHITECTURE.md</a>）。</p>
+				<table class="compare-table">
+					<thead><tr><th>变化</th><th>可能触发</th><th>成本直觉</th></tr></thead>
+					<tbody>
+						<tr><td>相机移动</td><td>可见 tile 更新、uniform 更新、重绘</td><td>通常不重建所有静态 bucket。</td></tr>
+						<tr><td>常量 paint 改变</td><td>样式重算和重绘</td><td>可能只改 uniform，通常较轻。</td></tr>
+						<tr><td>数据驱动 paint 改变</td><td>paint attribute 更新</td><td>与受影响 feature 和 buffer 相关。</td></tr>
+						<tr><td>layout / filter 改变</td><td>tile 重新 parse/layout</td><td>可能重建 bucket，通常更重。</td></tr>
+						<tr><td>GeoJSON `setData`</td><td>worker 重新切片和 parse</td><td>大数据高频更新容易卡顿。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>Style 加载发生了什么</h2>
+				<p>`Style.loadJSON()` 在下一帧调用 `_load()`：先校验 style，再创建 sources、加载 sprite、设置 glyph URL、创建 layers、projection、sky 和 terrain，最后触发 style load 事件（<a href="https://github.com/maplibre/maplibre-gl-js/blob/ae328866133a3188814b2a7b46b640b264d00ee9/src/style/style.ts#L457-L507">Style._load</a>）。因此“页面有 canvas”只说明 Map 初始化了，不代表 style、source、sprite、glyph 和 tile 都已完成。</p>
+
+				<h2>从症状反推缺失层</h2>
+				<table class="compare-table">
+					<thead><tr><th>现象</th><th>最先检查</th><th>原因</th></tr></thead>
+					<tbody>
+						<tr><td>整个地图空白</td><td>容器高度、style 请求、WebGL context</td><td>还没进入单个 layer。</td></tr>
+						<tr><td>底图有，业务线没有</td><td>source id、geometry、layer visibility</td><td>业务 source/layer 链断了。</td></tr>
+						<tr><td>vector tile 请求成功但无要素</td><td>`source-layer`、filter、min/max zoom</td><td>PBF 内部选择或样式筛选错误。</td></tr>
+						<tr><td>线有但颜色不对</td><td>expression 输入属性、feature-state</td><td>paint 计算结果与预期不同。</td></tr>
+						<tr><td>文字缺失</td><td>glyph、sprite、字体栈、碰撞</td><td>symbol 还有独立依赖和 placement 阶段。</td></tr>
+					</tbody>
+				</table>
+
+				<h2>官方来源</h2>
+				<ul><li><a href="https://maplibre.org/maplibre-style-spec/">MapLibre Style Specification</a></li><li><a href="https://maplibre.org/maplibre-gl-js/docs/API/classes/Style/">Style API</a></li><li><a href="https://github.com/maplibre/maplibre-gl-js/blob/ae328866133a3188814b2a7b46b640b264d00ee9/src/style/style.ts">style.ts</a></li></ul>
+				<div class="next-card"><span>继续追踪</span><a href="architecture.html">一条 LineString 如何成为 GPU 三角形和像素</a></div>
+			</article>
+		</main>
+		<script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

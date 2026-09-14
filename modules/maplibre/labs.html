@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>MapLibre 实验与自测 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>MapLibre 实验</strong><span>一次只破坏一层</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">总览</a><a href="architecture.html">渲染链</a><a href="debugging.html">调试</a></nav></header>
+		<main class="doc-layout"><aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="style-and-data.html">样式与数据</a><a href="architecture.html">一条线到像素</a><a class="active" href="labs.html">实验与自测</a><a href="comparison.html">三引擎对比</a><a href="debugging.html">调试手册</a><a href="glossary.html">术语表</a></aside>
+			<article class="doc">
+				<p class="kicker">Labs</p><h1>沿 Style 到 GPU 的链条逐层验证</h1>
+				<p class="lead">实验使用 MapLibre GL JS 6.9.0、空白 Style 和内联 GeoJSON，不需要地图 token。保留同一份数据，一次只改变一个条件，观察问题在哪一层出现。</p>
+				<h2>实验 1：LineString 到像素</h2>
+				<p>交互页面可以切换 layer visibility、filter、line-width 和 tile 边界，也可以点击线观察 `queryRenderedFeatures()`。它把写路径和读路径放在同一个最小场景里。</p>
+				<p><a class="primary-link" href="../../examples/maplibre/line-to-pixel.html">打开 MapLibre Line 实验</a></p>
+
+				<h2>实验 2：证明 Source 和 Layer 相互独立</h2>
+				<pre><code>map.getSource('route')             // source 仍存在
+map.setLayoutProperty(
+  'route-line', 'visibility', 'none'
+)
+map.querySourceFeatures('route')   // 可能仍有数据
+map.queryRenderedFeatures({
+  layers: ['route-line']
+})                                 // 不会命中隐藏层</code></pre>
+				<p>结论：Source 存在只证明数据管理层存在，不证明某个 Style Layer 会产生像素。</p>
+
+				<h2>实验 3：Filter 在 worker/bucket 边界的作用</h2>
+				<p>交互实验把 filter 从 `kind == primary` 改成 `kind == missing`。要素仍在 GeoJSON source 中，但不再进入当前 line layer 的有效 bucket。恢复 filter 后重新出现。</p>
+				<table class="compare-table"><thead><tr><th>观察</th><th>说明</th><th>不要误判</th></tr></thead><tbody><tr><td>Source 请求成功</td><td>数据取得成功。</td><td>不等于 filter 命中。</td></tr><tr><td>Layer 在 Style 中</td><td>渲染规则存在。</td><td>不等于 zoom 和 visibility 允许绘制。</td></tr><tr><td>Bucket 为空</td><td>当前 tile/layer 没有通过筛选的几何。</td><td>不一定是 WebGL 故障。</td></tr></tbody></table>
+
+				<h2>实验 4：为什么改变 line-width 不必重建中心线</h2>
+				<p>切换 `8 px` 和 `18 px`。line bucket 保存中心线展开所需的数据，shader 结合 paint 属性和像素比例生成最终宽度。常量 paint 更新通常比更换 `line-join`、filter 或 source data 更轻。用浏览器 Performance 面板比较持续 `setPaintProperty` 与持续 `setData` 的差异。</p>
+
+				<h2>实验 5：观察异步事件顺序</h2>
+				<pre><code>map.on('styledata', () => console.log('styledata'));
+map.on('sourcedata', e => console.log('sourcedata', e.sourceId));
+map.on('render', () => console.log('render'));
+map.on('idle', () => console.log('idle'));
+map.on('error', e => console.error(e.error));</code></pre>
+				<p>`load` 不是每个资源的逐项日志，`render` 也不代表所有 tile 已经完成。调试加载状态时应同时观察 network、source 事件、error 和 idle。</p>
+
+				<h2>实验 6：证明线使用三角形</h2>
+				<ol><li>打开浏览器 WebGL 调试工具或阅读 `src/webgl/draw/draw_line.ts`。</li><li>定位 `program.draw(context, gl.TRIANGLES, ...)`。</li><li>再看 `LineBucket` 的 `TriangleIndexArray` 与 `addLine()`。</li><li>解释为什么圆角、端帽、虚线和抗锯齿无法仅靠一条数学中心线直接完成。</li></ol>
+
+				<h2>自测</h2>
+				<details><summary>为什么 vector tile 请求 200，地图仍可能没有路？</summary><p>可能 `source-layer` 名称错误、filter 不匹配、当前 zoom 被限制、layer 隐藏，或样式透明。网络成功只覆盖链路前半段。</p></details>
+				<details><summary>为什么 worker 不直接调用 WebGL？</summary><p>普通 WebGL context 属于 canvas 和渲染线程。worker 负责可并行的数据解析和 layout，生成可传输数组；主线程管理 GPU context 与每帧绘制。</p></details>
+				<details><summary>为什么 `queryRenderedFeatures` 与 `querySourceFeatures` 结果可能不同？</summary><p>前者受当前屏幕、Style Layer、filter 和命中几何影响；后者查询已加载 source tile 中的要素，不等同于当前产生像素的集合。</p></details>
+				<details><summary>MapLibre 开源是否意味着底图可以随意商用？</summary><p>不是。渲染库许可与地图数据、字体、sprite、tile 服务条款是不同合同边界。</p></details>
+				<div class="next-card"><span>遇到空白地图</span><a href="debugging.html">按容器、Style、Source、Worker、Bucket、GPU 排查</a></div>
+			</article>
+		</main><script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>MapLibre 调试手册 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>MapLibre 调试手册</strong><span>从空容器查到 gl.drawElements</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">总览</a><a href="architecture.html">渲染链</a><a href="labs.html">实验</a></nav></header>
+		<main class="doc-layout"><aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="style-and-data.html">样式与数据</a><a href="architecture.html">一条线到像素</a><a href="labs.html">实验与自测</a><a href="comparison.html">三引擎对比</a><a class="active" href="debugging.html">调试手册</a><a href="glossary.html">术语表</a></aside>
+			<article class="doc">
+				<p class="kicker">Debugging</p><h1>MapLibre 地图空白或卡顿，从哪一层查</h1>
+				<p class="lead">遵循最短证据链：先证明 canvas 能画，再证明 Style 生效、Source 有数据、Layer 选中要素、worker 产出 bucket，最后才查 shader 和 GPU。</p>
+				<h2>六层排查表</h2>
+				<table class="compare-table"><thead><tr><th>层</th><th>检查</th><th>常见错误</th></tr></thead><tbody>
+					<tr><td>容器 / WebGL</td><td>元素尺寸、canvas、console、`webglcontextlost`</td><td>父容器高度为 0、GPU context 创建失败。</td></tr>
+					<tr><td>Style</td><td>`style.load`、style 校验错误、background layer</td><td>JSON 版本、source/layer schema、URL 404。</td></tr>
+					<tr><td>Source / 网络</td><td>Network、CORS、tile URL、响应格式</td><td>token、跨域、MIME、TMS/XYZ y 方向、PBF 损坏。</td></tr>
+					<tr><td>Worker / layout</td><td>worker URL、CSP、source-layer、glyph/sprite</td><td>ESM worker 文件不完整、严格 CSP 禁止 blob worker。</td></tr>
+					<tr><td>Style Layer</td><td>visibility、filter、minzoom/maxzoom、opacity</td><td>数据存在但没有要素通过当前规则。</td></tr>
+					<tr><td>GPU / pass</td><td>bucket buffer、shader 编译、custom layer 状态</td><td>自定义 WebGL 污染状态、context 丢失、深度/混合错误。</td></tr>
+				</tbody></table>
+
+				<h2>先建立无网络基线</h2>
+				<pre><code>const style = {
+  version: 8,
+  sources: {},
+  layers: [{
+    id: 'background',
+    type: 'background',
+    paint: {'background-color': '#dfe8ea'}
+  }]
+};</code></pre>
+				<p>若 background 都看不到，问题在容器、CSS、Map 初始化或 WebGL，不要先调 tile server。若 background 正常，再加一个内联 GeoJSON source 和 circle/line layer，把服务端变量排除。</p>
+
+				<h2>事件探针</h2>
+				<pre><code>map.on('error', e => console.error(e.error));
+map.on('styledata', e => console.log('styledata', e));
+map.on('sourcedata', e => console.log('sourcedata', e.sourceId));
+map.on('webglcontextlost', e => console.warn('context lost', e));
+map.on('idle', () => console.log('idle'));</code></pre>
+				<p>不要只监听 `load`。字体、sprite、后续 tile 和数据更新都可能在不同时间失败。</p>
+
+				<h2>MapLibre 6 的 worker 部署陷阱</h2>
+				<p>官方 6.9.0 文档说明 v6 只发布 ESM。Vite 应使用 `?worker&url` 让 worker 管线生成自包含 chunk；只用 `?url` 可能遗漏相邻的 `maplibre-gl-shared.mjs`。严格 CSP 不允许 `blob:` worker 时，应把 worker 放到同源地址并显式调用 `setWorkerUrl()`（<a href="https://maplibre.org/maplibre-gl-js/docs/#esm">官方 ESM 安装说明</a>）。</p>
+				<pre><code>import {Map, setWorkerUrl} from 'maplibre-gl';
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+
+setWorkerUrl(workerUrl);</code></pre>
+
+				<h2>性能问题按成本来源拆</h2>
+				<table class="compare-table"><thead><tr><th>现象</th><th>可能瓶颈</th><th>优先验证</th></tr></thead><tbody><tr><td>首次加载慢</td><td>tile/glyph/sprite 网络，PBF 解析</td><td>资源瀑布、压缩、缓存、worker 时间。</td></tr><tr><td>拖动掉帧</td><td>layer/vertex 过多、过绘制、symbol placement</td><td>减少 layer 与可见数据，比较是否恢复。</td></tr><tr><td>更新数据卡顿</td><td>大 GeoJSON 高频 `setData`</td><td>降低更新频率、拆动态 source、改 vector tile。</td></tr><tr><td>显存持续增长</td><td>过大 tile cache、自定义 layer 资源未释放</td><td>调用 `map.remove()`，检查 texture/buffer 生命周期。</td></tr><tr><td>点击查询慢</td><td>查询区域过大、layers 未限制、返回要素太多</td><td>限制点/小框和目标 layer。</td></tr></tbody></table>
+
+				<h2>生产检查清单</h2>
+				<ul><li>固定 MapLibre 版本并记录 Style Spec 兼容范围。</li><li>为 style、sprite、glyph、tile 和 worker 设置正确 CORS、缓存与内容类型。</li><li>区分渲染库许可和数据供应商许可。</li><li>监听 error 与 context loss，并给关键地图提供降级状态。</li><li>销毁页面时调用 `map.remove()`，释放事件、worker 和 WebGL 资源。</li><li>用真实低端移动设备测试 layer 数、vertex 数和内存，不只看开发机。</li></ul>
+				<div class="next-card"><span>技术选型</span><a href="comparison.html">判断 MapLibre、OpenLayers 和 Cesium 的边界</a></div>
+			</article>
+		</main><script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

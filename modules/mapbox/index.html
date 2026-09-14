@@ -10,11 +10,12 @@
 	<body>
 		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Mapbox 学习路径</strong><span>Vector Tiles, Style, WebGL</span></div></div><nav><a href="../../index.html">首页</a><a href="../index.html">全部模块</a><a href="roadmap.html">路线</a><a href="architecture.html">架构</a><a href="labs.html">实验</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a class="active" href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="roadmap.html">学习路线</a><a href="architecture.html">渲染架构</a><a href="api-debugging.html">接口与调试</a><a href="labs.html">实验与自测</a><a href="vs-cesium.html">与 Cesium 对比</a><a href="../cesium/index.html">Cesium</a><a href="../openlayers/index.html">OpenLayers</a></aside>
+			<aside class="doc-sidebar"><a class="active" href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="roadmap.html">学习路线</a><a href="architecture.html">渲染架构</a><a href="api-debugging.html">接口与调试</a><a href="labs.html">实验与自测</a><a href="vs-cesium.html">与 Cesium 对比</a><a href="../maplibre/index.html">MapLibre 开源源码</a><a href="../cesium/index.html">Cesium</a><a href="../openlayers/index.html">OpenLayers</a></aside>
 			<article class="doc">
 				<p class="kicker">Mapbox</p>
 				<h1>Mapbox：从矢量瓦片到 WebGL 地图</h1>
 				<p class="lead">Mapbox GL JS 的核心心智模型是：数据被切成 tile，样式写成 Style JSON，渲染器按 source 和 layer 把瓦片里的要素批量绘制到 WebGL。它特别擅长二维地图、矢量瓦片、样式驱动渲染、符号标注和大规模地图交互。</p>
+				<p>本模块关注 Mapbox 当前产品 API 与服务生态。若要阅读可固定版本的社区开源渲染源码，学习 worker、LineBucket、Painter 与 `gl.drawElements()`，进入独立的 <a href="../maplibre/index.html">MapLibre GL JS 模块</a>。两者有共同历史，但不应默认当前 API 完全互换。</p>
 				<div class="next-card"><span>系统学习</span><a href="roadmap.html">按四步路线学习并进入故障实验</a></div>
 
 				<h2>一句话链路</h2>

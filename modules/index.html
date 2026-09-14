@@ -22,13 +22,13 @@
 				<div class="section-head">
 					<div>
 						<p class="kicker">Modules</p>
-						<h1>十八个模块，六个知识域</h1>
+						<h1>十九个模块，六个知识域</h1>
 						<p class="lead-like">模块之间可以互相引用，但学习入口要清楚：先选知识域，再进入模块，再选择总览、深挖页、实验或项目路线。</p>
 					</div>
 				</div>
 				<div class="module-grid">
 					<section class="module-card"><h3>Agent 与大模型系统</h3><p>Pi Agent、Mini Agent、LLM/Agent 面试、推理加速。重点是 agent loop、工具调用、RAG、缓存、评估和高速推理。</p><a class="primary-link" href="#agent-ai">查看</a></section>
-					<section class="module-card"><h3>地图、渲染与数字孪生</h3><p>OpenLayers、Mapbox、Cesium、Gaussian Splatting、Digital Twin City。重点是数据如何走到渲染和交互。</p><a class="primary-link" href="#geo-rendering">查看</a></section>
+					<section class="module-card"><h3>地图、渲染与数字孪生</h3><p>OpenLayers、MapLibre、Mapbox、Cesium、Gaussian Splatting、Digital Twin City。重点是数据如何走到渲染和交互。</p><a class="primary-link" href="#geo-rendering">查看</a></section>
 					<section class="module-card"><h3>经济、金融与社会系统</h3><p>经济金融、股票 K 线、量化交易、历史社会。重点是资源、价格、风险、制度和反馈。</p><a class="primary-link" href="#econ-society">查看</a></section>
 					<section class="module-card"><h3>哲学、信仰与终极问题</h3><p>哲学、世界观、基督教基础。重点是存在、真理、道德、人生意义、罪、救赎和实践。</p><a class="primary-link" href="#philosophy-faith">查看</a></section>
 					<section class="module-card"><h3>认知学习与系统思维</h3><p>认知学习、系统思维。重点是如何学习、如何建模复杂系统、如何避免只堆资料。</p><a class="primary-link" href="#learning-system">查看</a></section>
@@ -50,9 +50,10 @@
 				<div class="section-head"><div><p class="kicker">Track 2</p><h2>地图、渲染与数字孪生</h2></div></div>
 				<div class="module-roadmap-grid">
 					<section><div><span>2D</span><h3>OpenLayers</h3><p>二维地图基础：Map、View、Layer、Source、Canvas/WebGL renderer。</p></div><ol><li><a href="openlayers/index.html">模块总览</a></li><li><a href="openlayers/render-path.html">Feature 到像素</a></li><li><a href="openlayers/labs.html">实验与自测</a></li><li><a href="openlayers/debugging.html">调试手册</a></li><li><a href="openlayers/charter.html">模块宪章</a></li></ol></section>
+					<section><div><span>ML</span><h3>MapLibre GL JS</h3><p>开源 GPU 地图：Style、vector tile、worker、bucket、WebGL 与 globe。</p></div><ol><li><a href="maplibre/index.html">模块总览</a></li><li><a href="maplibre/style-and-data.html">样式与数据</a></li><li><a href="maplibre/architecture.html">Line 到像素</a></li><li><a href="maplibre/labs.html">实验与自测</a></li><li><a href="maplibre/comparison.html">三引擎对比</a></li></ol></section>
 					<section><div><span>MB</span><h3>Mapbox</h3><p>高性能二维地图：style、source、layer、vector tile、WebGL 渲染。</p></div><ol><li><a href="mapbox/index.html">模块总览</a></li><li><a href="mapbox/roadmap.html">学习路线</a></li><li><a href="mapbox/architecture.html">渲染架构</a></li><li><a href="mapbox/labs.html">实验与自测</a></li><li><a href="mapbox/api-debugging.html">接口与调试</a></li></ol></section>
 					<section><div><span>3D</span><h3>Cesium</h3><p>三维地球和大规模空间数据：Viewer、Scene、Primitive、DrawCommand。</p></div><ol><li><a href="cesium/index.html">模块总览</a></li><li><a href="cesium/render-path.html">Point 到像素</a></li><li><a href="cesium/labs.html">实验与自测</a></li><li><a href="cesium/custom-shader.html">自定义着色器</a></li><li><a href="cesium/debugging.html">调试手册</a></li><li><a href="cesium/glossary.html">术语表</a></li></ol></section>
-					<section><div><span>GS</span><h3>Gaussian Splatting</h3><p>神经重建：照片、相机位姿、稀疏点云、3D 高斯、可微渲染。</p></div><ol><li><a href="gaussian-splatting/index.html">模块总览</a></li><li><a href="gaussian-splatting/render-path.html">训练与渲染路径</a></li><li><a href="gaussian-splatting/debugging.html">调试手册</a></li></ol></section>
+					<section><div><span>GS</span><h3>Gaussian Splatting</h3><p>神经重建：照片、相机位姿、3D 高斯、tile 排序与可微像素合成。</p></div><ol><li><a href="gaussian-splatting/index.html">模块总览</a></li><li><a href="gaussian-splatting/render-path.html">Gaussian 到像素</a></li><li><a href="gaussian-splatting/labs.html">实验与自测</a></li><li><a href="gaussian-splatting/glossary.html">术语表</a></li><li><a href="gaussian-splatting/debugging.html">调试手册</a></li></ol></section>
 					<section><div><span>DT</span><h3>数字孪生城市</h3><p>系统集成：地图底座、三维资产、实时数据、Agent 分析、前后端架构。</p></div><ol><li><a href="digital-twin-city/index.html">模块总览</a></li><li><a href="digital-twin-city/map-stack.html">地图底座</a></li><li><a href="digital-twin-city/realtime-agent.html">实时数据与 Agent</a></li><li><a href="digital-twin-city/mvp.html">MVP 路线</a></li><li><a href="digital-twin-city/labs.html">状态实验与自测</a></li></ol></section>
 				</div>
 			</section>

@@ -27,7 +27,7 @@
   -> 自测问题
   -> 回到模块复盘</code></pre>
 
-				<h2>十八个模块的第一批深挖点</h2>
+				<h2>十九个模块的第一批深挖点</h2>
 				<table class="compare-table">
 					<thead><tr><th>模块</th><th>先打穿的点</th><th>需要补的知识</th><th>例子 / 实验</th><th>状态</th></tr></thead>
 					<tbody>
@@ -36,11 +36,12 @@
 						<tr><td>LLM / Agent 面试</td><td>Embedding 到 RAG 召回</td><td>向量、余弦相似度、chunk、topK、rerank、prompt、评估。</td><td><a href="../modules/llm-agent-interview/embedding-rag-deep-dive.html">Embedding -> RAG 深挖</a> + <a href="../examples/rag-evaluation/index.html">RAG Evaluation Demo</a>。</td><td>样板已完成</td></tr>
 						<tr><td>LLM Runtime</td><td>角色优先级与缓存</td><td>system/developer/user/tool、运行日志、CPU cache、Prompt Cache、KV Cache。</td><td><a href="../modules/llm-agent-interview/runtime-cache.html">角色优先级与缓存</a>：从硬件缓存讲到大模型上下文缓存。</td><td>样板已完成</td></tr>
 						<tr><td>LLM Inference Acceleration</td><td>投机解码如何减少主模型 forward 次数</td><td>自回归瓶颈、drafter、verifier、接受率、DFlash、FP4、MoE、TileRT、GPU 调度碎片。</td><td><a href="../modules/llm-inference-acceleration/speculative-decoding.html">投机解码原理</a> + <a href="../modules/llm-inference-acceleration/mimo-ultraspeed.html">MiMo UltraSpeed 案例</a>。</td><td>样板已完成</td></tr>
-						<tr><td>Cesium</td><td>Primitive -> DrawCommand -> GPU</td><td>WebGL、ShaderProgram、VertexArray、RenderState、渲染队列。</td><td>一个 box primitive 如何变成 DrawCommand。</td><td>待补</td></tr>
-						<tr><td>OpenLayers</td><td>Layer / Source / View 分工</td><td>坐标系、瓦片、视口、矢量要素、Canvas/WebGL。</td><td>同一份数据换不同 layer style。</td><td>待补</td></tr>
+						<tr><td>Cesium</td><td>Entity Point -> DrawCommand -> GPU</td><td>Visualizer、Primitive、ShaderProgram、VertexArray、RenderState、渲染队列。</td><td><a href="../modules/cesium/render-path.html">Point 到像素</a> + <a href="../modules/cesium/labs.html">命令实验</a>。</td><td>样板已完成</td></tr>
+						<tr><td>OpenLayers</td><td>Feature -> Canvas 指令 -> 像素</td><td>frameState、坐标变换、BuilderGroup、Executor、Canvas。</td><td><a href="../modules/openlayers/render-path.html">Feature 到像素</a> + <a href="../modules/openlayers/labs.html">Canvas 实验</a>。</td><td>样板已完成</td></tr>
+						<tr><td>MapLibre</td><td>LineString -> Worker Bucket -> GPU</td><td>Style、MVT、WorkerTile、LineBucket、Painter、WebGL。</td><td><a href="../modules/maplibre/architecture.html">Line 到像素</a> + <a href="../examples/maplibre/line-to-pixel.html">交互实验</a>。</td><td>样板已完成</td></tr>
 						<tr><td>Mapbox</td><td>Style JSON 驱动渲染</td><td>source、layer、paint、layout、vector tile。</td><td>一个 source 加两个 layer，展示不同符号样式。</td><td>待补</td></tr>
 						<tr><td>Digital Twin City</td><td>实时数据如何进入地图场景</td><td>WebSocket、事件驱动、实体状态、告警流、GIS 数据模型。</td><td>传感器告警 -> 地图实体变色 -> Agent 解释。</td><td>待补</td></tr>
-						<tr><td>Gaussian Splatting</td><td>3D Gaussian 如何训练和渲染</td><td>相机模型、投影、梯度下降、高斯分布、可微渲染。</td><td>一个点从球形高斯变成屏幕椭圆 splat。</td><td>待补</td></tr>
+						<tr><td>Gaussian Splatting</td><td>3D Gaussian 如何成为像素</td><td>协方差、投影 Jacobian、conic、tile-depth sort、透明合成、可微渲染。</td><td><a href="../modules/gaussian-splatting/render-path.html">Gaussian 到像素</a> + <a href="../examples/gaussian-splatting/single-splat.html">单点实验</a>。</td><td>样板已完成</td></tr>
 						<tr><td>Economics and Finance</td><td>利率如何通过折现影响资产价格</td><td>现金流、折现率、久期、风险溢价、预期。</td><td><a href="../modules/econ-finance/interest-discount-deep-dive.html">利率折现深挖</a>：加息 -> 折现率上升 -> 未来现金流现值下降。</td><td>样板已完成</td></tr>
 						<tr><td>Stock K Line</td><td>指标只是价格和成交量的加工</td><td>OHLC、移动平均、差分、标准化、滞后性。</td><td><a href="../examples/kline-indicators/index.html">K 线指标 Demo</a>：价格序列 -> SMA / EMA / MACD / RSI。</td><td>样板已完成</td></tr>
 						<tr><td>Quant Trading</td><td>回测为什么容易骗人</td><td>时间序列、过拟合、手续费、滑点、幸存者偏差。</td><td>同一策略加入手续费和滑点后收益消失。</td><td>待补</td></tr>
@@ -57,7 +58,7 @@
 				<ol>
 					<li>第一批：Embedding -> RAG、Mini RAG Demo、RAG Evaluation、Mini Agent Loop、Agent Evaluation、Agent Safety、Pi toolCall 闭环。</li>
 					<li>第二批：利率折现、K 线指标数学、Layer / Source / Style。</li>
-					<li>第三批：DrawCommand、Gaussian Splatting、数字孪生实时状态。</li>
+					<li>第三批：DrawCommand、OpenLayers Canvas、Gaussian Splatting、MapLibre Worker/GPU、数字孪生实时状态。</li>
 					<li>第四批：回测陷阱、核电池能量转换。</li>
 					<li>结构优化批次：统一模块首页，再拆分 Mini Agent 这类过长教程型首页。</li>
 				</ol>

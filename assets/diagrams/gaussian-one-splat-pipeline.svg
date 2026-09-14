@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 430" role="img" aria-labelledby="title desc">
+  <title id="title">单个 3D Gaussian 到屏幕像素的处理链</title>
+  <desc id="desc">从高斯参数、相机投影、瓦片排序到逐像素透明度合成的四阶段流程图。</desc>
+  <style>
+    text { font-family: Arial, "Microsoft YaHei", sans-serif; fill: #17212b; }
+    .title { font-size: 27px; font-weight: 700; }
+    .stage { font-size: 18px; font-weight: 700; }
+    .body { font-size: 15px; }
+    .code { font-family: Consolas, monospace; font-size: 14px; }
+    .line { stroke: #6b7885; stroke-width: 2.5; fill: none; }
+  </style>
+  <rect width="1200" height="430" fill="#f7f9fb" rx="8" />
+  <text x="52" y="54" class="title">一个 3D Gaussian 如何成为像素</text>
+
+  <rect x="45" y="92" width="245" height="255" rx="7" fill="#e8f4f1" stroke="#91bbb2" />
+  <text x="68" y="126" class="stage">1. 场景参数</text>
+  <text x="68" y="162" class="body">中心 μ = (x, y, z)</text>
+  <text x="68" y="190" class="body">尺度 s + 旋转 q</text>
+  <text x="68" y="218" class="body">不透明度 o</text>
+  <text x="68" y="246" class="body">颜色 / 球谐系数</text>
+  <text x="68" y="292" class="code">Σ = R S Sᵀ Rᵀ</text>
+  <text x="68" y="320" class="body">得到空间椭球</text>
+
+  <path class="line" d="M290 220 H330" />
+  <path d="M330 220 l-12 -7 v14 z" fill="#6b7885" />
+
+  <rect x="335" y="92" width="245" height="255" rx="7" fill="#edf1f7" stroke="#a6b3c3" />
+  <text x="358" y="126" class="stage">2. 投影与包围盒</text>
+  <text x="358" y="162" class="body">视锥裁剪、投影中心</text>
+  <text x="358" y="190" class="code">Σ' = J W Σ Wᵀ Jᵀ</text>
+  <text x="358" y="218" class="body">求逆得到 conic</text>
+  <text x="358" y="246" class="body">最大特征值决定半径</text>
+  <text x="358" y="292" class="code">radius = ceil(3√λmax)</text>
+  <text x="358" y="320" class="body">确定覆盖哪些 tile</text>
+
+  <path class="line" d="M580 220 H620" />
+  <path d="M620 220 l-12 -7 v14 z" fill="#6b7885" />
+
+  <rect x="625" y="92" width="245" height="255" rx="7" fill="#fff3df" stroke="#d4b783" />
+  <text x="648" y="126" class="stage">3. 复制与排序</text>
+  <text x="648" y="162" class="body">每覆盖一个 tile 复制一次</text>
+  <text x="648" y="190" class="code">key = tile | depth</text>
+  <text x="648" y="218" class="body">GPU radix sort</text>
+  <text x="648" y="246" class="body">识别每个 tile 的范围</text>
+  <text x="648" y="292" class="body">一个 block 负责一个 tile</text>
+  <text x="648" y="320" class="body">列表内按深度排列</text>
+
+  <path class="line" d="M870 220 H910" />
+  <path d="M910 220 l-12 -7 v14 z" fill="#6b7885" />
+
+  <rect x="915" y="92" width="240" height="255" rx="7" fill="#f8e9e8" stroke="#cba3a0" />
+  <text x="938" y="126" class="stage">4. 像素合成</text>
+  <text x="938" y="162" class="code">w = exp(-½ dᵀΣ'⁻¹d)</text>
+  <text x="938" y="190" class="code">α = min(0.99, o·w)</text>
+  <text x="938" y="218" class="code">C += T·α·color</text>
+  <text x="938" y="246" class="code">T *= (1-α)</text>
+  <text x="938" y="292" class="body">T 足够小时提前结束</text>
+  <text x="938" y="320" class="body">补上 T × 背景色</text>
+
+  <text x="52" y="393" class="body">训练时，反向传播再沿这条链把像素误差传回位置、尺度、旋转、不透明度和颜色。</text>
+</svg>
