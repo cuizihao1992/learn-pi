@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>核电池计算实验与自测 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>核电池计算实验</strong><span>只做安全的纸面能量预算</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">核电池</a><a href="roadmap.html">路线</a><a href="../../pages/progress.html">进度</a></nav></header>
+		<main class="doc-layout"><aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="roadmap.html">学习路线</a><a href="principles.html">工作原理</a><a class="active" href="labs.html">计算实验</a><a href="space-atomic-clock.html">卫星与原子钟</a></aside>
+			<article class="doc"><p class="kicker">Labs</p><h1>半衰期、效率和任务功率如何一起约束系统</h1><p class="lead">所有实验都是公开参数下的简化计算，不接触任何放射源。真实系统还要考虑材料退化、温差变化、电子系统和安全设计。</p>
+				<h2>实验 1：计算理想衰减</h2><pre><code>P(t) = P0 * 2^(-t / T_half)
+
+若 P0 = 100 W：
+t = 0          -> 100 W
+t = T_half     -> 50 W
+t = 2*T_half   -> 25 W</code></pre><p>再计算四分之一个和半个半衰期。画出曲线，观察它是连续指数衰减，不是到某一天突然减半。</p>
+				<h2>实验 2：加入转换效率</h2><p>假设热源初始提供 2000 W 热功率，热电转换效率为 6%，则简化初始电功率为 120 W。把效率改为 5% 和 7%，比较它与热源衰减对输出的影响。</p><p><strong>边界：</strong>真实效率会随温差、材料和老化变化，不能把固定效率当成完整工程模型。</p>
+				<h2>实验 3：做任务功率预算</h2><table class="compare-table"><thead><tr><th>负载</th><th>工作功率</th><th>占空比</th><th>平均功率</th></tr></thead><tbody><tr><td>计算机</td><td>35 W</td><td>100%</td><td>35 W</td></tr><tr><td>通信</td><td>60 W</td><td>20%</td><td>12 W</td></tr><tr><td>仪器</td><td>40 W</td><td>25%</td><td>10 W</td></tr><tr><td>加热与损耗</td><td>固定预算</td><td>—</td><td>25 W</td></tr></tbody></table><p>合计平均负载为 82 W。再加入 20% 设计余量，判断 120 W 初始输出是否足够，以及任务末期还需检查什么。</p>
+				<h2>实验 4：不要把时钟当电源</h2><p>画两条独立链路：`原子跃迁 -> 频率基准 -> 时间信号` 与 `衰变热 -> 热电转换 -> 电功率`。说明卫星可以同时需要高精度时钟和供电系统，但两者解决不同问题。</p>
+				<h2>自测</h2><details><summary>半衰期长为什么不保证功率大？</summary><p>半衰期描述衰变速率；可用功率还取决于同位素数量、单次衰变能量、转换效率和负载条件。</p></details><details><summary>RTG 是核反应堆吗？</summary><p>不是。RTG 利用放射性同位素自然衰变产生的热，不维持受控裂变链式反应。</p></details><details><summary>为什么任务末期功率不能只按半衰期估算？</summary><p>转换材料、电接点、温差和电子系统也会老化，实际电功率下降可能不只来自核衰变。</p></details>
+				<h2>参考与复核</h2><ul><li><a href="https://science.nasa.gov/planetary-science/programs/radioisotope-power-systems/power-radioisotope-thermoelectric-generators/">NASA: Radioisotope Thermoelectric Generators</a></li><li><a href="https://www.energy.gov/ne/space-and-defense-power-systems">U.S. DOE: Space and Defense Power Systems</a></li></ul><p>资料等级：A｜最后复核：2026-09-14｜示例数字只用于理解公式，不代表具体任务设计参数。</p>
+				<div class="next-card"><span>检查体系</span><a href="roadmap.html">回到四层学习路线</a></div></article>
+		</main><script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

@@ -10,7 +10,7 @@
 	<body>
 		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习实验室</strong><span>把概念变成可观察的实验</span></div></div><nav><a href="../index.html">首页</a><a href="dashboard.html">仪表盘</a><a href="learning-paths.html">学习路线</a><a href="concept-index.html">概念索引</a><a href="search.html">检索</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a href="dashboard.html">学习仪表盘</a><a href="learning-paths.html">学习路线</a><a href="til.html">TIL 学习日志</a><a href="deep-dive-roadmap.html">深挖路线</a><a class="active" href="lab-index.html">实验室</a><a href="concept-index.html">概念索引</a><a href="progress.html">学习进度</a><a href="search.html">全站检索</a></aside>
+			<aside class="doc-sidebar"><a href="dashboard.html">学习仪表盘</a><a href="learning-paths.html">学习路线</a><a href="til.html">TIL 学习日志</a><a href="deep-dive-roadmap.html">深挖路线</a><a class="active" href="lab-index.html">实验室</a><a href="course-quality-matrix.html">课程质量矩阵</a><a href="concept-index.html">概念索引</a><a href="progress.html">学习进度</a><a href="search.html">全站检索</a></aside>
 			<article class="doc">
 				<p class="kicker">Labs</p>
 				<h1>从看懂到做懂</h1>
@@ -33,6 +33,10 @@
 					<section><h3>Agent Safety Demo</h3><p>观察路径越界、危险命令、写文件确认和密钥外传如何在工具执行前被拦截。</p><a class="primary-link" href="../examples/agent-safety/index.html">打开实验</a></section>
 					<section><h3>Mini Agent Node</h3><p>用最小 Node 脚本理解 Agent Loop、toolCall、toolResult 和最终回答的闭环。</p><a class="primary-link" href="../examples/mini-agent-node/mini-agent.mjs">查看示例代码</a></section>
 					<section><h3>K 线指标 Demo</h3><p>输入一组收盘价，观察 SMA、EMA、MACD、RSI 如何由价格序列计算出来。</p><a class="primary-link" href="../examples/kline-indicators/index.html">打开实验</a></section>
+					<section><h3>Mapbox 故障实验</h3><p>逐个破坏 source id、source-layer、坐标、filter 和 zoom，定位有数据却没有像素的原因。</p><a class="primary-link" href="../modules/mapbox/labs.html">开始实验</a></section>
+					<section><h3>数字孪生状态实验</h3><p>用公交车事件理解对象身份、乱序、重复、数据过期与处置反馈。</p><a class="primary-link" href="../modules/digital-twin-city/labs.html">开始实验</a></section>
+					<section><h3>量化回测实验</h3><p>移动成交时点、加入成本、记录全部参数尝试，让回测幻觉显形。</p><a class="primary-link" href="../modules/quant-trading/labs.html">开始实验</a></section>
+					<section><h3>核电池功率预算</h3><p>用半衰期、转换效率、负载占空比和安全余量计算简化任务功率。</p><a class="primary-link" href="../modules/nuclear-battery/labs.html">开始实验</a></section>
 				</div>
 				<h2>后续实验队列</h2>
 				<table class="compare-table">
@@ -41,7 +45,7 @@
 						<tr><td>RAG 对比实验</td><td>对比只用向量检索、混合检索和 rerank 后的召回变化。</td><td><a href="../modules/llm-agent-interview/rag-pipeline.html">RAG 数据工程</a></td></tr>
 						<tr><td>Agent 权限日志</td><td>记录谁触发了什么工具、参数、结果和确认状态。</td><td><a href="../modules/mini-agent/practical-path.html">Agent 实战路线</a></td></tr>
 						<tr><td>K 线信号回放</td><td>把指标状态放回趋势、成交量、位置和止损条件里复盘。</td><td><a href="../modules/stock-kline/signals.html">买卖信号整理</a></td></tr>
-						<tr><td>地图图层 Demo</td><td>Layer、Source、Style 如何决定地图展示。</td><td><a href="../modules/mapbox/architecture.html">Mapbox 架构</a></td></tr>
+						<tr><td>Cesium DrawCommand Demo</td><td>顶点数据、shader、uniform 和 render state 如何进入 GPU。</td><td><a href="../modules/cesium/render-path.html">Cesium 渲染路径</a></td></tr>
 						<tr><td>宏观周期拆解器</td><td>增长、通胀、利率、信用和资产价格如何传导。</td><td><a href="../modules/econ-finance/macro-cycle.html">宏观周期</a></td></tr>
 					</tbody>
 				</table>

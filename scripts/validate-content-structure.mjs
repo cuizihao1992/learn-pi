@@ -70,6 +70,20 @@ for (const commonPage of manifest.commonPages) {
 	if (!exists(commonPage)) fail(`common page does not exist: ${commonPage}`);
 }
 
+for (const sitePageKey of ["qualityMatrix", "sourcePolicy"]) {
+	const sitePage = manifest.site[sitePageKey];
+	if (!sitePage || !exists(sitePage)) fail(`site.${sitePageKey} must point to an existing page`);
+}
+
+if (manifest.site.qualityMatrix && exists(manifest.site.qualityMatrix)) {
+	const matrixHtml = fs.readFileSync(path.join(repoRoot, manifest.site.qualityMatrix), "utf8");
+	for (const module of manifest.modules) {
+		const marker = `data-module-slug="${module.slug}"`;
+		const occurrences = matrixHtml.split(marker).length - 1;
+		if (occurrences !== 1) fail(`quality matrix must contain exactly one row for ${module.slug}`);
+	}
+}
+
 if (errors.length > 0) {
 	console.error(`Content structure validation failed with ${errors.length} error(s):`);
 	for (const error of errors) console.error(`- ${error}`);

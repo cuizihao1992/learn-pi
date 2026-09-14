@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>来源与复核规范 | 源码学习实验室</title>
+		<link rel="stylesheet" href="../styles.css?v=6" />
+		<link rel="manifest" href="/learn-pi/manifest.json" />
+		<meta name="theme-color" content="#6366f1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="源码学吧" />
+		<link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
+	</head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>来源与复核规范</strong><span>事实、推断、猜想与信仰解释</span></div></div><nav><a href="../index.html">首页</a><a href="dashboard.html">仪表盘</a><a href="course-quality-matrix.html">质量矩阵</a><a href="charter.html">总宪章</a></nav></header>
+		<main class="doc-layout">
+			<aside class="doc-sidebar"><a href="dashboard.html">学习仪表盘</a><a href="knowledge-architecture.html">知识库架构</a><a href="course-quality-matrix.html">课程质量矩阵</a><a class="active" href="source-policy.html">来源与复核</a><a href="charter.html">总宪章</a><a href="search.html">全站检索</a></aside>
+			<article class="doc">
+				<p class="kicker">Source Policy</p>
+				<h1>哪些话是事实，哪些只是解释</h1>
+				<p class="lead">知识库可以讨论技术、金融、医学、生物、历史、哲学与宗教，但不能把不同认识层级揉成一个确定结论。页面需要让读者知道证据来自哪里、结论如何推出、什么时候复核。</p>
+
+				<h2>来源优先级</h2>
+				<table class="compare-table"><thead><tr><th>等级</th><th>优先来源</th><th>典型用途</th></tr></thead><tbody><tr><td>A：原始与权威</td><td>源码、官方文档、标准、法规、原始数据、论文原文、经典文本原文</td><td>支撑接口、机制、数值和原文解释。</td></tr><tr><td>B：高质量综合</td><td>系统综述、教材、大学课程、专业机构报告</td><td>建立领域共识和背景框架。</td></tr><tr><td>C：解释材料</td><td>技术文章、访谈、视频、社区讨论</td><td>帮助理解或发现问题，关键事实需回到 A/B 来源。</td></tr><tr><td>D：个人观点</td><td>猜想、类比、灵感和信仰立场</td><td>可以启发思考，但必须显式标注。</td></tr></tbody></table>
+
+				<h2>四种陈述必须分开</h2>
+				<ul><li><strong>事实：</strong>可由观察、数据、文本或源码直接核对。</li><li><strong>推断：</strong>根据事实和模型推出，应写清前提与推理链。</li><li><strong>猜想：</strong>目前证据不足的可能解释，应给出替代解释和证伪条件。</li><li><strong>信仰解释：</strong>来自某一宗教传统内部的世界观回答，应与历史事实和科学描述并列而不混同。</li></ul>
+
+				<h2>页面复核卡</h2>
+				<pre><code>资料等级：A / B / C / D
+关键来源：官方文档、论文或原始文本链接
+事实截止：内容覆盖到哪个版本或日期
+最后复核：YYYY-MM-DD
+适用边界：结论在什么条件下成立
+不确定性：争议、缺失数据或替代解释
+用途声明：教育用途，不替代专业意见</code></pre>
+
+				<h2>不同领域的特殊要求</h2>
+				<table class="compare-table"><thead><tr><th>领域</th><th>最低要求</th></tr></thead><tbody><tr><td>源码与 API</td><td>记录仓库、版本或提交；源码路径可能变化时标注复核日期。</td></tr><tr><td>模型与性能</td><td>记录模型版本、硬件、精度、并发、输入输出长度和测量口径。</td></tr><tr><td>经济与金融</td><td>区分历史描述、模型假设和投资判断；不得把回测写成收益承诺。</td></tr><tr><td>医学与生物</td><td>优先指南、系统综述和原始研究；明确个体差异与非诊疗用途。</td></tr><tr><td>历史</td><td>区分一手史料、学术解释与价值判断；重大争议至少呈现两种解释。</td></tr><tr><td>哲学与宗教</td><td>区分“某传统主张什么”与“这个主张为真”；引用原典时保留语境。</td></tr></tbody></table>
+
+				<h2>什么时候必须重新检查</h2>
+				<ul><li>接口、软件版本、模型能力、产品价格、法律或政策发生变化。</li><li>页面包含“最新、目前、最快、第一、一定”等时间敏感或强断言。</li><li>来源链接失效，或新证据改变原有结论。</li><li>读者发现无法复现实验，或同一术语在不同页面含义不一致。</li></ul>
+
+				<h2>发布前五问</h2>
+				<ol><li>最关键的事实能回到原始来源吗？</li><li>我是否把推断写成了事实？</li><li>页面给出了适用条件和反例吗？</li><li>数值和版本有没有复核日期？</li><li>读者能通过实验或原文独立验证吗？</li></ol>
+				<div class="next-card"><span>回到治理</span><a href="course-quality-matrix.html">查看哪些模块还缺来源与复核</a></div>
+			</article>
+		</main>
+		<script src="../theme.js?v=6"></script><script src="../enhance.js?v=6"></script>
+		<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

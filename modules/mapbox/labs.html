@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Mapbox 实验与自测 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Mapbox 实验</strong><span>有数据，为什么没有像素</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">Mapbox</a><a href="roadmap.html">路线</a><a href="../../pages/progress.html">进度</a></nav></header>
+		<main class="doc-layout"><aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="roadmap.html">学习路线</a><a href="architecture.html">渲染架构</a><a href="api-debugging.html">接口调试</a><a class="active" href="labs.html">实验与自测</a></aside>
+			<article class="doc"><p class="kicker">Labs</p><h1>一次只破坏渲染链的一层</h1><p class="lead">准备一个只含一个点的 GeoJSON 和一个 circle layer。每轮只改变一个变量，记录网络、source、style layer、相机和屏幕结果。</p>
+				<h2>实验 1：source id 失配</h2><pre><code>map.addSource("stations", { type: "geojson", data });
+map.addLayer({ id: "station-dot", type: "circle", source: "station" });
+// source 写成了 station，而实际 id 是 stations</code></pre><p>预测报错位置，再把 source 改正确。说明 style layer 只保存数据引用，不复制 source 数据。</p>
+				<h2>实验 2：交换经纬度</h2><p>分别使用 `[116.4, 39.9]` 和 `[39.9, 116.4]`，固定相机在北京。两组都是合法数字，但只有一组位于预期视野。</p><p><strong>验收：</strong>能区分“没有生成要素”和“要素生成了但在视野外”。</p>
+				<h2>实验 3：混淆 source-layer</h2><pre><code>// GeoJSON source 不使用 source-layer
+{ type: "circle", source: "stations" }
+
+// Vector source 的 style layer 需要选择瓦片内部图层
+{ type: "line", source: "transport", "source-layer": "road" }</code></pre><p>解释 source id 与瓦片内部 source-layer 为什么是两级命名空间。</p>
+				<h2>实验 4：让 filter 与 zoom 隐藏数据</h2><p>先设置无法命中的 filter，再设置高于当前 zoom 的 `minzoom`。检查 source 是否 loaded、要素是否存在、layer 是否可见，建立固定排查顺序。</p>
+				<h2>故障定位表</h2><table class="compare-table"><thead><tr><th>现象</th><th>先看什么</th><th>可能层</th></tr></thead><tbody><tr><td>网络 404</td><td>Request URL、token、CORS</td><td>数据获取</td></tr><tr><td>source loaded 但无 feature</td><td>瓦片范围、source-layer、数据内容</td><td>解析与选择</td></tr><tr><td>feature 存在但不可见</td><td>filter、zoom、visibility、坐标</td><td>样式与相机</td></tr><tr><td>样式正确但性能差</td><td>feature 数、表达式、重绘频率</td><td>布局与渲染</td></tr></tbody></table>
+				<h2>自测</h2><details><summary>source 与 layer 的根本区别是什么？</summary><p>source 定义数据从哪里来；layer 选择一部分数据并规定以何种图形和顺序绘制。</p></details><details><summary>为什么 layout 修改通常比 paint 修改更重？</summary><p>layout 会影响要素如何参与布局和传给 GPU，可能触发异步重新布局；paint 更接近绘制阶段的外观属性。</p></details><details><summary>worker 为什么不能独立完成最终绘制？</summary><p>worker 适合解析和布局，但 WebGL 上下文、最终图层顺序与每帧相机状态由渲染主流程统一协调。</p></details>
+				<h2>参考与复核</h2><ul><li><a href="https://docs.mapbox.com/mapbox-gl-js/guides/styles/work-with-layers/">Mapbox GL JS sources and layers</a></li><li><a href="https://docs.mapbox.com/style-spec/reference/layers/">Mapbox Style Spec: Layers</a></li><li><a href="https://mapbox.github.io/vector-tile-spec/">Mapbox Vector Tile Specification</a></li></ul><p>资料等级：A｜最后复核：2026-09-14｜实验需使用与你项目相同的 Mapbox GL JS 版本复现。</p>
+				<div class="next-card"><span>完成路线</span><a href="roadmap.html">核对四步产物</a></div></article>
+		</main><script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

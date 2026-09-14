@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>核电池学习路线 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>核电池学习路线</strong><span>从衰变能到任务功率</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">核电池</a><a href="labs.html">实验</a><a href="../../pages/progress.html">进度</a></nav></header>
+		<main class="doc-layout"><aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a class="active" href="roadmap.html">学习路线</a><a href="principles.html">工作原理</a><a href="labs.html">计算实验</a><a href="space-atomic-clock.html">卫星与原子钟</a></aside>
+			<article class="doc"><p class="kicker">Roadmap</p><h1>四层理解核电池，而不是只记名字</h1><p class="lead">学习顺序从物理能量来源走到转换、工程封装和任务匹配。只做安全的纸面计算与公开资料分析，不进行任何放射源实验。</p>
+				<h2>第 1 层：衰变与半衰期</h2><p>理解不稳定原子核、衰变类型、能量释放和半衰期。重点区分“寿命长”与“功率大”。</p><p><strong>产物：</strong>用指数衰减公式计算 0、1、2 个半衰期后的理想热功率比例。</p>
+				<h2>第 2 层：能量转换</h2><p>比较 RTG 的热电转换与 betavoltaic 的带电粒子直接转换，追踪每一步的能量损耗。</p><p><strong>产物：</strong>两张能量流图，分别标出输入、转换器、输出和主要限制。</p>
+				<h2>第 3 层：工程系统</h2><p>把屏蔽、封装、热管理、功率调节、材料老化和安全分析加入模型。</p><p><strong>产物：</strong>一份简化功率预算，区分初始热功率、转换效率、可用电功率和安全余量。</p>
+				<h2>第 4 层：任务匹配</h2><p>比较深空探测器、微功耗传感器和原子钟。原子钟提供时间基准，供电系统提供能量，两者不能混为一谈。</p><p><strong>产物：</strong>为三个场景写出选择依据和明确不适用的方案。</p>
+				<h2>完成标准</h2><ul><li>能从衰变能一路解释到负载获得的电功率。</li><li>能说明半衰期、转换效率和器件老化分别影响什么。</li><li>能区分 RPS、RTG、直接转换核电池、裂变反应堆和原子钟。</li></ul>
+				<h2>参考与复核</h2><ul><li><a href="https://science.nasa.gov/planetary-science/programs/radioisotope-power-systems/power-radioisotope-thermoelectric-generators/">NASA: Radioisotope Thermoelectric Generators</a></li><li><a href="https://www.energy.gov/ne/articles/what-radioisotope-power-system">U.S. DOE: What is a Radioisotope Power System?</a></li></ul><p>资料等级：A（NASA 与 DOE 官方资料）｜最后复核：2026-09-14｜数值需对应具体同位素、转换器和任务设计。</p>
+				<div class="next-card"><span>纸面实验</span><a href="labs.html">计算衰减、效率与任务功率预算</a></div></article>
+		</main><script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

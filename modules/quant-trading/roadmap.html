@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>量化交易学习路线 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>量化交易学习路线</strong><span>先证伪，再谈上线</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">量化交易</a><a href="labs.html">实验</a><a href="../../pages/progress.html">进度</a></nav></header>
+		<main class="doc-layout"><aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a class="active" href="roadmap.html">学习路线</a><a href="architecture.html">系统架构</a><a href="strategies.html">策略</a><a href="labs.html">实验与自测</a><a href="resources.html">资源与风控</a></aside>
+			<article class="doc"><p class="kicker">Roadmap</p><h1>从市场假设到受控实盘的五道门</h1><p class="lead">路线不是“学几个指标就自动交易”。每一阶段都有退出条件，前一阶段证据不足就不进入下一阶段。本模块仅用于研究方法教育，不构成投资建议。</p>
+				<h2>第 1 门：写出可证伪假设</h2><p>说明市场行为、信号为何可能存在、何时失效。先写假设再看回测，避免看到曲线后编故事。</p><p><strong>产物：</strong>研究卡，包含机制、资产范围、持有期、成本来源和证伪条件。</p>
+				<h2>第 2 门：建立 point-in-time 数据</h2><p>每个字段都要回答“当时是否真的可用”。处理复权、退市样本、发布时间、缺失值和时区。</p><p><strong>产物：</strong>数据字典与时间可用性表。</p>
+				<h2>第 3 门：做诚实回测</h2><p>信号、仓位、成交和费用分层；禁止本根收盘后生成信号却按同一收盘价成交。</p><p><strong>产物：</strong>基准回测、成本敏感性和逐笔成交样本。</p>
+				<h2>第 4 门：样本外验证</h2><p>固定测试集，记录所有试验次数。比较训练期、验证期、测试期，并检查不同年份、市场和参数邻域。</p><p><strong>产物：</strong>试验日志、样本外报告和失败策略清单。</p>
+				<h2>第 5 门：模拟盘与受控上线</h2><p>先验证数据延迟、拒单、滑点和状态恢复，再限制资金与风险预算上线。</p><p><strong>产物：</strong>监控面板定义、熔断条件、回滚方案和每日归因记录。</p>
+				<h2>完成标准</h2><ul><li>能够发现未来函数、幸存者偏差和多重试验。</li><li>能解释回测收益、可成交收益和实盘收益之间的差异。</li><li>能在策略上线前定义停止条件，而不是亏损后临时决定。</li></ul>
+				<h2>参考与复核</h2><ul><li><a href="https://escholarship.org/uc/item/4w1110bb">Bailey et al.: The Probability of Backtest Overfitting</a></li></ul><p>资料等级：A（原始论文）｜最后复核：2026-09-14｜回测结果是历史模拟，不代表未来收益。</p>
+				<div class="next-card"><span>先找错误</span><a href="labs.html">进入未来函数与成本实验</a></div></article>
+		</main><script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

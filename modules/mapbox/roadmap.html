@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Mapbox 学习路线 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>Mapbox 学习路线</strong><span>从 Style JSON 到 WebGL 像素</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">Mapbox</a><a href="labs.html">实验</a><a href="../../pages/progress.html">进度</a></nav></header>
+		<main class="doc-layout"><aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a class="active" href="roadmap.html">学习路线</a><a href="architecture.html">渲染架构</a><a href="api-debugging.html">接口调试</a><a href="labs.html">实验与自测</a><a href="vs-cesium.html">与 Cesium 对比</a></aside>
+			<article class="doc"><p class="kicker">Roadmap</p><h1>四步打穿 Mapbox 渲染链</h1><p class="lead">路线围绕“一块数据为什么能显示或不能显示”展开。每一步都要留下一个可检查产物，再进入下一步。</p>
+				<h2>第 1 步：建立声明模型</h2><p>阅读模块总览和 Style Specification，区分 style、source、source-layer、style layer、layout 与 paint。</p><p><strong>产物：</strong>手写一个只有 GeoJSON source 和 circle layer 的最小 Style 片段，并标出数据与外观分别在哪里定义。</p>
+				<h2>第 2 步：追踪矢量瓦片</h2><p>进入渲染架构，沿可见瓦片选择、网络请求、worker 解码、bucket 构建和主线程绘制追踪数据。</p><p><strong>产物：</strong>画出 `camera -> tile -> worker -> bucket -> painter -> WebGL` 链路，并解释每层的输入输出。</p>
+				<h2>第 3 步：制造故障</h2><p>完成实验中的 source id、source-layer、filter、zoom 和坐标顺序错误。一次只改变一个变量。</p><p><strong>产物：</strong>一张故障表，记录现象、所在层、验证信号和修复方法。</p>
+				<h2>第 4 步：做技术选择</h2><p>用相同业务需求比较 Mapbox、OpenLayers 和 Cesium，不比较“功能多少”，只比较数据规模、坐标空间、渲染目标和扩展边界。</p><p><strong>产物：</strong>为“城市二维运营地图”和“全球三维地球”各写一份不超过 200 字的选型结论。</p>
+				<h2>完成标准</h2><ul><li>能解释 source 有数据但 layer 不显示的五类原因。</li><li>能说清 vector tile 为什么按瓦片组织，以及 worker 为什么参与解析。</li><li>能从 DevTools 网络、样式配置和相机状态逐层定位问题。</li></ul>
+				<h2>参考与复核</h2><ul><li><a href="https://docs.mapbox.com/style-spec/guides/">Mapbox Style Specification</a></li><li><a href="https://docs.mapbox.com/mapbox-gl-js/guides/styles/work-with-layers/">Mapbox GL JS: Work with sources and layers</a></li><li><a href="https://mapbox.github.io/vector-tile-spec/">Mapbox Vector Tile Specification</a></li></ul><p>资料等级：A（官方规范与文档）｜最后复核：2026-09-14｜接口细节以当前 Mapbox GL JS 版本为准。</p>
+				<div class="next-card"><span>开始验证</span><a href="labs.html">进入 Mapbox 实验与自测</a></div></article>
+		</main><script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

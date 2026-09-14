@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>量化交易实验与自测 | 源码学习实验室</title><link rel="stylesheet" href="../../styles.css?v=6" /><link rel="manifest" href="/learn-pi/manifest.json" /><meta name="theme-color" content="#6366f1" /><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="源码学吧" /><link rel="apple-touch-icon" href="/learn-pi/icon-192.png" /></head>
+	<body>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>量化交易实验</strong><span>先让漂亮回测失败一次</span></div></div><nav><a href="../../index.html">首页</a><a href="index.html">量化交易</a><a href="roadmap.html">路线</a><a href="../../pages/progress.html">进度</a></nav></header>
+		<main class="doc-layout"><aside class="doc-sidebar"><a href="index.html">模块总览</a><a href="charter.html">模块宪章</a><a href="roadmap.html">学习路线</a><a href="architecture.html">系统架构</a><a href="strategies.html">策略</a><a class="active" href="labs.html">实验与自测</a><a href="resources.html">资源与风控</a></aside>
+			<article class="doc"><p class="kicker">Labs</p><h1>四个实验拆穿回测幻觉</h1><p class="lead">本页用于研究方法教育，不构成投资建议。实验目标不是找到高收益参数，而是让未来函数、成本、过拟合和运行风险变得可见。</p>
+				<h2>实验 1：移动一次成交时点</h2><pre><code>signal[t] = close[t] > movingAverage[t]
+
+错误：用 signal[t] 赚取 close[t-1] -> close[t] 的收益
+较合理：signal[t] 只能影响 t 之后可成交时刻的持仓</code></pre><p>保持信号完全不变，只把成交移到下一根可成交价格。比较收益、回撤和交易次数，解释差异来自哪里。</p>
+				<h2>实验 2：加入成本临界点</h2><p>从零手续费开始，每次把单边总成本提高 1 个基点，直到策略净收益降为零。再按月统计换手率，观察高频交易为什么对成本更敏感。</p><pre><code>net return = gross return
+           - commission
+           - bid/ask spread
+           - slippage
+           - market impact</code></pre>
+				<h2>实验 3：记录所有尝试</h2><p>测试 100 组均线参数，但不能只保存最好的一组。记录每次试验、参数、开始时间和结果，然后冻结参数再进入未查看的测试期。</p><p><strong>观察：</strong>尝试越多，偶然得到漂亮曲线的机会越大；“最佳历史参数”本身就是一次选择。</p>
+				<h2>实验 4：设计停机而不是止损口号</h2><p>分别制造行情数据中断、订单重复、成交回报延迟和持仓对账不一致。为每个故障定义检测信号、自动动作、人工确认和恢复条件。</p>
+				<h2>自测</h2><details><summary>训练集、验证集和测试集为什么不能反复互换？</summary><p>一旦根据测试结果修改策略，测试集就参与了选择，不能再提供独立样本外证据。</p></details><details><summary>为什么手续费不是唯一交易成本？</summary><p>点差、滑点、市场冲击、延迟与无法成交都会让实际执行偏离回测价格。</p></details><details><summary>样本外赚钱是否证明策略一定有效？</summary><p>不能。还要考虑试验次数、统计不确定性、不同市场状态、容量与后续实盘偏差。</p></details>
+				<h2>参考与复核</h2><ul><li><a href="https://escholarship.org/uc/item/4w1110bb">Bailey et al.: The Probability of Backtest Overfitting</a></li></ul><p>资料等级：A（原始论文）｜最后复核：2026-09-14｜所有收益例子均为假设或历史模拟。</p>
+				<div class="next-card"><span>研究流程</span><a href="roadmap.html">回到五道研究门</a></div></article>
+		</main><script src="../../theme.js?v=6"></script><script src="../../enhance.js?v=6"></script><script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/learn-pi/sw.js', { scope: '/learn-pi/' });</script>
+	</body>
+</html>

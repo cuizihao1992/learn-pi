@@ -8,9 +8,9 @@
   <link rel="apple-touch-icon" href="/learn-pi/icon-192.png" />
 </head>
 	<body>
-		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习仪表盘</strong><span>十八个模块，一个学习系统</span></div></div><nav><a href="../index.html">首页</a><a href="learning-paths.html">学习路线</a><a href="../modules/index.html">全部模块</a><a href="knowledge-architecture.html">知识库架构</a><a href="search.html">检索</a></nav></header>
+		<header class="topbar"><div class="brand"><img src="https://pi.dev/logo-auto.svg" alt="Site logo" /><div><strong>学习仪表盘</strong><span>十八个模块，一个学习系统</span></div></div><nav><a href="../index.html">首页</a><a href="learning-paths.html">学习路线</a><a href="../modules/index.html">全部模块</a><a href="course-quality-matrix.html">质量矩阵</a><a href="search.html">检索</a></nav></header>
 		<main class="doc-layout">
-			<aside class="doc-sidebar"><a class="active" href="dashboard.html">学习仪表盘</a><a href="learning-paths.html">学习路线</a><a href="knowledge-architecture.html">知识库架构</a><a href="deep-dive-roadmap.html">深挖路线</a><a href="lab-index.html">实验室</a><a href="progress.html">学习进度</a><a href="agent-project-checklist.html">Agent 项目清单</a><a href="interview-bank.html">面试题库</a><a href="concept-index.html">概念索引</a><a href="til.html">TIL 日志</a><a href="../modules/index.html">全部模块</a><a href="search.html">全站检索</a></aside>
+			<aside class="doc-sidebar"><a class="active" href="dashboard.html">学习仪表盘</a><a href="learning-paths.html">学习路线</a><a href="knowledge-architecture.html">知识库架构</a><a href="course-quality-matrix.html">课程质量矩阵</a><a href="source-policy.html">来源与复核</a><a href="deep-dive-roadmap.html">深挖路线</a><a href="lab-index.html">实验室</a><a href="progress.html">学习进度</a><a href="agent-project-checklist.html">Agent 项目清单</a><a href="interview-bank.html">面试题库</a><a href="concept-index.html">概念索引</a><a href="til.html">TIL 日志</a><a href="../modules/index.html">全部模块</a><a href="search.html">全站检索</a></aside>
 			<article class="doc">
 				<p class="kicker">Dashboard</p>
 				<h1>当前知识库怎么走</h1>
@@ -20,22 +20,22 @@
 				<table class="compare-table">
 					<thead><tr><th>维度</th><th>状态</th><th>下一步</th></tr></thead>
 					<tbody>
-						<tr><td>模块数量</td><td>15 个一等模块，已全部登记在 `content-manifest.json`。</td><td>继续统一模块首页结构。</td></tr>
+						<tr><td>模块数量</td><td>18 个一等模块，已全部登记在 `content-manifest.json`。</td><td>按质量矩阵补课程闭环。</td></tr>
 						<tr><td>入口结构</td><td>首页、学习路线、全部模块、仪表盘、搜索已经分工。</td><td>减少重复列表，保留清晰主路径。</td></tr>
-						<tr><td>深挖内容</td><td>已有 toolCall、Agent Loop、Embedding/RAG、利率折现、缓存等样板。</td><td>向地图、量化、历史、系统思维继续复制模板。</td></tr>
-						<tr><td>实验内容</td><td>已有 Embedding Search、Mini RAG、RAG Evaluation、Agent Safety、K 线指标等 demo。</td><td>补地图渲染和经济循环的交互实验。</td></tr>
+						<tr><td>深挖内容</td><td>已有 toolCall、Agent Loop、Embedding/RAG、利率折现、缓存等样板。</td><td>按<a href="course-quality-matrix.html">质量矩阵</a>继续补待完成项。</td></tr>
+						<tr><td>实验内容</td><td>已有 Agent、RAG、推理加速、地图、量化和能源分析实验。</td><td>把纸面实验逐步升级为可运行 Demo。</td></tr>
 						<tr><td>PWA</td><td>已支持 manifest、Service Worker、离线页、快捷方式和本地进度。</td><td>后续可增加离线内容版本提示。</td></tr>
 					</tbody>
 				</table>
 
-				<h2>二、五条主轨道</h2>
+				<h2>二、六个知识域</h2>
 				<div class="track-grid">
 					<section><h2>Agent / LLM</h2><ol><li>Pi Agent 源码架构</li><li>Mini Agent 从零实现</li><li>模型接口兼容</li><li>RAG 与记忆</li><li>角色优先级与缓存</li></ol><a class="primary-link" href="../modules/llm-agent-interview/index.html">进入</a></section>
 					<section><h2>地图 / 渲染</h2><ol><li>OpenLayers 二维地图</li><li>Mapbox 样式与瓦片</li><li>Cesium 三维渲染</li><li>Gaussian Splatting</li><li>数字孪生城市</li></ol><a class="primary-link" href="rendering-cheatsheet.html">进入</a></section>
 					<section><h2>经济 / 社会</h2><ol><li>社会运行总图</li><li>金钱和信用循环</li><li>利率折现</li><li>K 线和风控</li><li>量化与历史社会</li></ol><a class="primary-link" href="finance-cheatsheet.html">进入</a></section>
 					<section><h2>学习 / 系统</h2><ol><li>学习如何发生</li><li>知识体系方法</li><li>认知偏差</li><li>反馈环</li><li>杠杆点</li></ol><a class="primary-link" href="../modules/cognitive-learning/index.html">进入</a></section>
 					<section><h2>科学技术</h2><ol><li>核电池</li><li>卫星原子钟</li><li>高斯表示</li><li>空间能源</li><li>可视化实验</li></ol><a class="primary-link" href="../modules/nuclear-battery/index.html">进入</a></section>
-					<section><h2>知识库治理</h2><ol><li>内容边界</li><li>合并拆分</li><li>深挖模板</li><li>实验验证</li><li>发布检查</li></ol><a class="primary-link" href="knowledge-architecture.html">进入</a></section>
+					<section><h2>知识库治理</h2><ol><li>内容边界</li><li>质量矩阵</li><li>来源复核</li><li>实验验证</li><li>发布检查</li></ol><a class="primary-link" href="course-quality-matrix.html">进入</a></section>
 				</div>
 
 				<h2>三、最近应该优先打穿的点</h2>
